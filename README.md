@@ -1,11 +1,11 @@
 # Report Manager - Review and Editing System
 A program for reviewing and editing report cards.
-
+![alt text](https://github.com/Peace-Robotics-Studio/report-manager/blob/main/data/gui/banner.png?raw=true)
 ### Getting Started
 This project was built and tested using Ubuntu 21.10 64bit with Pycharm Community Edition. 
 
 #### Installing
-` clone git repository and execute 'Run.py'
+clone git repository and execute 'Run.py'
 
 #### Build Environment
 * PyCharm 2021.3.3
