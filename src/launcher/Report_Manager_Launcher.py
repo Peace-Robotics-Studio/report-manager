@@ -14,6 +14,9 @@ class Report_Manager_Launcher(Gtk.Dialog):
     def __init__(self, parent):
         Gtk.Dialog.__init__(self)
 
+        self.image = cairo.ImageSurface.create_from_png(res_dir['GUI'] + 'banner.png')
+
+
         self.set_default_size(699, 239)
         self.set_decorated(False)  # Creates a borderless window without a title bar
         self.set_app_paintable(True)
@@ -119,7 +122,6 @@ class Report_Manager_Launcher(Gtk.Dialog):
             self.response(Gtk.ResponseType.CANCEL)
 
     def draw(self, widget, context):
-        self.image = cairo.ImageSurface.create_from_png(res_dir['GUI'] + 'banner.png')
         input_region = Gdk.cairo_region_create_from_surface(self.image)
         self.input_shape_combine_region(input_region)
 
