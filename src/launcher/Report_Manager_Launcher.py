@@ -14,10 +14,8 @@ class Report_Manager_Launcher(Gtk.Dialog):
     def __init__(self, parent):
         Gtk.Dialog.__init__(self)
 
-        self.image = cairo.ImageSurface.create_from_png(res_dir['GUI'] + 'banner.png')
-
-
-        self.set_default_size(699, 239)
+        self.window_image = cairo.ImageSurface.create_from_png(res_dir['GUI'] + 'window-image.png')
+        self.set_default_size(699, 671)
         self.set_decorated(False)  # Creates a borderless window without a title bar
         self.set_app_paintable(True)
         self.connect('draw', self.draw)
@@ -95,15 +93,16 @@ class Report_Manager_Launcher(Gtk.Dialog):
     def do_button_movement(self, widget, event):
         state = event.get_state()
         if state & Gdk.ModifierType.BUTTON1_MASK:
-            delta_x = self.mouse_x - event.x_root
-            delta_y = self.mouse_y - event.y_root
+            if event.y_root < self.window_y + 191:
+                delta_x = self.mouse_x - event.x_root
+                delta_y = self.mouse_y - event.y_root
 
-            self.window_x -= delta_x
-            self.window_y -= delta_y
-            self.move(self.window_x, self.window_y)
+                self.window_x -= delta_x
+                self.window_y -= delta_y
+                self.move(self.window_x, self.window_y)
 
-            self.mouse_x = event.x_root
-            self.mouse_y = event.y_root
+                self.mouse_x = event.x_root
+                self.mouse_y = event.y_root
 
     def on_button_toggled(self, button, name, parent):
         if button.get_active():
@@ -122,11 +121,11 @@ class Report_Manager_Launcher(Gtk.Dialog):
             self.response(Gtk.ResponseType.CANCEL)
 
     def draw(self, widget, context):
-        input_region = Gdk.cairo_region_create_from_surface(self.image)
+        input_region = Gdk.cairo_region_create_from_surface(self.window_image)
         self.input_shape_combine_region(input_region)
 
         context.set_operator(cairo.OPERATOR_SOURCE)
-        context.set_source_surface(self.image, 0, 0)
+        context.set_source_surface(self.window_image, 0, 0)
         context.paint()
         context.set_operator(cairo.OPERATOR_OVER)
 
