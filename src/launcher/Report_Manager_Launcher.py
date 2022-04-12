@@ -12,20 +12,31 @@ from src.Settings import res_dir
 
 class Report_Manager_Launcher(Gtk.Dialog):
     def __init__(self, parent):
-        Gtk.Dialog.__init__(self)
+        """ Constructor """
 
-        self.window_image = cairo.ImageSurface.create_from_png(res_dir['GUI'] + 'window-image.png')
-        self.set_default_size(699, 671)
+        Gtk.Dialog.__init__(self)
+        # Set the name for the image used to define the launcher hit area
+        self.__launcher_properties = dict(
+            BANNER=cairo.ImageSurface.create_from_png(res_dir['GUI'] + 'window-image.png'),
+            BANNER_HEIGHT=191   # This is the part of the image users will click on to move the window
+        )
+        self.__launcher_properties['WIDTH'] = self.__launcher_properties['BANNER'].get_width()      # Width of window image
+        self.__launcher_properties['HEIGHT'] = self.__launcher_properties['BANNER'].get_height()    # Height of window image
+
+        # Create a window with the same dimensions as the image
+        self.set_default_size(self.__launcher_properties['WIDTH'], self.__launcher_properties['HEIGHT'])
         self.set_decorated(False)  # Creates a borderless window without a title bar
         self.set_app_paintable(True)
-        self.connect('draw', self.draw)
-        self.connect("button-press-event", self.do_button_press_event)
-        self.connect("motion-notify-event", self.do_button_movement)
+        self.connect('draw', self.draw)    # Capture signal and set callback
+        self.connect("button-press-event", self.do_button_press_event)  # Capture signal and set callback
+        self.connect("motion-notify-event", self.do_button_movement)    # Capture signal and set callback
 
+        # Obtain handle to the drawable area of the window and set a container to manage content
         area = self.get_content_area()
         grid = Gtk.Grid(column_homogeneous=False, column_spacing=0, row_spacing=0)
         area.add(grid)
 
+        # Create a button
         RUN_Button = Gtk.Button(label="Run")
         RUN_Button.connect("clicked", self.button_clicked)
         RUN_Button.get_style_context().add_class('button-background')
@@ -36,6 +47,7 @@ class Report_Manager_Launcher(Gtk.Dialog):
         QUIT_Button.get_style_context().add_class('button-background')
         QUIT_Button.set_name("myButton_red")
 
+        # Create a list
         vbox_list = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         vbox_list.set_hexpand(True)
         vbox_list.set_vexpand(True)
@@ -92,8 +104,10 @@ class Report_Manager_Launcher(Gtk.Dialog):
 
     def do_button_movement(self, widget, event):
         state = event.get_state()
+        # Check to see if it was the left mouse button that was clicked
         if state & Gdk.ModifierType.BUTTON1_MASK:
-            if event.y_root < self.window_y + 191:
+            # Only move the window if the 'click' happened in the dialog banner
+            if event.y_root < self.window_y + self.__launcher_properties['BANNER_HEIGHT']:
                 delta_x = self.mouse_x - event.x_root
                 delta_y = self.mouse_y - event.y_root
 
@@ -121,11 +135,12 @@ class Report_Manager_Launcher(Gtk.Dialog):
             self.response(Gtk.ResponseType.CANCEL)
 
     def draw(self, widget, context):
-        input_region = Gdk.cairo_region_create_from_surface(self.window_image)
+        """ Callback function triggered by the draw signal """
+        input_region = Gdk.cairo_region_create_from_surface(self.__launcher_properties['BANNER'])
         self.input_shape_combine_region(input_region)
 
         context.set_operator(cairo.OPERATOR_SOURCE)
-        context.set_source_surface(self.window_image, 0, 0)
+        context.set_source_surface(self.__launcher_properties['BANNER'], 0, 0)
         context.paint()
         context.set_operator(cairo.OPERATOR_OVER)
 
