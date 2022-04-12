@@ -8,6 +8,7 @@ This project was built and tested using Ubuntu 21.10 64bit with Pycharm Communit
 clone git repository and execute 'Run.py'
 
 #### Build Environment
+`sudo apt install libgirepository1.0-dev libcairo2-dev`
 * PyCharm 2021.3.3
 * PyGObject 3.42.0
 * PyCairo 1.21.0
