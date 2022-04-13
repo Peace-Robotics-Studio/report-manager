@@ -8,8 +8,9 @@ from gi.repository import Gtk
 from .L_Menu_Layer import L_Menu_Layer
 
 class L_GUI_Manager:
-    def __init__(self, l_width, l_height, banner_height):
+    def __init__(self, h_dialog, l_width, l_height, banner_height):
         """ Constructor
+        h_dialog: handle to the launcher dialog instance
         l_width: width of the launcher window (int)
         l_height: height of the launcher window (int)
         banner_height: height of the clickable banner image (int)"""
@@ -25,7 +26,7 @@ class L_GUI_Manager:
     def __build_default_interface(self):
         """ Private Task: composes layout of main gui. """
         # Expected dictionary format: [layer instance, layer order, input passthrough]
-        self.__layers.append([L_Menu_Layer(launcher_properties=self.__launcher_properties), 0, False])
+        self.__layers.append([L_Menu_Layer(h_gui_manager=self, launcher_properties=self.__launcher_properties), 0, False])
         self.__add_overlays()
 
     def __add_overlays(self):
@@ -39,6 +40,9 @@ class L_GUI_Manager:
         self.__interface_layer.add_overlay(layout_container)
         if pass_through is True:
             self.__interface_layer.set_overlay_pass_through(layout_container, True)
+            
+    def __process_button_click(self, data):
+        print(data)
 
     def get_overlay(self):
         """ Public Accessor: This function returns Gtk.Overlay object used for layering window content. """

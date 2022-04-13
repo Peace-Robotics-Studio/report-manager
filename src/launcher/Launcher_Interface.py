@@ -22,7 +22,7 @@ class Report_Manager_Launcher(Gtk.Dialog):
         )
         self.__launcher_properties['WIDTH'] = self.__launcher_properties['BANNER'].get_width()      # Width of window image
         self.__launcher_properties['HEIGHT'] = self.__launcher_properties['BANNER'].get_height()    # Height of window image
-        self.__gui_manager = L_GUI_Manager(l_width=self.__launcher_properties['WIDTH'], l_height=self.__launcher_properties['HEIGHT'], banner_height=self.__launcher_properties['BANNER_HEIGHT'])
+        self.__gui_manager = L_GUI_Manager(self, l_width=self.__launcher_properties['WIDTH'], l_height=self.__launcher_properties['HEIGHT'], banner_height=self.__launcher_properties['BANNER_HEIGHT'])
 
         # Create a window with the same dimensions as the image
         self.set_default_size(self.__launcher_properties['WIDTH'], self.__launcher_properties['HEIGHT'])
@@ -75,3 +75,5 @@ class Report_Manager_Launcher(Gtk.Dialog):
         context.paint()
         context.set_operator(cairo.OPERATOR_OVER)
 
+    def close_launcher(self, status, data):
+        print("Close Launcher")

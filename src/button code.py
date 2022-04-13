@@ -76,32 +76,6 @@ grid.attach(RUN_Button, 2, 0, 1, 1)
 grid.attach(QUIT_Button, 2, 1, 1, 1)
 grid.get_style_context().add_class('main-grid')
 
-
-
-CSS UnicodeError
-.button-background {
-    background-image: url("../gui/button-default.png");
-    border-image: none;
-    color: gray;
-    font-weight: bold;
-    font-size: 18px;
-    margin: 0;
-    padding: 0;
-    padding-top: 2px;
-    border: 0;
-    min-width: 110px;
-    min-height: 41px;
-    box-shadow: none;
-}
-
-#myButton_green.button-background {
-    color: green;
-}
-
-#myButton_green.button-background:hover {
-    background-image: url("../gui/button-bright-green.png");
-}
-
 #myButton_red.button-background {
     color: red;
 }
