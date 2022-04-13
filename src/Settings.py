@@ -16,3 +16,8 @@ res_dir = dict(
 )
 
 default_css_class = 'content-area'
+
+configuration_menu_labels = [
+    "RUN",
+    "QUIT",
+]

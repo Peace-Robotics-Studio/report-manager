@@ -15,7 +15,6 @@ class L_Button:
             style_name: css name """
         # Create a button
         self.__button = Gtk.Button(label=label)
-        self.__button.get_label()
         self.__button.connect("clicked", self.button_clicked)
         self.__button.get_style_context().add_class(style_class) # 'button-background'
         self.__button.set_name(style_name) # "green-button"
@@ -25,9 +24,4 @@ class L_Button:
         return self.__button
 
     def button_clicked(self, button):
-        if button.get_label() == "Run":
-            print("RUN")
-            # self.response(Gtk.ResponseType.OK)
-        elif button.get_label() == "Quit":
-            # self.response(Gtk.ResponseType.CANCEL)
-            print("QUIT")
+        print(button.get_label())
