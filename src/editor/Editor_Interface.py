@@ -1,4 +1,4 @@
-# Report_Manager_Editor.py
+# Editor_Interface.py
 #
 # Copyright 2022 Peace Robotics Studio
 
@@ -7,7 +7,7 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk
 from src.Settings import res_dir
-from src.launcher.Report_Manager_Launcher import Report_Manager_Launcher
+from src.launcher.Launcher_Interface import Report_Manager_Launcher
 
 
 class ReportEditor(Gtk.Application):

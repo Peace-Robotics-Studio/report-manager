@@ -14,9 +14,9 @@ gi.require_version('Gtk', '3.0')
 # Resolves error: "attempted relative import with no known parent package"
 # https://stackoverflow.com/questions/16981921/relative-imports-in-python-3
 if __name__ == '__main__':
-    from editor.Report_Manager_Editor import ReportEditor
+    from editor.Editor_Interface import ReportEditor
 else:
-    from .editor.Report_Manager_Editor import ReportEditor
+    from .editor.Editor_Interface import ReportEditor
 
 # Create an instance of the Report Editor window
 editor_window = ReportEditor()
