@@ -52,17 +52,20 @@ class L_Menu_Layer:
             self.__menu_area.pack_start(child=self.__menu_buttons[button].get_button(), expand=False, fill=False, padding=0)
 
     def __build_menu_buttons(self) -> None:
+        """ Private Initializer: This function builds the menu buttons and assigns CSS class definitions. """
         for i in range(len(launcher_configuration_menu_labels)):
             if i == self.__active_menu:
                 self.__menu_buttons[launcher_configuration_menu_labels[i]] = L_Button(self, launcher_configuration_menu_labels[i], i, self.__menu_button_css_class, self.__menu_button_css_active)
             else:
                 self.__menu_buttons[launcher_configuration_menu_labels[i]] = L_Button(self, launcher_configuration_menu_labels[i], i, self.__menu_button_css_class, self.__menu_button_css_inactive)
 
-    def process_menu_selection(self, button_number):
+    def process_menu_selection(self, button_number) -> None:
+        """ Public Processor: This function coordinates menu actions. """
         self.__activate_menu_button(button_number)
         self.__active_menu = button_number
 
     def __activate_menu_button(self, button_number):
+        """ Private Initializer: This function modifies CSS style attributes for active and inactive menu buttons. """
         if self.__active_menu != button_number:
             self.__menu_buttons[launcher_configuration_menu_labels[button_number]].set_style_name(self.__menu_button_css_active)
             self.__menu_buttons[launcher_configuration_menu_labels[self.__active_menu]].set_style_name(self.__menu_button_css_inactive)
