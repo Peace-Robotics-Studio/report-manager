@@ -2,12 +2,11 @@
 #
 # Copyright 2022 Peace Robotics Studio
 
-import cairo
 import gi
 
 gi.require_version('Gtk', '3.0')
 
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk
 from .L_Button import L_Button
 from ...Settings import *
 
@@ -50,8 +49,7 @@ class L_Menu_Layer:
         self.__build_menu_buttons()  # Construct a list of buttons to add to the configuration menu
         self.__layout_container.attach(child=self.__menu_area, left=0, top=1, width=1, height=1)
         for index, button in enumerate(self.__menu_buttons, start=0):
-            self.__menu_area.pack_start(child=self.__menu_buttons[button].get_button(), expand=False, fill=False,
-                                        padding=0)
+            self.__menu_area.pack_start(child=self.__menu_buttons[button].get_button(), expand=False, fill=False, padding=0)
 
     def __build_menu_buttons(self) -> None:
         for i in range(len(launcher_configuration_menu_labels)):
@@ -65,5 +63,6 @@ class L_Menu_Layer:
         self.__active_menu = button_number
 
     def __activate_menu_button(self, button_number):
-        self.__menu_buttons[launcher_configuration_menu_labels[button_number]].set_style_name(self.__menu_button_css_active)
-        self.__menu_buttons[launcher_configuration_menu_labels[self.__active_menu]].set_style_name(self.__menu_button_css_inactive)
+        if self.__active_menu != button_number:
+            self.__menu_buttons[launcher_configuration_menu_labels[button_number]].set_style_name(self.__menu_button_css_active)
+            self.__menu_buttons[launcher_configuration_menu_labels[self.__active_menu]].set_style_name(self.__menu_button_css_inactive)

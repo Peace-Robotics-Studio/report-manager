@@ -18,7 +18,7 @@ class Report_Manager_Launcher(Gtk.Dialog):
         self.__launcher_properties = dict(
             WINDOW_IMAGE=cairo.ImageSurface.create_from_png(res_dir['GUI'] + 'window-image.png'),
             DEFAULT_CONFIG_BUTTON_HEIGHT=40,
-            BANNER_IMAGE=cairo.ImageSurface.create_from_png(res_dir['GUI'] + 'banner.png')   # This is a copy of the banner image that users click on to move the launcher
+            BANNER_HEIGHT=206   # This is a copy of the banner image that users click on to move the launcher
         )
         self.__launcher_properties['WIDTH'] = self.__launcher_properties['WINDOW_IMAGE'].get_width()      # Width of launcher window image
         self.__launcher_properties['HEIGHT'] = self.__launcher_properties['WINDOW_IMAGE'].get_height()    # Height of launcher window image
@@ -26,7 +26,7 @@ class Report_Manager_Launcher(Gtk.Dialog):
         self.__gui_manager = L_GUI_Manager(self,
                                            l_width=self.__launcher_properties['WIDTH'],
                                            l_height=self.__launcher_properties['HEIGHT'],
-                                           banner_height=206,
+                                           banner_height=self.__launcher_properties['BANNER_HEIGHT'],
                                            config_button_height=self.__launcher_properties['DEFAULT_CONFIG_BUTTON_HEIGHT'])
         # Create a launcher window with the same dimensions as the window image
         self.set_default_size(self.__launcher_properties['WIDTH'], self.__launcher_properties['HEIGHT'])
@@ -57,7 +57,7 @@ class Report_Manager_Launcher(Gtk.Dialog):
         # Check to see if it was the left mouse button that was clicked
         if state & Gdk.ModifierType.BUTTON1_MASK:
             # Only move the window if the 'click' happened inside the dialog banner area
-            if event.y_root < self.window_y + self.__launcher_properties['BANNER_IMAGE'].get_height():
+            if event.y_root < self.window_y + self.__launcher_properties['BANNER_HEIGHT']:
                 # Calculate the difference between the current mouse location and the previous mouse location
                 delta_x = self.mouse_x - event.x_root
                 delta_y = self.mouse_y - event.y_root
