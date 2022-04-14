@@ -4,11 +4,13 @@
 
 import cairo
 import gi
+
 gi.require_version('Gtk', '3.0')
 
 from gi.repository import Gtk, Gdk
 from .L_Button import L_Button
 from ...Settings import *
+
 
 class L_Menu_Layer:
 
@@ -27,22 +29,35 @@ class L_Menu_Layer:
         return self.__layout_container
 
     def __build_layer(self) -> None:
-        """ Private Initilizer: This function composes the menu layout """
+        """ Private Initializer: This function composes the menu layout """
         self.__menu_area = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
         self.__menu_area.get_style_context().add_class('content')
         self.__menu_area.set_hexpand(True)
         self.__menu_area.set_vexpand(True)
-        self.__menu_area.set_margin_top(self.__launcher_properties['BANNER_HEIGHT'])
-        self.__menu_area.set_margin_bottom(self.__launcher_properties['LAUNCHER_HEIGHT'] - self.__launcher_properties['BANNER_HEIGHT'] - self.__launcher_properties['CONFIG_BUTTON_HEIGHT'])
-        self.__build_menu_buttons()
-
+        self.__menu_area.set_margin_top(
+            self.__launcher_properties['BANNER_HEIGHT'])  # Set the top margin to the height of the banner
+        # Set the bottom margin to (window_height - banner_height - button_height)
+        self.__menu_area.set_margin_bottom(
+            self.__launcher_properties['LAUNCHER_HEIGHT'] - self.__launcher_properties['BANNER_HEIGHT'] -
+            self.__launcher_properties['CONFIG_BUTTON_HEIGHT'])
+        self.__build_menu_buttons()  # Construct a list of buttons to add to the configuration menu
         self.__layout_container.attach(child=self.__menu_area, left=0, top=1, width=1, height=1)
         for index, button in enumerate(self.__menu_buttons, start=0):
-            self.__menu_area.pack_start(child=self.__menu_buttons[button].get_button(), expand=False, fill=False, padding=0)
+            self.__menu_area.pack_start(child=self.__menu_buttons[button].get_button(), expand=False, fill=False,
+                                        padding=0)
 
     def __build_menu_buttons(self) -> None:
-        for i in range(len(configuration_menu_labels)):
-            self.__menu_buttons[configuration_menu_labels[i]] = L_Button(self, configuration_menu_labels[i], 'button-background', 'green-button')
+        for i in range(len(launcher_configuration_menu_labels)):
+            if i == default_launcher_configuration_menu:  # Located in Settings.py
+                self.__menu_buttons[launcher_configuration_menu_labels[i]] = L_Button(self,
+                                                                                      launcher_configuration_menu_labels[
+                                                                                          i], 'launcher-menu',
+                                                                                      'active-configure-button')
+            else:
+                self.__menu_buttons[launcher_configuration_menu_labels[i]] = L_Button(self,
+                                                                                      launcher_configuration_menu_labels[
+                                                                                          i], 'launcher-menu',
+                                                                                      'inactive-configure-button')
 
     def process_button_click(self, data):
         print(data)

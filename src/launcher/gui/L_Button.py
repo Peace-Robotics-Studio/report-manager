@@ -4,7 +4,8 @@
 
 import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk
+
 
 class L_Button:
     def __init__(self, h_menu_layer, label, style_class, style_name):
@@ -18,6 +19,7 @@ class L_Button:
         self.__button.connect("clicked", self.button_clicked)
         self.__button.get_style_context().add_class(style_class) # 'button-background'
         self.__button.set_name(style_name) # 'green-button'
+        self.__button.set_can_focus(False)
 
     def get_button(self) -> Gtk.Button:
         """ Public Accessor: This function returns Gtk.Button object used in the menu. """
