@@ -21,6 +21,13 @@ class L_Menu_Layer:
         self.__h_gui_manager = h_gui_manager
         self.__launcher_properties = launcher_properties
         self.__menu_buttons = {}
+        if default_launcher_configuration_menu < len(launcher_configuration_menu_labels):
+            self.__active_menu = default_launcher_configuration_menu
+        else:
+            self.__active_menu = 0
+        self.__menu_button_css_class = 'launcher-menu'
+        self.__menu_button_css_active = 'active-configure-button'
+        self.__menu_button_css_inactive = 'inactive-configure-button'
         self.__layout_container = Gtk.Grid(column_homogeneous=False, column_spacing=0, row_spacing=0)
         self.__build_layer()
 
@@ -48,16 +55,15 @@ class L_Menu_Layer:
 
     def __build_menu_buttons(self) -> None:
         for i in range(len(launcher_configuration_menu_labels)):
-            if i == default_launcher_configuration_menu:  # Located in Settings.py
-                self.__menu_buttons[launcher_configuration_menu_labels[i]] = L_Button(self,
-                                                                                      launcher_configuration_menu_labels[
-                                                                                          i], 'launcher-menu',
-                                                                                      'active-configure-button')
+            if i == self.__active_menu:
+                self.__menu_buttons[launcher_configuration_menu_labels[i]] = L_Button(self, launcher_configuration_menu_labels[i], i, self.__menu_button_css_class, self.__menu_button_css_active)
             else:
-                self.__menu_buttons[launcher_configuration_menu_labels[i]] = L_Button(self,
-                                                                                      launcher_configuration_menu_labels[
-                                                                                          i], 'launcher-menu',
-                                                                                      'inactive-configure-button')
+                self.__menu_buttons[launcher_configuration_menu_labels[i]] = L_Button(self, launcher_configuration_menu_labels[i], i, self.__menu_button_css_class, self.__menu_button_css_inactive)
 
-    def process_button_click(self, data):
-        print(data)
+    def process_menu_selection(self, button_number):
+        self.__activate_menu_button(button_number)
+        self.__active_menu = button_number
+
+    def __activate_menu_button(self, button_number):
+        self.__menu_buttons[launcher_configuration_menu_labels[button_number]].set_style_name(self.__menu_button_css_active)
+        self.__menu_buttons[launcher_configuration_menu_labels[self.__active_menu]].set_style_name(self.__menu_button_css_inactive)

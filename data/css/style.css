@@ -7,7 +7,7 @@
 
 .launcher-menu {
     border: 0px;
-    border-bottom: 5px solid #2b2b2b;
+    border-bottom: 3px solid #2b2b2b;
     border-radius: 0px;
     background-image:none;
     background-color: #2b2b2b;
@@ -22,12 +22,12 @@
 
 #inactive-configure-button.launcher-menu:hover {
     background-color: #212121;
-    border-bottom: 5px solid black;
+    border-bottom: 3px solid black;
 }
 
 #active-configure-button.launcher-menu {
     color: #dbdbdb;
-    border-bottom: 5px solid #2d5fab;
+    border-bottom: 3px solid #2d5fab;
 }
 
 #active-configure-button.launcher-menu:hover {

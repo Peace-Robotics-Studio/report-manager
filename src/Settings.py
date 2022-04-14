@@ -22,5 +22,4 @@ launcher_configuration_menu_labels = [
     "Quick Reports",
     "Results"
 ]
-
 default_launcher_configuration_menu = 0     # This number is an index value of launcher_configuration_menu_labels[]
