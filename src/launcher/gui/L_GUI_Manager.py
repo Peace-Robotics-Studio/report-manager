@@ -8,16 +8,18 @@ from gi.repository import Gtk
 from .L_Menu_Layer import L_Menu_Layer
 
 class L_GUI_Manager:
-    def __init__(self, h_dialog, l_width, l_height, banner_height):
+    def __init__(self, h_dialog, l_width, l_height, banner_height, config_button_height):
         """ Constructor
-        h_dialog: handle to the launcher dialog instance
-        l_width: width of the launcher window (int)
-        l_height: height of the launcher window (int)
-        banner_height: height of the clickable banner image (int)"""
+        h_dialog: handle to the launcher dialog instance,
+        l_width: width of the launcher window (int),
+        l_height: height of the launcher window (int),
+        banner_height: height of the clickable banner image (int),
+        config_button_height: height of the button in the configuration menu. """
         self.__launcher_properties = {
-          "WIDTH": l_width,
-          "HEIGHT": l_height,
-          "BANNER_HEIGHT": banner_height
+          "LAUNCHER_WIDTH": l_width,
+          "LAUNCHER_HEIGHT": l_height,
+          "BANNER_HEIGHT": banner_height,
+          "CONFIG_BUTTON_HEIGHT": config_button_height
         }
         self.__interface_layer = Gtk.Overlay()
         self.__layers = []

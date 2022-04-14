@@ -28,17 +28,17 @@ class L_Menu_Layer:
 
     def __build_layer(self) -> None:
         """ Private Initilizer: This function composes the menu layout """
-        self.__menu_area = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+        self.__menu_area = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
         self.__menu_area.get_style_context().add_class('content')
         self.__menu_area.set_hexpand(True)
         self.__menu_area.set_vexpand(True)
         self.__menu_area.set_margin_top(self.__launcher_properties['BANNER_HEIGHT'])
-
+        self.__menu_area.set_margin_bottom(self.__launcher_properties['LAUNCHER_HEIGHT'] - self.__launcher_properties['BANNER_HEIGHT'] - self.__launcher_properties['CONFIG_BUTTON_HEIGHT'])
         self.__build_menu_buttons()
 
         self.__layout_container.attach(child=self.__menu_area, left=0, top=1, width=1, height=1)
         for index, button in enumerate(self.__menu_buttons, start=0):
-            self.__menu_area.attach(child=self.__menu_buttons[button].get_button(), left=1, top=index, width=1, height=1)
+            self.__menu_area.pack_start(child=self.__menu_buttons[button].get_button(), expand=False, fill=False, padding=0)
 
     def __build_menu_buttons(self) -> None:
         for i in range(len(configuration_menu_labels)):
