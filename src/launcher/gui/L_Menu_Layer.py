@@ -20,19 +20,22 @@ class L_Menu_Layer:
         self.__h_gui_manager = h_gui_manager
         self.__launcher_properties = launcher_properties
         self.__menu_buttons = {}
-        if default_launcher_configuration_menu < len(launcher_configuration_menu_labels):
-            self.__active_menu = default_launcher_configuration_menu
-        else:
-            self.__active_menu = 0
+        self.__active_menu = default_launcher_configuration_menu
         self.__menu_button_css_class = 'launcher-menu'
         self.__menu_button_css_active = 'active-configure-button'
         self.__menu_button_css_inactive = 'inactive-configure-button'
         self.__layout_container = Gtk.Grid(column_homogeneous=False, column_spacing=0, row_spacing=0)
-        self.__build_layer()
+        self.__build_layer() # Initialization step
 
-    def get_layout_container(self) -> Gtk.Grid:
-        """ Public Accessor: This function returns the Gtk layout container """
-        return self.__layout_container
+    # Private Methods
+
+    def __activate_menu_button(self, menu_key: str):
+        """ Private Initializer: This function modifies CSS style attributes for active and inactive menu buttons. """
+        if self.__active_menu != menu_key:
+            self.__menu_buttons[menu_key].set_style_name(
+                self.__menu_button_css_active)
+            self.__menu_buttons[self.__active_menu].set_style_name(
+                self.__menu_button_css_inactive)
 
     def __build_layer(self) -> None:
         """ Private Initializer: This function composes the menu layout """
@@ -46,26 +49,29 @@ class L_Menu_Layer:
         self.__menu_area.set_margin_bottom(
             self.__launcher_properties['LAUNCHER_HEIGHT'] - self.__launcher_properties['BANNER_HEIGHT'] -
             self.__launcher_properties['CONFIG_BUTTON_HEIGHT'])
+
         self.__build_menu_buttons()  # Construct a list of buttons to add to the configuration menu
         self.__layout_container.attach(child=self.__menu_area, left=0, top=1, width=1, height=1)
-        for index, button in enumerate(self.__menu_buttons, start=0):
-            self.__menu_area.pack_start(child=self.__menu_buttons[button].get_button(), expand=False, fill=False, padding=0)
+        for menu_key in self.__menu_buttons:
+            self.__menu_area.pack_start(child=self.__menu_buttons[menu_key].get_button(), expand=False, fill=False, padding=0)
 
     def __build_menu_buttons(self) -> None:
         """ Private Initializer: This function builds the menu buttons and assigns CSS class definitions. """
-        for i in range(len(launcher_configuration_menu_labels)):
-            if i == self.__active_menu:
-                self.__menu_buttons[launcher_configuration_menu_labels[i]] = L_Button(self, launcher_configuration_menu_labels[i], i, self.__menu_button_css_class, self.__menu_button_css_active)
+        for menu_key in launcher_configuration_menu_labels:
+            if menu_key == self.__active_menu:
+                self.__menu_buttons[menu_key] = L_Button(self, launcher_configuration_menu_labels[menu_key], menu_key, self.__menu_button_css_class, self.__menu_button_css_active)
             else:
-                self.__menu_buttons[launcher_configuration_menu_labels[i]] = L_Button(self, launcher_configuration_menu_labels[i], i, self.__menu_button_css_class, self.__menu_button_css_inactive)
+                self.__menu_buttons[menu_key] = L_Button(self, launcher_configuration_menu_labels[menu_key], menu_key, self.__menu_button_css_class, self.__menu_button_css_inactive)
 
-    def process_menu_selection(self, button_number) -> None:
-        """ Public Processor: This function coordinates menu actions. """
-        self.__activate_menu_button(button_number)
-        self.__active_menu = button_number
+    # Public Methods
 
-    def __activate_menu_button(self, button_number):
-        """ Private Initializer: This function modifies CSS style attributes for active and inactive menu buttons. """
-        if self.__active_menu != button_number:
-            self.__menu_buttons[launcher_configuration_menu_labels[button_number]].set_style_name(self.__menu_button_css_active)
-            self.__menu_buttons[launcher_configuration_menu_labels[self.__active_menu]].set_style_name(self.__menu_button_css_inactive)
+    def get_layout_container(self) -> Gtk.Grid:
+        """ Public Accessor: This function returns the Gtk layout container """
+        return self.__layout_container
+
+    def process_menu_selection(self, menu_key) -> None:
+        """ Public Processor: This function coordinates menu actions with the GUI_Manager. """
+        self.__activate_menu_button(menu_key)
+        self.__active_menu = menu_key
+        # self.__h_gui_manager.load_content_area(button_number)
+

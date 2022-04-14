@@ -17,9 +17,9 @@ res_dir = dict(
 
 default_css_class = 'content-area'
 
-launcher_configuration_menu_labels = [
-    "Setup",
-    "Quick Reports",
-    "Results"
-]
-default_launcher_configuration_menu = 0     # This number is an index value of launcher_configuration_menu_labels[]
+launcher_configuration_menu_labels = dict(
+    MENU_1="Setup",
+    MENU_2="Quick Reports",
+    MENU_3="Results"
+)
+default_launcher_configuration_menu = "MENU_1"
