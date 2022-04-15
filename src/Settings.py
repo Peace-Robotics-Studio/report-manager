@@ -20,6 +20,6 @@ default_css_class = 'content-area'
 launcher_configuration_menu_labels = dict(
     MENU_1="Setup",
     MENU_2="Quick Reports",
-    MENU_3="Results"
+    MENU_3="Feedback"
 )
-default_launcher_configuration_menu = "MENU_1"
+default_launcher_menu_tab = "MENU_1"

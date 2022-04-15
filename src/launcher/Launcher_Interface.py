@@ -17,7 +17,7 @@ class Report_Manager_Launcher(Gtk.Dialog):
         # A dictionary of properties that define the look and feel of the launcher window
         self.__launcher_properties = dict(
             WINDOW_IMAGE=cairo.ImageSurface.create_from_png(res_dir['GUI'] + 'window-image.png'),
-            DEFAULT_CONFIG_BUTTON_HEIGHT=40,
+            MENU_BUTTON_HEIGHT=36,
             BANNER_HEIGHT=206   # This is a copy of the banner image that users click on to move the launcher
         )
         self.__launcher_properties['WIDTH'] = self.__launcher_properties['WINDOW_IMAGE'].get_width()      # Width of launcher window image
@@ -27,7 +27,7 @@ class Report_Manager_Launcher(Gtk.Dialog):
                                            l_width=self.__launcher_properties['WIDTH'],
                                            l_height=self.__launcher_properties['HEIGHT'],
                                            banner_height=self.__launcher_properties['BANNER_HEIGHT'],
-                                           config_button_height=self.__launcher_properties['DEFAULT_CONFIG_BUTTON_HEIGHT'])
+                                           menu_button_height=self.__launcher_properties['MENU_BUTTON_HEIGHT'])
         # Create a launcher window with the same dimensions as the window image
         self.set_default_size(self.__launcher_properties['WIDTH'], self.__launcher_properties['HEIGHT'])
         self.set_decorated(False)  # Creates a borderless window without a title bar

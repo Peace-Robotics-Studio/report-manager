@@ -1,11 +1,10 @@
-.content {
+.launcher-menu-container {
     color: #dbdbdb;
     background-color: #2b2b2b;
     margin-right: 15px;
     margin-left: 15px;
 }
-
-.launcher-menu {
+.launcher-menu-bar {
     border: 0px;
     border-bottom: 3px solid #2b2b2b;
     border-radius: 0px;
@@ -14,22 +13,22 @@
     padding-bottom: 5px;
     margin-right: 5px;
 }
-
-#inactive-configure-button.launcher-menu {
+#inactive-button.launcher-menu-bar {
     color: #dbdbdb;
     padding-bottom: 5px;
 }
-
-#inactive-configure-button.launcher-menu:hover {
+#inactive-button.launcher-menu-bar:hover {
     background-color: #212121;
     border-bottom: 3px solid black;
 }
-
-#active-configure-button.launcher-menu {
+#active-button.launcher-menu-bar {
     color: #dbdbdb;
     border-bottom: 3px solid #2d5fab;
 }
-
-#active-configure-button.launcher-menu:hover {
+#active-button.launcher-menu-bar:hover {
     background-color: #212121;
+}
+.launcher-content-container {
+    margin-right: 15px;
+    margin-left: 15px;
 }

@@ -20,10 +20,11 @@ class L_Menu_Layer:
         self.__h_gui_manager = h_gui_manager
         self.__launcher_properties = launcher_properties
         self.__menu_buttons = {}
-        self.__active_menu = default_launcher_configuration_menu
-        self.__menu_button_css_class = 'launcher-menu'
-        self.__menu_button_css_active = 'active-configure-button'
-        self.__menu_button_css_inactive = 'inactive-configure-button'
+        self.__active_menu = default_launcher_menu_tab
+        self.__menu_container_css_class = 'launcher-menu-container'
+        self.__menu_button_css_class = 'launcher-menu-bar'
+        self.__menu_button_css_active = 'active-button'
+        self.__menu_button_css_inactive = 'inactive-button'
         self.__layout_container = Gtk.Grid(column_homogeneous=False, column_spacing=0, row_spacing=0)
         self.__build_layer() # Initialization step
 
@@ -32,23 +33,20 @@ class L_Menu_Layer:
     def __activate_menu_button(self, menu_key: str):
         """ Private Initializer: This function modifies CSS style attributes for active and inactive menu buttons. """
         if self.__active_menu != menu_key:
-            self.__menu_buttons[menu_key].set_style_name(
-                self.__menu_button_css_active)
-            self.__menu_buttons[self.__active_menu].set_style_name(
-                self.__menu_button_css_inactive)
+            self.__menu_buttons[menu_key].set_style_name(self.__menu_button_css_active)
+            self.__menu_buttons[self.__active_menu].set_style_name(self.__menu_button_css_inactive)
 
     def __build_layer(self) -> None:
         """ Private Initializer: This function composes the menu layout """
         self.__menu_area = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
-        self.__menu_area.get_style_context().add_class('content')
+        self.__menu_area.get_style_context().add_class(self.__menu_container_css_class)
         self.__menu_area.set_hexpand(True)
         self.__menu_area.set_vexpand(True)
-        self.__menu_area.set_margin_top(
-            self.__launcher_properties['BANNER_HEIGHT'])  # Set the top margin to the height of the banner
+        self.__menu_area.set_margin_top(self.__launcher_properties['BANNER_HEIGHT'])  # Set the top margin to the height of the banner
         # Set the bottom margin to (window_height - banner_height - button_height)
         self.__menu_area.set_margin_bottom(
             self.__launcher_properties['LAUNCHER_HEIGHT'] - self.__launcher_properties['BANNER_HEIGHT'] -
-            self.__launcher_properties['CONFIG_BUTTON_HEIGHT'])
+            self.__launcher_properties['MENU_BUTTON_HEIGHT'])
 
         self.__build_menu_buttons()  # Construct a list of buttons to add to the configuration menu
         self.__layout_container.attach(child=self.__menu_area, left=0, top=1, width=1, height=1)
@@ -73,5 +71,5 @@ class L_Menu_Layer:
         """ Public Processor: This function coordinates menu actions with the GUI_Manager. """
         self.__activate_menu_button(menu_key)
         self.__active_menu = menu_key
-        # self.__h_gui_manager.load_content_area(button_number)
+        self.__h_gui_manager.load_content_area(menu_key)
 
