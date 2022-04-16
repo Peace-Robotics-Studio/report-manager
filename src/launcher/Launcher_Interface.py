@@ -1,6 +1,12 @@
-# Launcher_Interface.py
-#
-# Copyright 2022 Peace Robotics Studio
+#  Launcher_Interface.py. (Modified 2022-04-15, 5:40 p.m. by Praxis)
+#  Copyright (c) 2021-2022 Peace Robotics Studio
+#  Licensed under the MIT License.
+#  Permission is hereby granted, free of charge, to any person obtaining a copy
+#  of this software and associated documentation files (the "Software"), to deal
+#  in the Software without restriction, including without limitation the rights
+#  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#  copies of the Software, and to permit persons to whom the Software is
+#  furnished to do so.
 
 import gi
 import cairo
@@ -69,7 +75,7 @@ class Report_Manager_Launcher(Gtk.Dialog):
                 self.mouse_x = event.x_root
                 self.mouse_y = event.y_root
 
-    def draw(self, widget, context) -> None:
+    def draw(self, widget, context):
         """ Callback function triggered by the draw signal.
          Gtk.Widget.input_shape_combine_region() uses an X server extension on the X11 platform and does not work on other platforms. """
         input_region = Gdk.cairo_region_create_from_surface(self.__launcher_properties['WINDOW_IMAGE'])
@@ -79,5 +85,7 @@ class Report_Manager_Launcher(Gtk.Dialog):
         context.paint()
         context.set_operator(cairo.OPERATOR_OVER)
 
-    def close_launcher(self, status, data):
-        print("Close Launcher")
+    def exit_launcher(self, status: str, data=None):
+        if status == "quit":
+            self.response(Gtk.ResponseType.CANCEL)
+            # self.response(Gtk.ResponseType.OK)

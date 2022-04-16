@@ -1,7 +1,19 @@
+#  L_Content_Layer.py. (Modified 2022-04-15, 3:19 p.m. by Praxis)
+#  Copyright (c) 2021-2022 Peace Robotics Studio
+#  Licensed under the MIT License.
+#  Permission is hereby granted, free of charge, to any person obtaining a copy
+#  of this software and associated documentation files (the "Software"), to deal
+#  in the Software without restriction, including without limitation the rights
+#  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#  copies of the Software, and to permit persons to whom the Software is
+#  furnished to do so.
+
 import gi
+
 gi.require_version('Gtk', '3.0')
 
 from gi.repository import Gtk
+
 
 class L_Content_Layer:
 
@@ -11,7 +23,7 @@ class L_Content_Layer:
             launcher_properties: dictionary including width, height, banner_height """
         self.__h_gui_manager = h_gui_manager
         self.__launcher_properties = launcher_properties
-        self.__layout_container = Gtk.Grid(column_homogeneous=False, column_spacing=0, row_spacing=0)
+        self.__layout_container = Gtk.Grid(column_spacing=0, row_spacing=0)
         self.__content_container_css_class = 'launcher-content-container'
         self.__build_layer()
 
@@ -20,7 +32,7 @@ class L_Content_Layer:
         return self.__layout_container
 
     def __build_layer(self) -> None:
-        """ Initilization: composes layout of content area """
+        """ Initialization: composes layout of content area """
         self.__content_area = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.__content_area.get_style_context().add_class(self.__content_container_css_class)
         self.__content_area.set_margin_top(self.__launcher_properties['BANNER_HEIGHT'] + self.__launcher_properties['MENU_BUTTON_HEIGHT'])  # Set the top margin to the height of the banner + menu bar
@@ -34,4 +46,3 @@ class L_Content_Layer:
 
     def remove_layout_container(self, container: Gtk.Container) -> None:
         self.__content_area.remove(container)
-

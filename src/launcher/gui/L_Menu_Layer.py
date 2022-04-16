@@ -1,13 +1,19 @@
-# L_Menu_Layer.py
-#
-# Copyright 2022 Peace Robotics Studio
+#  L_Menu_Layer.py. (Modified 2022-04-15, 3:03 p.m. by Praxis)
+#  Copyright (c) 2021-2022 Peace Robotics Studio
+#  Licensed under the MIT License.
+#  Permission is hereby granted, free of charge, to any person obtaining a copy
+#  of this software and associated documentation files (the "Software"), to deal
+#  in the Software without restriction, including without limitation the rights
+#  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#  copies of the Software, and to permit persons to whom the Software is
+#  furnished to do so.
 
 import gi
 
 gi.require_version('Gtk', '3.0')
 
 from gi.repository import Gtk
-from .L_Button import L_Button
+from .L_Menu_Button import L_Menu_Button
 from ...Settings import *
 
 
@@ -22,9 +28,9 @@ class L_Menu_Layer:
         self.__menu_buttons = {}
         self.__active_menu = default_launcher_menu_tab
         self.__menu_container_css_class = 'launcher-menu-container'
-        self.__menu_button_css_class = 'launcher-menu-bar'
-        self.__menu_button_css_active = 'active-button'
-        self.__menu_button_css_inactive = 'inactive-button'
+        self.__menu_button_css_class = 'launcher-menu-button'
+        self.__menu_button_css_active = 'active-menu-button'
+        self.__menu_button_css_inactive = 'inactive-menu-button'
         self.__layout_container = Gtk.Grid(column_homogeneous=False, column_spacing=0, row_spacing=0)
         self.__build_layer() # Initialization step
 
@@ -57,9 +63,9 @@ class L_Menu_Layer:
         """ Private Initializer: This function builds the menu buttons and assigns CSS class definitions. """
         for menu_key in launcher_configuration_menu_labels:
             if menu_key == self.__active_menu:
-                self.__menu_buttons[menu_key] = L_Button(self, launcher_configuration_menu_labels[menu_key], menu_key, self.__menu_button_css_class, self.__menu_button_css_active)
+                self.__menu_buttons[menu_key] = L_Menu_Button(self, launcher_configuration_menu_labels[menu_key], menu_key, self.__menu_button_css_class, self.__menu_button_css_active)
             else:
-                self.__menu_buttons[menu_key] = L_Button(self, launcher_configuration_menu_labels[menu_key], menu_key, self.__menu_button_css_class, self.__menu_button_css_inactive)
+                self.__menu_buttons[menu_key] = L_Menu_Button(self, launcher_configuration_menu_labels[menu_key], menu_key, self.__menu_button_css_class, self.__menu_button_css_inactive)
 
     # Public Methods
 

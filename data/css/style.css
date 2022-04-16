@@ -1,10 +1,36 @@
+.launcher-banner-build-number {
+    margin-right: 90px;
+    color: gray;
+}
+.launcher-banner-container {
+    margin-top: 85px;
+    margin-right: 15px;
+}
+.launcher-banner-close-button {
+    border-image: none;
+    margin-right: 6px;
+    padding: 0;
+    border: 0;
+    min-width: 35px;
+    min-height: 37px;
+    box-shadow: none;
+}
+#close-button.launcher-banner-close-button {
+    background-image: url("../gui/launcher-close-button-inactive.png");
+}
+#close-button.launcher-banner-close-button:hover {
+    background-image: url("../gui/launcher-close-button-hover.png");
+}
+#close-button.launcher-banner-close-button:active {
+    background-image: url("../gui/launcher-close-button-active.png");
+}
 .launcher-menu-container {
     color: #dbdbdb;
     background-color: #2b2b2b;
     margin-right: 15px;
     margin-left: 15px;
 }
-.launcher-menu-bar {
+.launcher-menu-button {
     border: 0px;
     border-bottom: 3px solid #2b2b2b;
     border-radius: 0px;
@@ -13,22 +39,33 @@
     padding-bottom: 5px;
     margin-right: 5px;
 }
-#inactive-button.launcher-menu-bar {
+#inactive-menu-button.launcher-menu-button {
     color: #dbdbdb;
     padding-bottom: 5px;
 }
-#inactive-button.launcher-menu-bar:hover {
+#inactive-menu-button.launcher-menu-button:hover {
     background-color: #212121;
     border-bottom: 3px solid black;
 }
-#active-button.launcher-menu-bar {
+#active-menu-button.launcher-menu-button {
     color: #dbdbdb;
     border-bottom: 3px solid #2d5fab;
 }
-#active-button.launcher-menu-bar:hover {
+#active-menu-button.launcher-menu-button:hover {
     background-color: #212121;
 }
 .launcher-content-container {
     margin-right: 15px;
     margin-left: 15px;
+    margin-bottom: 15px;
+}
+.launcher-feedback-content-container {
+    background-color: green;
+}
+.launcher-feedback-navigation-bar {
+    background-color: orange;
+    padding: 4px;
+}
+#active-button.launcher-feedback-navigation-bar {
+    margin-left: 5px;
 }

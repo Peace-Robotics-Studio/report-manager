@@ -1,12 +1,18 @@
-# L_Button.py
-#
-# Copyright 2022 Peace Robotics Studio
+#  L_Menu_Button.py. (Modified 2022-04-15, 3:03 p.m. by Praxis)
+#  Copyright (c) 2021-2022 Peace Robotics Studio
+#  Licensed under the MIT License.
+#  Permission is hereby granted, free of charge, to any person obtaining a copy
+#  of this software and associated documentation files (the "Software"), to deal
+#  in the Software without restriction, including without limitation the rights
+#  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+#  copies of the Software, and to permit persons to whom the Software is
+#  furnished to do so.
 
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
-class L_Button:
+class L_Menu_Button:
     def __init__(self, h_menu_layer: object, label: str, menu_key: str, style_class: str, style_name: str):
         """ Constructor
             h_menu_layer: handle to the L_Menu_Layer instance,
