@@ -1,4 +1,4 @@
-#  L_GUI_Manager.py. (Modified 2022-04-16, 1:04 p.m. by godvalve)
+#  L_GUI_Manager.py. (Modified 2022-04-16, 1:28 p.m. by godvalve)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -87,4 +87,9 @@ class L_GUI_Manager:
     def process_action(self, action: str, data=None):
         match action:
             case "quit":
-                self.__h_dialog.exit_launcher("quit")
+                self.__h_dialog.exit_launcher(action)
+            case "editor":
+                self.__h_dialog.start_editor(action)
+            case "load":
+                self.__h_dialog.load_editor(action, data)
+
