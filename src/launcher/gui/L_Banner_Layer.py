@@ -1,4 +1,4 @@
-#  L_Banner_Layer.py. (Modified 2022-04-15, 6:56 p.m. by Praxis)
+#  L_Banner_Layer.py. (Modified 2022-04-15, 8:03 p.m. by godvalve)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -53,8 +53,7 @@ class L_Banner_Layer:
         box.set_margin_bottom(self.__launcher_properties['LAUNCHER_HEIGHT'] - self.__launcher_properties['BANNER_HEIGHT'])
         label = Gtk.Label()  # Add a label to the box
         box.pack_end(child=label, expand=False, fill=False, padding=0)
-        label.set_text("v2022.04.15")  # Set the value of the label text
-        # label.get_style_context().add_class('label-notification')  # Connect a CSS class to the label
+        label.set_text(version_number)  # Set the value of the label text
 
 
     # Public Methods

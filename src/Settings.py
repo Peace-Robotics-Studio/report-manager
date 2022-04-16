@@ -1,4 +1,4 @@
-#  Settings.py. (Modified 2022-04-15, 3:03 p.m. by Praxis)
+#  Settings.py. (Modified 2022-04-15, 7:55 p.m. by godvalve)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -28,3 +28,5 @@ launcher_configuration_menu_labels = dict(
     MENU_3="Feedback"
 )
 default_launcher_menu_tab = "MENU_1"
+
+version_number = "v2022.04.15"

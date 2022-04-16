@@ -1,4 +1,4 @@
-#  Launcher_Interface.py. (Modified 2022-04-15, 5:40 p.m. by Praxis)
+#  Launcher_Interface.py. (Modified 2022-04-15, 8:40 p.m. by godvalve)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -86,6 +86,9 @@ class Report_Manager_Launcher(Gtk.Dialog):
         context.set_operator(cairo.OPERATOR_OVER)
 
     def exit_launcher(self, status: str, data=None):
-        if status == "quit":
-            self.response(Gtk.ResponseType.CANCEL)
+        match status:
+            case "quit":
+                self.response(Gtk.ResponseType.CANCEL)
+
             # self.response(Gtk.ResponseType.OK)
+

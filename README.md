@@ -2,17 +2,17 @@
 A program for reviewing and editing report cards.
 ![alt text](https://github.com/Peace-Robotics-Studio/report-manager/blob/main/data/gui/banner.png?raw=true)
 ### Getting Started
-This project was built and tested using Ubuntu 21.10 64bit with Pycharm Community Edition. 
+This project was built and tested using Ubuntu 22.04 64bit with Pycharm Community Edition. 
 
 #### Installing
 clone git repository and execute 'Run.py'
 
 #### Build Environment
 `sudo apt install libgirepository1.0-dev libcairo2-dev`
-* PyCharm 2021.3.3
+* PyCharm 2022.1.0
 * PyGObject 3.42.0
 * PyCairo 1.21.0
-* Python 3.9
+* Requires > Python3.10
 
 #### Donations
 * [Buy us a Coffee](https://ko-fi.com/mccolmrobotics)

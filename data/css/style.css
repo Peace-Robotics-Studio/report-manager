@@ -60,12 +60,11 @@
     margin-bottom: 15px;
 }
 .launcher-feedback-content-container {
-    background-color: green;
+    border-top: 3px solid #1d1d1d;
 }
 .launcher-feedback-navigation-bar {
-    background-color: orange;
     padding: 4px;
 }
-#active-button.launcher-feedback-navigation-bar {
-    margin-left: 5px;
+.launcher-feedback-navigation-button {
+    margin-right: 5px;
 }

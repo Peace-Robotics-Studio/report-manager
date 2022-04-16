@@ -1,4 +1,4 @@
-#  L_GUI_Manager.py. (Modified 2022-04-15, 3:49 p.m. by Praxis)
+#  L_GUI_Manager.py. (Modified 2022-04-16, 1:04 p.m. by godvalve)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -85,5 +85,6 @@ class L_GUI_Manager:
         self.__layer_objects[self.__layer_order['CONTENT']][0].add_layout_container(self.__menu_tabs[menu_key].get_layout_container())
 
     def process_action(self, action: str, data=None):
-        if action == "quit":
-            self.__h_dialog.exit_launcher("quit")
+        match action:
+            case "quit":
+                self.__h_dialog.exit_launcher("quit")
