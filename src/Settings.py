@@ -1,4 +1,4 @@
-#  Settings.py. (Modified 2022-04-15, 7:55 p.m. by godvalve)
+#  Settings.py. (Modified 2022-04-16, 4:33 p.m. by Praxis)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,14 +19,5 @@ res_dir = dict(
     CSS=RES_FOLDER + "css/",
     GUI=RES_FOLDER + "gui/"
 )
-
-default_css_class = 'content-area'
-
-launcher_configuration_menu_labels = dict(
-    MENU_1="Setup",
-    MENU_2="Quick Reports",
-    MENU_3="Feedback"
-)
-default_launcher_menu_tab = "MENU_1"
 
 version_number = "v2022.04.15"

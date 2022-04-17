@@ -1,4 +1,4 @@
-#  L_Content_Layer.py. (Modified 2022-04-15, 3:19 p.m. by Praxis)
+#  L_Content_Layer.py. (Modified 2022-04-17, 9:27 a.m. by Praxis)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -17,11 +17,10 @@ from gi.repository import Gtk
 
 class L_Content_Layer:
 
-    def __init__(self, h_gui_manager, launcher_properties):
+    def __init__(self, launcher_properties):
         """ Constructor
             h_gui_manager: Handle to GUI_Manager instance,
             launcher_properties: dictionary including width, height, banner_height """
-        self.__h_gui_manager = h_gui_manager
         self.__launcher_properties = launcher_properties
         self.__layout_container = Gtk.Grid(column_spacing=0, row_spacing=0)
         self.__content_container_css_class = 'launcher-content-container'
@@ -46,3 +45,6 @@ class L_Content_Layer:
 
     def remove_layout_container(self, container: Gtk.Container) -> None:
         self.__content_area.remove(container)
+
+    def test(self):
+        print("Hello world")

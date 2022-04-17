@@ -1,4 +1,4 @@
-#  L_Menu_Layer.py. (Modified 2022-04-15, 3:03 p.m. by Praxis)
+#  L_Menu_Layer.py. (Modified 2022-04-17, 9:51 a.m. by Praxis)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -13,59 +13,49 @@ import gi
 gi.require_version('Gtk', '3.0')
 
 from gi.repository import Gtk
-from .L_Menu_Button import L_Menu_Button
+from .L_Menu import L_Menu
+from ..tabs.L_Setup import L_Setup
+from ..tabs.L_Reports import L_Reports
+from ..tabs.L_Feedback import L_Feedback
 from ...Settings import *
 
 
 class L_Menu_Layer:
 
-    def __init__(self, h_gui_manager, launcher_properties):
+    def __init__(self, launcher_properties, content_manager: object):
         """ Constructor
             h_gui_manager: Handle to GUI_Manager instance,
             launcher_properties: dictionary including width, height, banner_height """
-        self.__h_gui_manager = h_gui_manager
         self.__launcher_properties = launcher_properties
-        self.__menu_buttons = {}
-        self.__active_menu = default_launcher_menu_tab
-        self.__menu_container_css_class = 'launcher-menu-container'
-        self.__menu_button_css_class = 'launcher-menu-button'
-        self.__menu_button_css_active = 'active-menu-button'
-        self.__menu_button_css_inactive = 'inactive-menu-button'
-        self.__layout_container = Gtk.Grid(column_homogeneous=False, column_spacing=0, row_spacing=0)
-        self.__build_layer() # Initialization step
+        self.__layout_container = Gtk.Grid(column_spacing=0, row_spacing=0)
+        self.__menu_container_css_class = "launcher-menu-container"
+        menu_buttons = dict(
+            MENU_0={"LABEL": "Setup", "ACTIVE": True, "CONTENT_MANAGER": L_Setup()},
+            MENU_1={"LABEL": "Quick Reports", "ACTIVE": False, "CONTENT_MANAGER": L_Reports()},
+            MENU_2={"LABEL": "Feedback", "ACTIVE": False, "CONTENT_MANAGER": L_Feedback()}
+        )
+        self.__category_menu = L_Menu(orientation="horizontal",
+                                      container_css_class="launcher-menu-container",
+                                      button_values=menu_buttons,
+                                      button_css_class="launcher-menu-button",
+                                      content_manager=content_manager,
+                                      message_callback=self.message_callback)
+        self.__build_layer()  # Initialize layout containers
 
     # Private Methods
 
-    def __activate_menu_button(self, menu_key: str):
-        """ Private Initializer: This function modifies CSS style attributes for active and inactive menu buttons. """
-        if self.__active_menu != menu_key:
-            self.__menu_buttons[menu_key].set_style_name(self.__menu_button_css_active)
-            self.__menu_buttons[self.__active_menu].set_style_name(self.__menu_button_css_inactive)
-
     def __build_layer(self) -> None:
         """ Private Initializer: This function composes the menu layout """
-        self.__menu_area = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
-        self.__menu_area.get_style_context().add_class(self.__menu_container_css_class)
-        self.__menu_area.set_hexpand(True)
-        self.__menu_area.set_vexpand(True)
-        self.__menu_area.set_margin_top(self.__launcher_properties['BANNER_HEIGHT'])  # Set the top margin to the height of the banner
+        self.__menu_container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
+        self.__menu_container.add(self.__category_menu.get_layout_container())
+        self.__layout_container.attach(child=self.__menu_container, left=0, top=0, width=1, height=1)
+        self.__menu_container.set_hexpand(True)
+        self.__menu_container.set_vexpand(True)
+        self.__menu_container.set_margin_top(self.__launcher_properties['BANNER_HEIGHT'])  # Set the top margin to the height of the banner
         # Set the bottom margin to (window_height - banner_height - button_height)
-        self.__menu_area.set_margin_bottom(
+        self.__menu_container.set_margin_bottom(
             self.__launcher_properties['LAUNCHER_HEIGHT'] - self.__launcher_properties['BANNER_HEIGHT'] -
             self.__launcher_properties['MENU_BUTTON_HEIGHT'])
-
-        self.__build_menu_buttons()  # Construct a list of buttons to add to the configuration menu
-        self.__layout_container.attach(child=self.__menu_area, left=0, top=1, width=1, height=1)
-        for menu_key in self.__menu_buttons:
-            self.__menu_area.pack_start(child=self.__menu_buttons[menu_key].get_button(), expand=False, fill=False, padding=0)
-
-    def __build_menu_buttons(self) -> None:
-        """ Private Initializer: This function builds the menu buttons and assigns CSS class definitions. """
-        for menu_key in launcher_configuration_menu_labels:
-            if menu_key == self.__active_menu:
-                self.__menu_buttons[menu_key] = L_Menu_Button(self, launcher_configuration_menu_labels[menu_key], menu_key, self.__menu_button_css_class, self.__menu_button_css_active)
-            else:
-                self.__menu_buttons[menu_key] = L_Menu_Button(self, launcher_configuration_menu_labels[menu_key], menu_key, self.__menu_button_css_class, self.__menu_button_css_inactive)
 
     # Public Methods
 
@@ -73,9 +63,11 @@ class L_Menu_Layer:
         """ Public Accessor: This function returns the Gtk layout container """
         return self.__layout_container
 
-    def process_menu_selection(self, menu_key) -> None:
-        """ Public Processor: This function coordinates menu actions with the GUI_Manager. """
-        self.__activate_menu_button(menu_key)
-        self.__active_menu = menu_key
-        self.__h_gui_manager.load_content_area(menu_key)
+    def message_callback(self, data) -> None:
+        """ Public Processor: """
+        print(data)
+
+
+
+
 

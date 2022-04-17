@@ -1,4 +1,4 @@
-#  Launcher_Interface.py. (Modified 2022-04-15, 8:40 p.m. by godvalve)
+#  Launcher_Interface.py. (Modified 2022-04-16, 5:09 p.m. by Praxis)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -14,7 +14,7 @@ import cairo
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk
 from src.Settings import res_dir
-from .gui.L_GUI_Manager import L_GUI_Manager
+from .gui.L_Layer_Manager import L_GUI_Manager
 
 class Report_Manager_Launcher(Gtk.Dialog):
     def __init__(self, parent):
@@ -89,6 +89,6 @@ class Report_Manager_Launcher(Gtk.Dialog):
         match status:
             case "quit":
                 self.response(Gtk.ResponseType.CANCEL)
-
-            # self.response(Gtk.ResponseType.OK)
+            case "editor":
+                self.response(Gtk.ResponseType.OK)
 
