@@ -1,4 +1,4 @@
-#  L_Setup.py. (Modified 2022-04-16, 1:34 p.m. by Praxis)
+#  L_Student_Enrollment.py. (Modified 2022-04-18, 1:14 p.m. by Praxis)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -12,20 +12,21 @@ import gi
 gi.require_version('Gtk', '3.0')
 
 from gi.repository import Gtk
+from ...gui.widgets.Combo_Picker import Combo_Picker
 
-class L_Setup:
-    def __init__(self):
+class L_Student_Enrollment:
+    def __init__(self, parent_window: Gtk.Window):
+        self.__parent_window = parent_window
         self.__layoutContainer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        self.__build_content()
+        self.__layoutContainer.set_hexpand(True)
+        self.__layoutContainer.set_vexpand(True)
+
+        self.display_enrollment_list()
 
     def get_layout_container(self):
         return self.__layoutContainer
 
-    def __build_content(self):
-        label = Gtk.Label()  # Add a label to the box
-        label.set_text("Setup Area")  # Set the value of the label text
-        label.get_style_context().add_class('label-notification')  # Connect a CSS class to the label
-        self.__layoutContainer.add(label)
-        button = Gtk.Button()
-        button.set_label("Click Me Setup")
-        self.__layoutContainer.add(button)
+    def display_enrollment_list(self):
+        roster_file_dir = Combo_Picker(label="Student Roster:", parent_window=self.__parent_window)
+        self.__layoutContainer.pack_start(roster_file_dir.get_layout_container(), False, False, 0)
+

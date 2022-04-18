@@ -1,4 +1,4 @@
-#  L_Menu_Button.py. (Modified 2022-04-16, 9:09 p.m. by Praxis)
+#  L_Menu_Button.py. (Modified 2022-04-17, 3:26 p.m. by Praxis)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -13,7 +13,7 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
 class L_Menu_Button:
-    def __init__(self, key: str, label: str, style_class: str, callback: classmethod):
+    def __init__(self, key: str, label: str, style_class: str, callback: classmethod, label_alignment: str ="default"):
         """ Constructor
             key: identification name of the button
             label: label for the button,
@@ -21,8 +21,10 @@ class L_Menu_Button:
             callback:  """
         self.__key = key
         self.__callback = callback
-        # Create a button
         self.__button = Gtk.Button(label=label)
+        match label_alignment:
+            case "left" | "right":
+                self.__button.get_child().set_xalign(0) if label_alignment == "left" else self.__button.get_child().set_xalign(1)
         self.__button.connect("clicked", self.button_clicked)
         self.__button.get_style_context().add_class(style_class)
         self.__button.set_can_focus(False)

@@ -1,4 +1,4 @@
-#  L_Content_Layer.py. (Modified 2022-04-17, 9:27 a.m. by Praxis)
+#  L_Content_Manager.py. (Modified 2022-04-17, 12:14 p.m. by Praxis)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -13,22 +13,20 @@ import gi
 gi.require_version('Gtk', '3.0')
 
 from gi.repository import Gtk
+from .ABS_Content_Manager import Content_Manager
 
 
-class L_Content_Layer:
+class L_Content_Manager(Content_Manager):
 
     def __init__(self, launcher_properties):
-        """ Constructor
-            h_gui_manager: Handle to GUI_Manager instance,
+        """ Constructor: Inherits from Content_Manager abstract class
             launcher_properties: dictionary including width, height, banner_height """
+        super().__init__()
         self.__launcher_properties = launcher_properties
-        self.__layout_container = Gtk.Grid(column_spacing=0, row_spacing=0)
         self.__content_container_css_class = 'launcher-content-container'
         self.__build_layer()
 
-    def get_layout_container(self) -> Gtk.Container:
-        """ Accessor function: returns Gtk layout container """
-        return self.__layout_container
+    # Private Methods
 
     def __build_layer(self) -> None:
         """ Initialization: composes layout of content area """
@@ -37,7 +35,9 @@ class L_Content_Layer:
         self.__content_area.set_margin_top(self.__launcher_properties['BANNER_HEIGHT'] + self.__launcher_properties['MENU_BUTTON_HEIGHT'])  # Set the top margin to the height of the banner + menu bar
         self.__content_area.set_hexpand(True)
         self.__content_area.set_vexpand(True)
-        self.__layout_container.attach(child=self.__content_area, left=0, top=0, width=1, height=1)
+        super().attach_to_grid(child=self.__content_area, left=0, top=0, width=1, height=1)
+
+    # Public Methods
 
     def add_layout_container(self, container: Gtk.Container) -> None:
         self.__content_area.add(container)
@@ -45,6 +45,3 @@ class L_Content_Layer:
 
     def remove_layout_container(self, container: Gtk.Container) -> None:
         self.__content_area.remove(container)
-
-    def test(self):
-        print("Hello world")

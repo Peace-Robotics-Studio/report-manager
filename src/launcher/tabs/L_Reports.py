@@ -1,4 +1,4 @@
-#  L_Reports.py. (Modified 2022-04-16, 1:34 p.m. by Praxis)
+#  L_Reports.py. (Modified 2022-04-17, 10:35 p.m. by Praxis)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,6 +26,3 @@ class L_Reports:
         label.set_text("Reports Area")  # Set the value of the label text
         label.get_style_context().add_class('label-notification')  # Connect a CSS class to the label
         self.__layoutContainer.add(label)
-        button = Gtk.Button()
-        button.set_label("Click Me Reports")
-        self.__layoutContainer.add(button)

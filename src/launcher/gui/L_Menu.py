@@ -1,4 +1,4 @@
-#  L_Menu.py. (Modified 2022-04-17, 9:46 a.m. by Praxis)
+#  L_Menu.py. (Modified 2022-04-17, 3:52 p.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -16,11 +16,10 @@ from gi.repository import Gtk
 from .L_Menu_Button import L_Menu_Button
 
 class L_Menu:
-    def __init__(self, orientation: str, container_css_class: str, button_values: dict, button_css_class: str, content_manager: object, message_callback: classmethod):
+    def __init__(self, orientation: str, container_css_class: str, button_values: dict, button_css_class: str, content_manager: object, message_callback: classmethod, align_button_labels: str ="default"):
         """ Constructor """
         self.message_callback = message_callback
         self.__content_manager = content_manager
-        # print(self.__content_manager.test())
         if orientation.lower() == "horizontal":
             self.__layout_container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
             self.__layout_container.set_hexpand(True)
@@ -33,7 +32,7 @@ class L_Menu:
         self.__menu_buttons = {}
         self.__active_tab_key = None
         for key in button_values:
-            self.__menu_buttons[key] = {"BUTTON_OBJECT": L_Menu_Button(key=key, label=button_values[key]["LABEL"], style_class=button_css_class, callback=self.load_menu_request),
+            self.__menu_buttons[key] = {"BUTTON_OBJECT": L_Menu_Button(key=key, label=button_values[key]["LABEL"], label_alignment=align_button_labels, style_class=button_css_class, callback=self.load_menu_request),
                                         "CONTENT_MANAGER": button_values[key]["CONTENT_MANAGER"]}
             if button_values[key]["ACTIVE"] is True:
                 self.__menu_buttons[key]["BUTTON_OBJECT"].set_style_name(self.__menu_button_css_active)
@@ -63,3 +62,4 @@ class L_Menu:
         """ Public Processor: This function coordinates menu actions with the GUI_Manager. """
         self.__activate_menu_button(key)
         self.__load_tab_content(key)
+        self.message_callback(key)

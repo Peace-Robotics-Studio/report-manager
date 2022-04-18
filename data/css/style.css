@@ -68,3 +68,102 @@
 .launcher-feedback-navigation-button {
     margin-right: 5px;
 }
+.launcher-feedback-options-menu-container {
+    min-width: 100px;
+    border-bottom: 2px solid #1d1d1d;
+}
+.launcher-feedback-options-menu {
+    background-color: #2b2b2b;
+    min-width: 100px;
+}
+.launcher-feedback-options-container {
+    border-color: #1d1d1d;
+    border-width: 0px 0px 2px 2px;
+    border-style: solid;
+    padding: 10px;
+}
+.launcher-feedback-options-button {
+    border: 0px;
+    border-bottom: 3px solid #2b2b2b;
+    border-radius: 0px;
+    background-image:none;
+    background-color: #2b2b2b;
+    padding: 5px 10px;
+    margin: 0px;
+}
+#inactive-menu-button.launcher-feedback-options-button {
+    color: #dbdbdb;
+    border-right: 3px solid #2b2b2b;
+}
+#inactive-menu-button.launcher-feedback-options-button:hover {
+    background-color: #212121;
+    border-right: 3px solid black;
+}
+#active-menu-button.launcher-feedback-options-button {
+    color: #dbdbdb;
+    border-right: 3px solid #2d5fab;
+}
+#active-menu-button.launcher-feedback-options-button:hover {
+    background-color: #212121;
+}
+.launcher-feedback-options-label {
+    color: gray;
+    margin-bottom: 3px;
+}
+.launcher-widget-entry-insert {
+    border-image: none;
+    margin: 0px;
+    padding: 0px;
+    border: 0px;
+    box-shadow: none;
+}
+#active-invalid.launcher-widget-entry-insert {
+    color: #ff8989;
+}
+#active-valid.launcher-widget-entry-insert {
+    color: #9ac572;
+}
+#inactive-valid.launcher-widget-entry-insert {
+    color: #7fa35f;
+}
+#inactive-invalid.launcher-widget-entry-insert {
+    color: #c57272;
+}
+.launcher-widget-path-box {
+    border: 1px solid gray;
+    min-height: 20px;
+    padding: 1px 5px;
+    color: #b8cfe5;
+    background-color: #45494a;
+}
+.launcher-widget-button-image {
+    border-image: none;
+    margin: 0px;
+    margin-left: 3px;
+    padding: 0px;
+    border: 0px;
+    min-width: 20px;
+    min-height: 20px;
+    box-shadow: none;
+    background-repeat: no-repeat;
+    background-position: center;
+    outline: none;
+}
+#picker-button.launcher-widget-button-image {
+    background-image: url("../icons/open_folder.png");
+}
+#picker-button.launcher-widget-button-image:hover {
+    background-image: url("../icons/open_folder_light.png");
+}
+#drop-config-button.launcher-widget-button-image {
+    background-image: url("../icons/drop_settings.png");
+    min-width: 23px;
+    padding: 2px;
+}
+#drop-config-button.launcher-widget-button-image:hover {
+    background-color: #45494a;
+    background-image: url("../icons/drop_settings_light.png");
+}
+#drop-config-button.launcher-widget-button-image:active {
+    background-color: #515657;
+}
