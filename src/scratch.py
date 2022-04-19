@@ -1,5 +1,5 @@
-#  scratch.py. (Modified 2022-04-18, 12:27 p.m. by Praxis)
-#  Copyright (c) 2022 Peace Robotics Studio
+#  scratch.py. (Modified 2022-04-18, 9:55 p.m. by Praxis)
+#  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
 #  of this software and associated documentation files (the "Software"), to deal
@@ -13,82 +13,76 @@ import gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
 
+class SecondDialog(Gtk.Dialog):
+    def __init__(self, message):
+        super().__init__(title="Second Dialog", flags=0)
+        self.add_buttons(
+            Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OK, Gtk.ResponseType.OK
+        )
 
-class FileChooserWindow(Gtk.Window):
+        self.set_default_size(150, 100)
+
+        label = Gtk.Label(label=message)
+
+        box = self.get_content_area()
+        box.add(label)
+        self.show_all()
+
+
+class FirstDialog(Gtk.Dialog):
+    def __init__(self, message):
+        super().__init__(title="First Dialog", flags=0)
+        self.add_buttons(
+            Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OK, Gtk.ResponseType.OK
+        )
+
+        self.set_default_size(150, 100)
+
+        label = Gtk.Label(label=message)
+
+        box = self.get_content_area()
+        button = Gtk.Button(label="launcher another dialog")
+        button.connect("clicked", self.dialog_button_clicked)
+
+        box.add(button)
+        box.add(label)
+
+        self.show_all()
+
+    def dialog_button_clicked(self, widget):
+        dialog = SecondDialog("This is the second dialog's message.")
+        response = dialog.run()
+        if response == Gtk.ResponseType.OK:
+            print("The OK button was clicked")
+        elif response == Gtk.ResponseType.CANCEL:
+            print("The Cancel button was clicked")
+        dialog.destroy()
+
+
+class DialogWindow(Gtk.Window):
     def __init__(self):
-        super().__init__(title="FileChooser Example")
+        Gtk.Window.__init__(self, title="Dialog Example")
 
-        box = Gtk.Box(spacing=6)
-        self.add(box)
+        self.set_border_width(6)
 
-        button1 = Gtk.Button(label="Choose File")
-        button1.connect("clicked", self.on_file_clicked)
-        box.add(button1)
+        button = Gtk.Button(label="Open dialog")
+        button.connect("clicked", self.on_button_clicked)
 
-        button2 = Gtk.Button(label="Choose Folder")
-        button2.connect("clicked", self.on_folder_clicked)
-        box.add(button2)
+        self.add(button)
 
-    def on_file_clicked(self, widget):
-        dialog = Gtk.FileChooserDialog(
-            title="Please choose a file", parent=self, action=Gtk.FileChooserAction.OPEN
-        )
-        dialog.add_buttons(
-            Gtk.STOCK_CANCEL,
-            Gtk.ResponseType.CANCEL,
-            Gtk.STOCK_OPEN,
-            Gtk.ResponseType.OK,
-        )
-
-        self.add_filters(dialog)
-
+    def on_button_clicked(self, widget):
+        dialog = FirstDialog("This is the first dialog's message.")
         response = dialog.run()
+
         if response == Gtk.ResponseType.OK:
-            print("Open clicked")
-            print("File selected: " + dialog.get_filename())
+            print("The OK button was clicked")
         elif response == Gtk.ResponseType.CANCEL:
-            print("Cancel clicked")
-
-        dialog.destroy()
-
-    def add_filters(self, dialog):
-        filter_text = Gtk.FileFilter()
-        filter_text.set_name("Text files")
-        filter_text.add_mime_type("text/plain")
-        dialog.add_filter(filter_text)
-
-        filter_py = Gtk.FileFilter()
-        filter_py.set_name("Python files")
-        filter_py.add_mime_type("text/x-python")
-        dialog.add_filter(filter_py)
-
-        filter_any = Gtk.FileFilter()
-        filter_any.set_name("Any files")
-        filter_any.add_pattern("*")
-        dialog.add_filter(filter_any)
-
-    def on_folder_clicked(self, widget):
-        dialog = Gtk.FileChooserDialog(
-            title="Please choose a folder",
-            parent=self,
-            action=Gtk.FileChooserAction.SELECT_FOLDER,
-        )
-        dialog.add_buttons(
-            Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, "Select", Gtk.ResponseType.OK
-        )
-        dialog.set_default_size(800, 400)
-
-        response = dialog.run()
-        if response == Gtk.ResponseType.OK:
-            print("Select clicked")
-            print("Folder selected: " + dialog.get_filename())
-        elif response == Gtk.ResponseType.CANCEL:
-            print("Cancel clicked")
+            print("The Cancel button was clicked")
 
         dialog.destroy()
 
 
-win = FileChooserWindow()
+win = DialogWindow()
 win.connect("destroy", Gtk.main_quit)
 win.show_all()
 Gtk.main()
