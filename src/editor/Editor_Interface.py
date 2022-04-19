@@ -11,7 +11,7 @@
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk
-from src.Settings import res_dir
+from src.Config import res_dir
 from src.launcher.Launcher_Interface import Report_Manager_Launcher
 
 

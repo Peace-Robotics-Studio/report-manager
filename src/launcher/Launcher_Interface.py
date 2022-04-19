@@ -13,28 +13,27 @@ import cairo
 
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gdk
-from src.Settings import res_dir, config_data, update_configuration_data
+from src.Config import res_dir, config_data, update_configuration_data
 from .gui.L_Layer_Coordinator import L_Layer_Coordinator
 
 class Report_Manager_Launcher(Gtk.Dialog):
     def __init__(self, parent):
         """ Constructor """
         Gtk.Dialog.__init__(self)   # Initialize Gtk.Dialog super class
-        # ToDo: Check for configuration.json file and create if it does not exist
         # A dictionary of properties that define the look and feel of the launcher window
         self.__launcher_properties = dict(
-            WINDOW_IMAGE=cairo.ImageSurface.create_from_png(res_dir['GUI'] + 'window-image.png'),
+            WINDOW_IMAGE=cairo.ImageSurface.create_from_png(res_dir['GUI'] + 'drop_shadow.png'),
             MENU_BUTTON_HEIGHT=36,
-            BANNER_HEIGHT=206   # This is a copy of the banner image that users click on to move the launcher
+            BANNER_HEIGHT=195   # This is a copy of the banner image that users click on to move the launcher
         )
         self.__launcher_properties['WIDTH'] = self.__launcher_properties['WINDOW_IMAGE'].get_width()      # Width of launcher window image
         self.__launcher_properties['HEIGHT'] = self.__launcher_properties['WINDOW_IMAGE'].get_height()    # Height of launcher window image
         # Create an instance of the launcher GUI manager class. Sends a portion of the launcher properties
-        self.__gui_manager = L_Layer_Coordinator(self,
-                                                 l_width=self.__launcher_properties['WIDTH'],
-                                                 l_height=self.__launcher_properties['HEIGHT'],
-                                                 banner_height=self.__launcher_properties['BANNER_HEIGHT'],
-                                                 menu_button_height=self.__launcher_properties['MENU_BUTTON_HEIGHT'])
+        self.__layer_coordinator = L_Layer_Coordinator(self,
+                                                       l_width=self.__launcher_properties['WIDTH'],
+                                                       l_height=self.__launcher_properties['HEIGHT'],
+                                                       banner_height=self.__launcher_properties['BANNER_HEIGHT'],
+                                                       menu_button_height=self.__launcher_properties['MENU_BUTTON_HEIGHT'])
         # Create a launcher window with the same dimensions as the window image
         self.set_default_size(self.__launcher_properties['WIDTH'], self.__launcher_properties['HEIGHT'])
         self.set_decorated(False)  # Creates a borderless window without a title bar
@@ -45,7 +44,7 @@ class Report_Manager_Launcher(Gtk.Dialog):
         # Obtain handle to the drawable area of the dialog window and attach a container to manage content
         area = self.get_content_area()
         # Adds a drawing layer to the dialog window
-        area.add(self.__gui_manager.get_overlay())
+        area.add(self.__layer_coordinator.get_overlay())
         # Displays the launcher window and all widgets
         self.show_all()
 

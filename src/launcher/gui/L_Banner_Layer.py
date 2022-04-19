@@ -14,7 +14,7 @@ gi.require_version('Gtk', '3.0')
 
 from gi.repository import Gtk
 from .ABS_Content_Layer import Content_Layer
-from ...Settings import *
+from ...Config import *
 
 class L_Banner_Layer(Content_Layer):
 

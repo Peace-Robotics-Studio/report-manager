@@ -15,7 +15,7 @@ from gi.repository import Gtk
 from .L_Banner_Layer import L_Banner_Layer
 from .L_Menu_Layer import L_Menu_Layer
 from .L_Content_Manager import L_Content_Manager
-from ...Settings import *
+from ...Config import *
 
 
 class L_Layer_Coordinator:

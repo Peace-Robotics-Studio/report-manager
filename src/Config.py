@@ -1,4 +1,4 @@
-#  Settings.py. (Modified 2022-04-18, 3:37 p.m. by Praxis)
+#  Config.py. (Modified 2022-04-18, 3:37 p.m. by Praxis)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -42,4 +42,6 @@ def update_configuration_data():
 
 if os.path.isfile(config_file_path):
     config_data = load_json_from_file(config_file_path)
+else:
+    config_data = {}
 

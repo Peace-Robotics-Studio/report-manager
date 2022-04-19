@@ -13,7 +13,7 @@ import gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, Gdk
 from .Context_Box import Context_Box
-from ....Settings import *
+from ....Config import *
 
 
 class Combo_Picker:
@@ -76,10 +76,13 @@ class Combo_Picker:
     # Private Methods
 
     def __picker_config_context(self, button):
-        dialog = Context_Box("This is the second dialog's message.")
+
+        dialog = Context_Box(parent=self.__parent_window, reference_widget=button, data={"Message": "This is the second dialog's message."}, align="right")
         response = dialog.run()
         # if response == Gtk.ResponseType.OK:
         #     print("The OK button was clicked")
+        # self.window_x, self.window_y = self.get_position()
+
         dialog.destroy()
 
     def __path_box_clicked(self, widget, event):

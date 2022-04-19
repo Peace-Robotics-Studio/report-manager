@@ -13,23 +13,29 @@ import cairo
 
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, Gdk
-from ....Settings import *
+from ....Config import *
 
 
 class Context_Box(Gtk.Dialog):
-    def __init__(self, data: dict):
-        super().__init__(title="Second Dialog", flags=0)
+    def __init__(self, parent, reference_widget: Gtk.Widget, data: dict, align: str):
+        super().__init__(flags=0)
         # Set properties for the dialog window
-        self.set_default_size(300, 300)
+        self.set_default_size(100, 25)
+        self.__parent_window = parent
+        self.__reference_widget = reference_widget
+        self.__alignment = align
+
+
         self.set_decorated(False)  # Remove the window border
         self.add_events(Gdk.EventMask.FOCUS_CHANGE_MASK)
         self.connect("focus-out-event", self.__window_focus_lost)
         self.set_app_paintable(True)
         self.connect('draw', self.__create_background)
+        # self.move(100,100)
         # Create a container to hold content for this dialog window.
         window_area = self.get_content_area()
         layout_container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
-        layout_container.get_style_context().add_class('test')  # Use CSS to set new background colour
+        layout_container.get_style_context().add_class('context-box-container')  # Use CSS to set new background colour
         layout_container.set_hexpand(True)
         layout_container.set_vexpand(True)
         window_area.add(layout_container)
@@ -38,6 +44,25 @@ class Context_Box(Gtk.Dialog):
         layout_container.add(label)
         # Make the dialog box visible
         self.show_all()
+
+        alloc = self.get_allocation()
+        self.__window_width = alloc.width
+        self.window_x, self.window_y = self.__get_position()
+        self.move(self.window_x, self.window_y)
+
+    def __get_position(self):
+        win_x, win_y = self.__parent_window.get_position()
+        target_widget_allocation = self.__reference_widget.get_allocation()
+        x = target_widget_allocation.x
+        y = target_widget_allocation.y
+        if self.__alignment == "left":
+            absolute_x = win_x + x
+            absolute_y = win_y + y + target_widget_allocation.height
+        else:
+            absolute_x = win_x + x - self.__window_width + target_widget_allocation.width
+            absolute_y = win_y + y + target_widget_allocation.height
+
+        return absolute_x, absolute_y
 
     def __window_focus_lost(self, widget, event):
         """  """
@@ -53,7 +78,7 @@ class Context_Box(Gtk.Dialog):
         surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, width, height)
         ctx = cairo.Context(surface)
         # Clear the surface buffer
-        ctx.set_source_rgba(0.0, 0.0, 0.0, 1.0)  # Opaque black
+        ctx.set_source_rgba(0.0, 0.0, 0.0, 0.0)  # Opaque black
         ctx.rectangle(0, 0, width, height)  # Draw a square outline with the same dimensions as the widget
         ctx.fill()  # Fill the outline with colour
         context.set_operator(cairo.OPERATOR_SOURCE)
