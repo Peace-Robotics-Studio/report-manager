@@ -1,4 +1,4 @@
-#  Combo_Picker.py. (Modified 2022-04-18, 10:49 p.m. by Praxis)
+#  Combo_Picker.py. (Modified 2022-04-19, 10:37 p.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -13,15 +13,17 @@ import gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, Gdk
 from .Context_Box import Context_Box
+from .Form_Item import Form_Item
 from ....Config import *
 
 
 class Combo_Picker:
     def __init__(self, label: str, parent_window: Gtk.Window):
-        """ Constructor
-            This class a custom entry field using Gtk.Entry
-            label: descriptive name of the event box  """
-        self.__parent_window = parent_window  # Required by the Gtk.Dialog class definition
+        """ Constructor: This class creates a custom entry field using Gtk.Entry
+            label: descriptive name of the event box,
+            parent_window: The common top-level window """
+        self.__parent_window = parent_window  # Handle to common top-level window
+        # Fixme: This shouldn't be baked into this class
         if "student_roster" in config_data:  # Check to see if a dictionary key for 'student roster' exists in the loaded configuration key
             self.directory_path = config_data["student_roster"]  # Set the directory_path to this key's value if it exists
         else:
@@ -31,16 +33,16 @@ class Combo_Picker:
         directory_label = Gtk.Label(label=label)  # Create a label to place before the directory path container
         directory_label.get_style_context().add_class('launcher-widget-label')  # Connect a CSS class to the label
         self.__layoutContainer.pack_start(child=directory_label, expand=False, fill=False, padding=0)  # Add the label to the root container
-
+        # Create a box to hold the file path string
         file_dir = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
         file_dir.get_style_context().add_class('launcher-widget-path-box')
         file_dir.set_hexpand(True)
         self.__layoutContainer.pack_start(file_dir, True, True, 0)
-
+        # Create an event box to detect when the user clicks on the file path
         self.path_edit_sentinel = Gtk.EventBox()
         self.path_edit_sentinel.connect('button-press-event', self.__path_box_clicked)
         file_dir.pack_start(child=self.path_edit_sentinel, expand=True, fill=True, padding=0)
-
+        # Create an entry box to allow the user to modify the file path
         self.file_dir_entry = Gtk.Entry()
         self.file_dir_entry.add_events(Gdk.EventMask.FOCUS_CHANGE_MASK | Gdk.EventMask.KEY_RELEASE_MASK)
         self.file_dir_entry.connect("focus-out-event", self.__entry_focus_lost)
@@ -50,17 +52,15 @@ class Combo_Picker:
         self.file_dir_entry.set_max_width_chars(100)
         self.file_dir_entry.set_can_focus(False)
         self.__update_displayed_path(False)
-
         self.path_edit_sentinel.add(self.file_dir_entry)
-
+        # Create a button to display a Gtk.FileChooserDialog
         picker_button = Gtk.Button()
         picker_button.get_style_context().add_class('launcher-widget-button-image')
         picker_button.set_can_focus(False)
         picker_button.set_name("picker-button")
         picker_button.connect("clicked", self.__file_picker)
-        picker_button.set_tooltip_text("This is a tooltip")
         file_dir.pack_end(child=picker_button, expand=False, fill=False, padding=0)
-
+        # Create a button to display a context menu with configuration options
         drop_config_button = Gtk.Button()
         drop_config_button.get_style_context().add_class('launcher-widget-button-image')
         drop_config_button.set_name("drop-config-button")
@@ -76,14 +76,18 @@ class Combo_Picker:
     # Private Methods
 
     def __picker_config_context(self, button):
-
-        dialog = Context_Box(parent=self.__parent_window, reference_widget=button, data={"Message": "This is the second dialog's message."}, align="right")
-        response = dialog.run()
+        """ Private Callback: This function creates a context menu when the picker config button is activated. """
+        # ToDo: Implement class as abstract and this function as abstract function
+        form_items_list = [Form_Item(label="Save Path", response_key="HKEY", callback=self.__save_picker_config_data, toggled_on=True, decorator="checkbox")]
+        config_context = Context_Box(parent=self.__parent_window, reference_widget=button, form_items=form_items_list, align="right")
+        response = config_context.run()
         # if response == Gtk.ResponseType.OK:
         #     print("The OK button was clicked")
-        # self.window_x, self.window_y = self.get_position()
+        config_context.destroy()
 
-        dialog.destroy()
+    def __save_picker_config_data(self, button, name):
+        # ToDo: Save preference to configuration file
+        pass
 
     def __path_box_clicked(self, widget, event):
         """ Private Callback: This function is triggered by a Gtk.EventBox containing the Gtk.Entry widget. """

@@ -170,6 +170,19 @@
 .context-box-container {
     background-color: #2b2b2b;
     border: 1px solid #5b5b5b;
-    padding: 5px 15px;
+    padding: 0px;
     margin-top: 2px;
+}
+.context-form-title {
+    background-color: #45494a;
+    color: #b4c4cd;
+    margin: 0px;
+    padding: 5px 10px;
+    font-weight: bold;
+}
+.context-form-option {
+    margin: 5px 15px;
+}
+.context-form-checkbox {
+    margin-right: 3px;
 }
