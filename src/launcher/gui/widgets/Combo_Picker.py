@@ -1,4 +1,4 @@
-#  Combo_Picker.py. (Modified 2022-04-19, 10:37 p.m. by Praxis)
+#  Combo_Picker.py. (Modified 2022-04-20, 8:15 p.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -13,7 +13,7 @@ import gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, Gdk
 from .Context_Box import Context_Box
-from .Form_Item import Form_Item
+from .Form_Item import Form_Item_Properties
 from ....Config import *
 
 
@@ -77,9 +77,8 @@ class Combo_Picker:
 
     def __picker_config_context(self, button):
         """ Private Callback: This function creates a context menu when the picker config button is activated. """
-        # ToDo: Implement class as abstract and this function as abstract function
-        form_items_list = [Form_Item(label="Save Path", response_key="HKEY", callback=self.__save_picker_config_data, toggled_on=True, decorator="checkbox")]
-        config_context = Context_Box(parent=self.__parent_window, reference_widget=button, form_items=form_items_list, align="right")
+        form_items = [Form_Item_Properties(label="Save Path", response_key="HKEY", callback=self.__save_picker_config_data, toggled_on=True, decorator="checkbox")]
+        config_context = Context_Box(parent=self.__parent_window, reference_widget=button, align="right", form_items=form_items)
         response = config_context.run()
         # if response == Gtk.ResponseType.OK:
         #     print("The OK button was clicked")
@@ -87,7 +86,7 @@ class Combo_Picker:
 
     def __save_picker_config_data(self, button, name):
         # ToDo: Save preference to configuration file
-        pass
+        print("ToDo: Save preference to configuration file")
 
     def __path_box_clicked(self, widget, event):
         """ Private Callback: This function is triggered by a Gtk.EventBox containing the Gtk.Entry widget. """

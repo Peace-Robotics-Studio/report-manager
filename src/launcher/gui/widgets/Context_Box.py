@@ -1,4 +1,4 @@
-#  Context_Box.py. (Modified 2022-04-19, 10:21 p.m. by Praxis)
+#  Context_Box.py. (Modified 2022-04-20, 8:07 p.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,16 +18,15 @@ from ....Config import *
 
 
 class Context_Box(Gtk.Dialog):
-    def __init__(self, parent, reference_widget: Gtk.Widget, form_items: list, align: str):
+    def __init__(self, parent, reference_widget: Gtk.Widget, align: str, form_items: list):
         """ Constructor:  """
         super().__init__(flags=0)
         # Set properties for the dialog window
         self.set_default_size(100, 25)
+        self.__form_items = form_items
         self.__parent_window = parent
         self.__reference_widget = reference_widget
         self.__alignment = align
-        self.__form_items = form_items
-
         self.set_decorated(False)  # Remove the window border
         self.add_events(Gdk.EventMask.FOCUS_CHANGE_MASK)
         self.connect("focus-out-event", self.__window_focus_lost)
@@ -41,7 +40,7 @@ class Context_Box(Gtk.Dialog):
         self.layout_container.set_vexpand(True)
         window_area.add(self.layout_container)
         # Make the dialog box visible
-        self.add_form_items()
+        self.build_form_items()
         self.show_all()
         # Move the box (based on its final dimensions) to a position under the reference widget
         self.__adjust_window_size()
@@ -91,10 +90,9 @@ class Context_Box(Gtk.Dialog):
         context.paint()
         context.set_operator(cairo.OPERATOR_OVER)
 
-    def add_form_items(self):
+    def build_form_items(self):
         """ Public Initializer: This function adds form items to the context menu """
         if self.__form_items:
-            for item in self.__form_items:
-                self.layout_container.add(item.get_layout_container())
-
-
+            for item_property_dictionary in self.__form_items:
+                form_item = Form_Item(item_property_dictionary)
+                self.layout_container.add(form_item.get_layout_container())
