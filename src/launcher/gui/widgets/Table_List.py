@@ -1,4 +1,4 @@
-#  Table_List.py. (Modified 2022-04-19, 11:05 p.m. by Praxis)
+#  Table_List.py. (Modified 2022-04-20, 9:54 p.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,19 +19,31 @@ from ....Config import *
 class Table_List:
     def __init__(self):
         """ Constructor:  """
-        self.layout_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
+        self.__layout_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
+        self.__layout_container.set_vexpand(True)
+        self.__layout_container.get_style_context().add_class('table-list-container')
         self.__action_bar = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
-        self.__action_bar.get_style_context().add_class('context-box-container')
+        self.__action_bar.get_style_context().add_class('action-bar')
+        # self.__action_bar.get_style_context().add_class('action-bar')
         self.__action_bar.set_hexpand(True)
+        button = Gtk.Button(label="+")
+        self.__action_bar.add(button)
+        button = Gtk.Button(label="-")
+        self.__action_bar.add(button)
+        button = Gtk.Button(label="Edit")
+        self.__action_bar.add(button)
+        self.__layout_container.add(self.__action_bar)
 
-        self.layout_container.add(self.__action_bar)
         list_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
+        list_container.get_style_context().add_class('table-list-data')
+        # list_container.get_style_context().add_class('table-list')
+        self.__layout_container.add(list_container)
         list_container.set_hexpand(True)
         list_container.set_vexpand(True)
 
     def get_layout_container(self) -> Gtk.Container:
         """ Public Accessor: Returns Gtk.Container object. """
-        return self.__layoutContainer
+        return self.__layout_container
 
     def add_action_items(self):
         """ Accepts a list of button items to be added to the action bar """

@@ -1,4 +1,4 @@
-#  Combo_Picker.py. (Modified 2022-04-20, 8:15 p.m. by Praxis)
+#  Combo_Picker.py. (Modified 2022-04-20, 9:15 p.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,17 +18,19 @@ from ....Config import *
 
 
 class Combo_Picker:
-    def __init__(self, label: str, parent_window: Gtk.Window):
+    def __init__(self, label: str, css_class: str, parent_window: Gtk.Window, callback: callable):
         """ Constructor: This class creates a custom entry field using Gtk.Entry
             label: descriptive name of the event box,
             parent_window: The common top-level window """
         self.__parent_window = parent_window  # Handle to common top-level window
+        self.__results_callback = callback
         # Fixme: This shouldn't be baked into this class
         if "student_roster" in config_data:  # Check to see if a dictionary key for 'student roster' exists in the loaded configuration key
             self.directory_path = config_data["student_roster"]  # Set the directory_path to this key's value if it exists
         else:
             self.directory_path = ""  # Otherwise, initialize directory_path with an empty string
         self.__layoutContainer = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)  # Create a root container for the combo_picker widget
+        self.__layoutContainer.get_style_context().add_class(css_class)
         self.__layoutContainer.set_hexpand(True)  # Set the widget to stretch across the available horizontal space
         directory_label = Gtk.Label(label=label)  # Create a label to place before the directory path container
         directory_label.get_style_context().add_class('launcher-widget-label')  # Connect a CSS class to the label
@@ -86,7 +88,7 @@ class Combo_Picker:
 
     def __save_picker_config_data(self, button, name):
         # ToDo: Save preference to configuration file
-        print("ToDo: Save preference to configuration file")
+        print(f"ToDo: Save preference to configuration file: {name}")
 
     def __path_box_clicked(self, widget, event):
         """ Private Callback: This function is triggered by a Gtk.EventBox containing the Gtk.Entry widget. """
@@ -127,6 +129,7 @@ class Combo_Picker:
 
     def __is_path_valid(self) -> bool:
         """ Private Task: This function checks to see if the directory string is a valid path. """
+        self.__results_callback(self.directory_path)
         return os.path.exists(self.directory_path)
 
     def __set_entry_text_colour(self, is_valid, active_state):

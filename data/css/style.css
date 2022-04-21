@@ -186,3 +186,18 @@
 .context-form-checkbox {
     margin-right: 3px;
 }
+.enrollment-combo-picker {
+    margin-top: 0px;
+}
+.action-bar {
+    border: 1px solid #5b5b5b;
+}
+.table-list-data {
+    border: 1px solid #5b5b5b;
+}
+.table-list-container {
+    margin-top: 20px;
+}
+.test {
+    margin-top: 0px;
+}

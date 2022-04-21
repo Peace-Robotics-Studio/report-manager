@@ -1,4 +1,4 @@
-#  L_Feedback_Files.py. (Modified 2022-04-17, 4:54 p.m. by Praxis)
+#  L_Feedback_Files.py. (Modified 2022-04-20, 8:37 p.m. by Praxis)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -14,7 +14,9 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
 class L_Feedback_Files:
+    """ This class is called by """
     def __init__(self, active_option: str):
+        """ Constructor """
         self.__layoutContainer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.__layoutContainer.set_hexpand(True)
         self.__layoutContainer.set_vexpand(True)
