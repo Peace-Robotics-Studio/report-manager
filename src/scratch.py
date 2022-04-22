@@ -1,5 +1,5 @@
-#  scratch.py. (Modified 2022-04-18, 9:55 p.m. by Praxis)
-#  Copyright (c) 2022-2022 Peace Robotics Studio
+#  scratch.py. (Modified 2022-04-21, 10:25 p.m. by Praxis)
+#  Copyright (c) 2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
 #  of this software and associated documentation files (the "Software"), to deal
@@ -10,79 +10,45 @@
 
 import gi
 
-gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
 
-class SecondDialog(Gtk.Dialog):
-    def __init__(self, message):
-        super().__init__(title="Second Dialog", flags=0)
-        self.add_buttons(
-            Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OK, Gtk.ResponseType.OK
-        )
-
-        self.set_default_size(150, 100)
-
-        label = Gtk.Label(label=message)
-
-        box = self.get_content_area()
-        box.add(label)
-        self.show_all()
-
-
-class FirstDialog(Gtk.Dialog):
-    def __init__(self, message):
-        super().__init__(title="First Dialog", flags=0)
-        self.add_buttons(
-            Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OK, Gtk.ResponseType.OK
-        )
-
-        self.set_default_size(150, 100)
-
-        label = Gtk.Label(label=message)
-
-        box = self.get_content_area()
-        button = Gtk.Button(label="launcher another dialog")
-        button.connect("clicked", self.dialog_button_clicked)
-
-        box.add(button)
-        box.add(label)
-
-        self.show_all()
-
-    def dialog_button_clicked(self, widget):
-        dialog = SecondDialog("This is the second dialog's message.")
-        response = dialog.run()
-        if response == Gtk.ResponseType.OK:
-            print("The OK button was clicked")
-        elif response == Gtk.ResponseType.CANCEL:
-            print("The Cancel button was clicked")
-        dialog.destroy()
-
-
-class DialogWindow(Gtk.Window):
+class MainWindow(Gtk.Window):
     def __init__(self):
-        Gtk.Window.__init__(self, title="Dialog Example")
+        super(MainWindow, self).__init__()
+        self.connect("destroy", lambda x: Gtk.main_quit())
+        self.set_default_size(200, 200)
 
-        self.set_border_width(6)
+        overlay = Gtk.Overlay()
 
-        button = Gtk.Button(label="Open dialog")
-        button.connect("clicked", self.on_button_clicked)
+        textview = Gtk.TextView()
+        textview.set_wrap_mode(Gtk.WrapMode.WORD_CHAR)
+        textbuffer = textview.get_buffer()
+        textbuffer.set_text("Welcome to the PyGObject Tutorial\n\nThis guide aims to provide an introduction to using Python and GTK+.\n\nIt includes many sample code files and exercises for building your knowledge of the language.", -1)
+        overlay.add(textview)
 
-        self.add(button)
-
-    def on_button_clicked(self, widget):
-        dialog = FirstDialog("This is the first dialog's message.")
-        response = dialog.run()
-
-        if response == Gtk.ResponseType.OK:
-            print("The OK button was clicked")
-        elif response == Gtk.ResponseType.CANCEL:
-            print("The Cancel button was clicked")
-
-        dialog.destroy()
+        button = Gtk.Button(label="Overlayed Button")
+        button.set_tooltip_text("Hello")
+        #button.connect("enter-notify-event", self.on_overlay_btn_entered)
+        button.set_valign(Gtk.Align.CENTER)
+        button.set_halign(Gtk.Align.CENTER)
+        overlay.add_overlay(button)
 
 
-win = DialogWindow()
-win.connect("destroy", Gtk.main_quit)
-win.show_all()
-Gtk.main()
+        self.add(overlay)
+        overlay.show_all()
+        self.show_all()
+
+    def on_overlay_btn_entered(self, btn, event):
+        print("Overlay button entered")
+        return True
+
+
+    def run(self):
+        Gtk.main()
+
+
+def main(args):
+    mainwdw = MainWindow()
+    mainwdw.run()
+
+    return 0

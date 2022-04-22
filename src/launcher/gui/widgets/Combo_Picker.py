@@ -1,4 +1,4 @@
-#  Combo_Picker.py. (Modified 2022-04-20, 9:15 p.m. by Praxis)
+#  Combo_Picker.py. (Modified 2022-04-21, 7:15 p.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -57,14 +57,14 @@ class Combo_Picker:
         self.path_edit_sentinel.add(self.file_dir_entry)
         # Create a button to display a Gtk.FileChooserDialog
         picker_button = Gtk.Button()
-        picker_button.get_style_context().add_class('launcher-widget-button-image')
+        picker_button.get_style_context().add_class('form-button')
         picker_button.set_can_focus(False)
         picker_button.set_name("picker-button")
         picker_button.connect("clicked", self.__file_picker)
         file_dir.pack_end(child=picker_button, expand=False, fill=False, padding=0)
         # Create a button to display a context menu with configuration options
         drop_config_button = Gtk.Button()
-        drop_config_button.get_style_context().add_class('launcher-widget-button-image')
+        drop_config_button.get_style_context().add_class('form-button')
         drop_config_button.set_name("drop-config-button")
         drop_config_button.connect("clicked", self.__picker_config_context)
         self.__layoutContainer.pack_end(child=drop_config_button, expand=False, fill=False, padding=0)

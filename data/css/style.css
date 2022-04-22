@@ -136,10 +136,9 @@
     color: #b8cfe5;
     background-color: #45494a;
 }
-.launcher-widget-button-image {
+.form-button {
     border-image: none;
     margin: 0px;
-    margin-left: 3px;
     padding: 0px;
     border: 0px;
     min-width: 20px;
@@ -148,23 +147,26 @@
     background-repeat: no-repeat;
     background-position: center;
     outline: none;
+    border-radius: 2px;
 }
-#picker-button.launcher-widget-button-image {
+#picker-button.form-button {
+    margin-left: 3px;
     background-image: url("../icons/open_folder.png");
 }
-#picker-button.launcher-widget-button-image:hover {
+#picker-button.form-button:hover {
+    margin-left: 3px;
     background-image: url("../icons/open_folder_light.png");
 }
-#drop-config-button.launcher-widget-button-image {
+#drop-config-button.form-button {
     background-image: url("../icons/drop_settings.png");
     min-width: 23px;
     padding: 2px;
 }
-#drop-config-button.launcher-widget-button-image:hover {
+#drop-config-button.form-button:hover {
     background-color: #45494a;
     background-image: url("../icons/drop_settings_light.png");
 }
-#drop-config-button.launcher-widget-button-image:active {
+#drop-config-button.form-button:active {
     background-color: #515657;
 }
 .context-box-container {
@@ -191,6 +193,7 @@
 }
 .action-bar {
     border: 1px solid #5b5b5b;
+    padding: 2px;
 }
 .table-list-data {
     border: 1px solid #5b5b5b;
@@ -200,4 +203,34 @@
 }
 .instructions-link {
     margin-top: 5px;
+}
+.active-item {
+    margin-right: 3px;
+}
+.active-item:hover {
+    background-color: #45494a;
+}
+.active-item:active {
+    background-color: #515657;
+}
+.inactive-item {
+    margin-right: 3px;
+}
+#minus-inactive.form-button {
+    background-image: url("../icons/minus.png");
+}
+#minus-active.form-button {
+    background-image: url("../icons/minus_light.png");
+}
+#plus-inactive.form-button {
+    background-image: url("../icons/plus.png");
+}
+#plus-active.form-button {
+    background-image: url("../icons/plus_light.png");
+}
+#edit-inactive.form-button {
+    background-image: url("../icons/edit.png");
+}
+#edit-active.form-button {
+    background-image: url("../icons/edit_light.png");
 }

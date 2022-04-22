@@ -1,4 +1,4 @@
-#  Table_List.py. (Modified 2022-04-20, 9:54 p.m. by Praxis)
+#  Table_List.py. (Modified 2022-04-21, 11:03 p.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -14,24 +14,24 @@ import cairo
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, Gdk
 from ....Config import *
+from .Form_Button import Form_Button
 
 
 class Table_List:
-    def __init__(self):
+    def __init__(self, callback: callable):
         """ Constructor:  """
         self.__layout_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
         self.__layout_container.set_vexpand(True)
         self.__layout_container.get_style_context().add_class('table-list-container')
         self.__action_bar = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
         self.__action_bar.get_style_context().add_class('action-bar')
-        # self.__action_bar.get_style_context().add_class('action-bar')
         self.__action_bar.set_hexpand(True)
-        button = Gtk.Button(label="+")
-        self.__action_bar.add(button)
-        button = Gtk.Button(label="-")
-        self.__action_bar.add(button)
-        button = Gtk.Button(label="Edit")
-        self.__action_bar.add(button)
+        plus_button = Form_Button(name="plus", callback=callback)
+        self.__action_bar.add(plus_button.add())
+        minus_button = Form_Button(name="minus", active=False, callback=callback)
+        self.__action_bar.add(minus_button.add())
+        edit_button = Form_Button(name="edit", active=False, callback=callback)
+        self.__action_bar.add(edit_button.add())
         self.__layout_container.add(self.__action_bar)
 
         list_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)

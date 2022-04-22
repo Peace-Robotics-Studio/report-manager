@@ -1,4 +1,4 @@
-#  L_Student_Enrollment.py. (Modified 2022-04-20, 11:19 p.m. by Praxis)
+#  L_Student_Enrollment.py. (Modified 2022-04-21, 11:03 p.m. by Praxis)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,17 +22,21 @@ class L_Student_Enrollment:
         self.__student_data = defaultdict(list)
         self.__parent_window = parent_window
         self.__layoutContainer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        self.__layoutContainer.get_style_context().add_class('test')
+        # self.__layoutContainer.get_style_context().add_class('test')
         self.__layoutContainer.set_hexpand(True)
         self.__layoutContainer.set_vexpand(True)
 
         roster_file_dir = Combo_Picker(label="Student Roster:", css_class="enrollment-combo-picker", parent_window=self.__parent_window, callback=self.__load_student_data)
         self.__layoutContainer.pack_start(roster_file_dir.get_layout_container(), False, False, 0)
-        student_details_list = Table_List()
+        student_details_list = Table_List(callback=self.button_clicked)
         self.__layoutContainer.pack_start(student_details_list.get_layout_container(), False, True, 0)
+        self.__layoutContainer.show_all()
 
     def get_layout_container(self):
         return self.__layoutContainer
+
+    def button_clicked(self, button, name):
+        print(name)
 
     def __load_student_data(self, file_name):
         print(f"Valid file: {file_name}")
