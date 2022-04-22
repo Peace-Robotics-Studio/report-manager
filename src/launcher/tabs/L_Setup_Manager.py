@@ -56,24 +56,11 @@ class L_Setup_Manager(Content_Manager):
         options_menu_area.set_vexpand(True)
         options_menu_area.add(self.__category_menu.get_layout_container())
         content_area.pack_start(options_menu_area, False, False, 0)
-        # Update properties for options content area (created in the constructor)
+        # Update properties for options in the content area (created in the constructor)
         self.options_content_area.get_style_context().add_class(self.__content_options_container_css_class)  # Connect a CSS class to the box
         self.options_content_area.set_vexpand(True)
         self.options_content_area.set_hexpand(True)
         content_area.pack_start(self.options_content_area, False, True, 0)
-        # Create the navigation bar
-        navigation_bar = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)  # Create a box to hold the navigation bar
-        navigation_bar.get_style_context().add_class(self.__navigation_bar_css_class)  # Attach a CSS class
-        navigation_bar.set_hexpand(True)  # Set the navigation box to horizontally expand
-        super().attach_to_grid(child=navigation_bar, left=0, top=1, width=1, height=1)  # Attach the box to position 1 of the layout grid
-        # Add navigation buttons
-        editor_button = Gtk.Button(label="Open Editor")  # Create a button to open the editor
-        editor_button.connect("clicked", self.navigation_pane_button_clicked)
-        editor_button.get_style_context().add_class(self.__navigation_button_css_class)  # Attach a CSS class
-        load_button = Gtk.Button(label="Load")  # Create a button to load a selected file into the editor
-        load_button.get_style_context().add_class(self.__navigation_button_css_class)  # Attach a CSS class
-        navigation_bar.pack_end(child=editor_button, expand=False, fill=False, padding=0)  # Add the button to right side of the navigation bar's box
-        navigation_bar.pack_end(child=load_button, expand=False, fill=False, padding=0)  # Add the button immediately to the left of the editor button
 
     def navigation_pane_button_clicked(self, button) -> None:
         """ Public Processor: This function coordinates menu actions with the GUI_Manager. """

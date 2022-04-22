@@ -129,8 +129,10 @@ class Combo_Picker:
 
     def __is_path_valid(self) -> bool:
         """ Private Task: This function checks to see if the directory string is a valid path. """
-        self.__results_callback(self.directory_path)
+        if os.path.exists(self.directory_path):
+            self.__results_callback(self.directory_path)
         return os.path.exists(self.directory_path)
+
 
     def __set_entry_text_colour(self, is_valid, active_state):
         """ Private Task: This function modifies the colour of text in the Gtk.Entry box by assigning different CSS names. """

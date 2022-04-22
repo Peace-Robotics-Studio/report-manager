@@ -36,10 +36,15 @@ class Table_List:
 
         list_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
         list_container.get_style_context().add_class('table-list-data')
-        # list_container.get_style_context().add_class('table-list')
         self.__layout_container.add(list_container)
         list_container.set_hexpand(True)
         list_container.set_vexpand(True)
+        instructions = Gtk.Label()
+        instructions.set_xalign(0)
+        instructions.set_markup("<a href=\"https://github.com/Peace-Robotics-Studio/report-manager/wiki/Feature-Guide\" "
+                   "title=\"Report Manager Wiki\">Instructions for exporting student data from MyEd BC</a>")
+        instructions.get_style_context().add_class('instructions-link')
+        self.__layout_container.add(instructions)
 
     def get_layout_container(self) -> Gtk.Container:
         """ Public Accessor: Returns Gtk.Container object. """
@@ -47,4 +52,4 @@ class Table_List:
 
     def add_action_items(self):
         """ Accepts a list of button items to be added to the action bar """
-        self.__action_bar
+        pass
