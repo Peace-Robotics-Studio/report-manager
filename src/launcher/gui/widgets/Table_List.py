@@ -34,11 +34,11 @@ class Table_List:
         self.__action_bar.add(edit_button.add())
         self.__layout_container.add(self.__action_bar)
 
-        list_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
-        list_container.get_style_context().add_class('table-list-data')
-        self.__layout_container.add(list_container)
-        list_container.set_hexpand(True)
-        list_container.set_vexpand(True)
+        self.list_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
+        self.list_container.get_style_context().add_class('table-list-data')
+        self.__layout_container.add(self.list_container)
+        self.list_container.set_hexpand(True)
+        self.list_container.set_vexpand(True)
         instructions = Gtk.Label()
         instructions.set_xalign(0)
         instructions.set_markup("<a href=\"https://github.com/Peace-Robotics-Studio/report-manager/wiki/Feature-Guide\" "
@@ -49,6 +49,9 @@ class Table_List:
     def get_layout_container(self) -> Gtk.Container:
         """ Public Accessor: Returns Gtk.Container object. """
         return self.__layout_container
+
+    def add(self, widget: Gtk.Container):
+        self.list_container.add(widget)
 
     def add_action_items(self):
         """ Accepts a list of button items to be added to the action bar """

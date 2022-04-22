@@ -234,3 +234,9 @@
 #edit-active.form-button {
     background-image: url("../icons/edit_light.png");
 }
+.duh {
+    margin: 0px;
+    padding-right: 20px;
+    color: orange;
+    background-color: blue;
+}

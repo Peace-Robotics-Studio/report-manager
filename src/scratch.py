@@ -1,54 +1,97 @@
-#  scratch.py. (Modified 2022-04-21, 10:25 p.m. by Praxis)
-#  Copyright (c) 2022 Peace Robotics Studio
-#  Licensed under the MIT License.
-#  Permission is hereby granted, free of charge, to any person obtaining a copy
-#  of this software and associated documentation files (the "Software"), to deal
-#  in the Software without restriction, including without limitation the rights
-#  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-#  copies of the Software, and to permit persons to whom the Software is
-#  furnished to do so.
-
 import gi
 
+gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
 
-class MainWindow(Gtk.Window):
+# list of tuples for each software, containing the software name, initial release, and main programming languages used
+software_list = [
+    ("Firefox", 2002, "C++"),
+    ("Eclipse", 2004, "Java"),
+    ("Pitivi", 2004, "Python"),
+    ("Netbeans", 1996, "Java"),
+    ("Chrome", 2008, "C++"),
+    ("Filezilla", 2001, "C++"),
+    ("Bazaar", 2005, "Python"),
+    ("Git", 2005, "C"),
+    ("Linux Kernel", 1991, "C"),
+    ("GCC", 1987, "C"),
+    ("Frostwire", 2004, "Java"),
+]
+
+
+class TreeViewFilterWindow(Gtk.Window):
     def __init__(self):
-        super(MainWindow, self).__init__()
-        self.connect("destroy", lambda x: Gtk.main_quit())
-        self.set_default_size(200, 200)
+        super().__init__(title="Treeview Filter Demo")
+        self.set_border_width(10)
 
-        overlay = Gtk.Overlay()
+        # Setting up the self.grid in which the elements are to be positioned
+        self.grid = Gtk.Grid()
+        self.grid.set_column_homogeneous(True)
+        self.grid.set_row_homogeneous(True)
+        self.add(self.grid)
 
-        textview = Gtk.TextView()
-        textview.set_wrap_mode(Gtk.WrapMode.WORD_CHAR)
-        textbuffer = textview.get_buffer()
-        textbuffer.set_text("Welcome to the PyGObject Tutorial\n\nThis guide aims to provide an introduction to using Python and GTK+.\n\nIt includes many sample code files and exercises for building your knowledge of the language.", -1)
-        overlay.add(textview)
+        # Creating the ListStore model
+        self.software_liststore = Gtk.ListStore(str, int, str)
+        for software_ref in software_list:
+            self.software_liststore.append(list(software_ref))
+        self.current_filter_language = None
 
-        button = Gtk.Button(label="Overlayed Button")
-        button.set_tooltip_text("Hello")
-        #button.connect("enter-notify-event", self.on_overlay_btn_entered)
-        button.set_valign(Gtk.Align.CENTER)
-        button.set_halign(Gtk.Align.CENTER)
-        overlay.add_overlay(button)
+        # Creating the filter, feeding it with the liststore model
+        self.language_filter = self.software_liststore.filter_new()
+        # setting the filter function, note that we're not using the
+        self.language_filter.set_visible_func(self.language_filter_func)
 
+        # creating the treeview, making it use the filter as a model, and adding the columns
+        self.treeview = Gtk.TreeView(model=self.language_filter)
+        for i, column_title in enumerate(
+            ["Software", "Release Year", "Programming Language"]
+        ):
+            renderer = Gtk.CellRendererText()
+            column = Gtk.TreeViewColumn(column_title, renderer, text=i)
+            self.treeview.append_column(column)
 
-        self.add(overlay)
-        overlay.show_all()
+        # creating buttons to filter by programming language, and setting up their events
+        self.buttons = list()
+        for prog_language in ["Java", "C", "C++", "Python", "None"]:
+            button = Gtk.Button(label=prog_language)
+            self.buttons.append(button)
+            button.connect("clicked", self.on_selection_button_clicked)
+
+        # setting up the layout, putting the treeview in a scrollwindow, and the buttons in a row
+        self.scrollable_treelist = Gtk.ScrolledWindow()
+        self.scrollable_treelist.set_vexpand(True)
+        self.grid.attach(self.scrollable_treelist, 0, 0, 8, 10)
+        self.grid.attach_next_to(
+            self.buttons[0], self.scrollable_treelist, Gtk.PositionType.BOTTOM, 1, 1
+        )
+        for i, button in enumerate(self.buttons[1:]):
+            self.grid.attach_next_to(
+                button, self.buttons[i], Gtk.PositionType.RIGHT, 1, 1
+            )
+        self.scrollable_treelist.add(self.treeview)
+
         self.show_all()
 
-    def on_overlay_btn_entered(self, btn, event):
-        print("Overlay button entered")
-        return True
+    def language_filter_func(self, model, iter, data):
+        """Tests if the language in the row is the one in the filter"""
+        if (
+            self.current_filter_language is None
+            or self.current_filter_language == "None"
+        ):
+            return True
+        else:
+            return model[iter][2] == self.current_filter_language
+
+    def on_selection_button_clicked(self, widget):
+        """Called on any of the button clicks"""
+        # we set the current language filter to the button's label
+        self.current_filter_language = widget.get_label()
+        print("%s language selected!" % self.current_filter_language)
+        # we update the filter, which updates in turn the view
+        self.language_filter.refilter()
 
 
-    def run(self):
-        Gtk.main()
-
-
-def main(args):
-    mainwdw = MainWindow()
-    mainwdw.run()
-
-    return 0
+win = TreeViewFilterWindow()
+win.connect("destroy", Gtk.main_quit)
+win.show_all()
+Gtk.main()
