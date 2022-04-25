@@ -1,4 +1,4 @@
-#  Config.py. (Modified 2022-04-18, 3:37 p.m. by Praxis)
+#  Config.py. (Modified 2022-04-23, 11:57 a.m. by Praxis)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -12,6 +12,7 @@ import os
 from pathlib import Path
 import json
 
+import PyPDF2 as PyPDF2
 
 THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 RES_FOLDER = str(Path(THIS_FOLDER).parents[0]) + "/data/"
@@ -39,6 +40,15 @@ def save_json_to_file(file_path, json_data):
 
 def update_configuration_data():
     save_json_to_file(file_path=config_file_path, json_data=config_data)
+
+
+def pdf_to_text(filename):
+    """ Scraped from https://stackoverflow.blog/2022/04/21/the-robots-are-coming-for-the-boring-parts-of-your-job/?cb=1 """
+    pdf = PyPDF2.PdfFileReader(open(filename, "rb"))
+    text = ""
+    for i in range(pdf.getNumPages()):
+        text += pdf.getPage(i).extractText()
+    return text
 
 if os.path.isfile(config_file_path):
     config_data = load_json_from_file(config_file_path)

@@ -1,4 +1,4 @@
-#  Combo_Picker.py. (Modified 2022-04-21, 7:15 p.m. by Praxis)
+#  Combo_Picker.py. (Modified 2022-04-22, 4:56 p.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -130,6 +130,8 @@ class Combo_Picker:
     def __is_path_valid(self) -> bool:
         """ Private Task: This function checks to see if the directory string is a valid path. """
         if os.path.exists(self.directory_path):
+            config_data["student_roster"] = self.directory_path
+            update_configuration_data()  # Save the internal dictionary to the configuration file
             self.__results_callback(self.directory_path)
         return os.path.exists(self.directory_path)
 

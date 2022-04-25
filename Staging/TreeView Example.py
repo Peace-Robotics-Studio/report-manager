@@ -1,4 +1,4 @@
-#  scratch.py. (Modified 2022-04-24, 6:42 p.m. by Praxis)
+#  TreeView Example.py. (Modified 2022-04-24, 8:22 p.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -9,27 +9,24 @@
 #  furnished to do so.
 
 import gi
-import cairo
-
-gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk, Gdk, GdkPixbuf
-from ....Config import *
-from .Form_Button import Form_Button
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
+from gi.repository import GLib
+import signal
 
 student_tree = {'08': [
-        ['Simpson, Lisa', 'F', 'active'],
-        ['Bueller, Feris', 'M', 'active'],
-        ['Standish, Claire', 'F', 'active']
-    ],
-    '09': [
-        ['Wiggum, Ralph', 'F', 'active'],
-        ['Frye, Cameron', 'M', 'active'],
-        ['Vernon, Richard', 'F', 'active']
-    ]}
+                    ['Simpson, Lisa', 'F', 'active'],
+                    ['Bueller, Feris', 'M', 'active'],
+                    ['Standish, Claire', 'F', 'active']
+                ],
+                '09': [
+                    ['Wiggum, Ralph', 'F', 'active'],
+                    ['Frye, Cameron', 'M', 'active'],
+                    ['Vernon, Richard', 'F', 'active']
+                ]}
 
-
-class Tabular_Display:
-    EXPAND_BY_DEFAULT = True
+class TreeViewFilteringExample(Gtk.Window):
+    EXPAND_BY_DEFAULT = False
     COLUMNS = {
         "VISIBLE": 0,
         "NAME": 1,
@@ -37,47 +34,13 @@ class Tabular_Display:
         "ENROLLMENT": 3
     }
 
-    def __init__(self, callback: callable):
-        """ Constructor:  """
-        self.__layout_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
-        self.__layout_container.set_vexpand(True)
-        self.__layout_container.get_style_context().add_class('table-list-container')
-        self.__action_bar = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
-        self.__action_bar.get_style_context().add_class('action-bar')
-        self.__action_bar.set_hexpand(True)
-        plus_button = Form_Button(name="plus", callback=callback)
-        self.__action_bar.add(plus_button.add())
-        minus_button = Form_Button(name="minus", active=False, callback=callback)
-        self.__action_bar.add(minus_button.add())
-        edit_button = Form_Button(name="edit", active=False, callback=callback)
-        self.__action_bar.add(edit_button.add())
-        self.__layout_container.add(self.__action_bar)
+    def __init__(self):
+        # Set up window
+        Gtk.Window.__init__(self, title="TreeView Filtering Demo")
+        self.set_size_request(500, 500)
+        self.set_position(Gtk.WindowPosition.CENTER)
+        self.set_resizable(True)
 
-        # Create an entry box to allow the user to modify the file path
-        self.file_dir_entry = Gtk.Entry()
-        self.file_dir_entry.get_style_context().add_class('action-bar-search')
-        # self.file_dir_entry.add_events(Gdk.EventMask.KEY_RELEASE_MASK)
-        self.file_dir_entry.set_icon_from_pixbuf(Gtk.EntryIconPosition.PRIMARY, self.__get_pixbuf_image("search_dark.png"))
-        self.file_dir_entry.connect("changed", self.search_query)
-        self.__action_bar.pack_end(self.file_dir_entry, False, False, 0)
-
-        # Add a content container for data
-        self.list_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
-        self.list_container.get_style_context().add_class('table-list-data')
-        self.__layout_container.add(self.list_container)
-        self.list_container.set_hexpand(True)
-        self.list_container.set_vexpand(True)
-
-        self.create_TreeView(target_container=self.list_container)
-
-        instructions = Gtk.Label()
-        instructions.set_xalign(0)
-        instructions.set_markup("<a href=\"https://github.com/Peace-Robotics-Studio/report-manager/wiki/Feature-Guide\" "
-                                "title=\"Report Manager Wiki\">Instructions for exporting student data from MyEd BC</a>")
-        instructions.get_style_context().add_class('instructions-link')
-        self.__layout_container.add(instructions)
-
-    def create_TreeView(self, target_container: Gtk.Container):
         # Initialize and populate a Gtk.TreeStore
         # See: https://docs.gtk.org/gtk3/treeview-tutorial.html#adding-rows-to-a-tree-store
         self.tree_store = Gtk.TreeStore(bool, str, str, str)
@@ -115,22 +78,15 @@ class Tabular_Display:
             col_combined.add_attribute(text_renderer, "text", column_number)
             self.treeview.append_column(column=col_combined)
 
+
         # Scrolled Window in case results don't fit in the available space
         self.sw = Gtk.ScrolledWindow()
         self.sw.add(widget=self.treeview)
 
-        # vbox.pack_start(child=self.sw, expand=True, fill=True, padding=0)
-        target_container.add(self.sw)
+        vbox.pack_start(child=self.sw, expand=True, fill=True, padding=0)
 
         # Initialize filtering
         self.search_query()
-
-    def get_layout_container(self) -> Gtk.Container:
-        """ Public Accessor: Returns Gtk.Container object. """
-        return self.__layout_container
-
-    def add(self, widget: Gtk.Container):
-        self.list_container.add(widget)
 
     def add_student_nodes(self, data: dict):
         """ Add rows to the Gtk.TreeView """
@@ -140,8 +96,8 @@ class Tabular_Display:
             category_name = f"Grade {key[1] if key.startswith('0') else key} ({len(data[key])})"
             # Arrange the data used in the top-level row label
             category_list_values = [True, category_name]  # The base list of values for each row
-            if len(value) > 1:  # Check if the data value comprises more than a single string
-                for i in range(len(value) - 1):  # For each additional item in the value
+            if len(value[0]) > 1:  # Check if the data value comprises more than a single string
+                for i in range(len(value[0])-1):  # For each additional item in the value
                     category_list_values += [""]  # Add an empty string
             top_level_row = self.tree_store.append(parent=None, row=category_list_values)  # Store the list 'category_list_values' in the TreeStore
             for item in value:  # For each item in value
@@ -198,45 +154,11 @@ class Tabular_Display:
             self.tree_store.set_value(subtree, self.COLUMNS["VISIBLE"], True)  # Set the value of the VISIBLE field to True
             self.make_subtree_visible(model=model, row_iter=subtree)  # Recursive call to this function to evaluate whether the current row has children
 
-    def format_data(self, data):
-        grade_groups = {}
-        for item_number, grade in enumerate(data['Grade'], start=0):
-            if grade not in grade_groups:
-                grade_groups[grade] = []
-            grade_groups[grade].append([data['Name'][item_number], data['Gender'][item_number], data['EnrStatus'][item_number]])
-        return grade_groups
 
-    def __get_pixbuf_image(self, image_name):
-        pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
-            filename=res_dir['ICONS'] + image_name,
-            width=20,
-            height=20,
-            preserve_aspect_ratio=True)
-        return pixbuf
 
-    def update(self, data: dict):
-        pass
-        # self.current_data = data
-        # if self.__displaying_tree_view is False:
-        #     self.create_tree_view(data)
-        #     self.__displaying_tree_view
-        # else:
-        #     self.update_liststore(self.format_data(data))
-        # self.__layout_container.show_all()
-
-    def update_liststore(self, data):
-        if self.__displaying_tree_view:
-            self.treestore.clear()
-
-        label = [True, "Grade 1", "", ""]
-        cat_iter = self.treestore.append(None, label)
-        for student in data['01']:
-            self.treestore.append(cat_iter, student)
-        # for grade in sorted(data.keys()):
-        #     category = [f"Grade {grade[1] if grade.startswith('0') else grade} ({len(data[grade])})", None, None]
-        #     category_iter = self.software_liststore.append(None, category)
-        #     print()
-        #     # for student in data[grade]:
-        #     #     print(student)
-        #     for student in data[grade]:
-        #         tree_iter = self.software_liststore.append(category_iter, student)
+win = TreeViewFilteringExample()
+win.connect("delete-event", Gtk.main_quit)
+win.show_all()
+# Make sure that the application can be stopped from the terminal using Ctrl-C
+GLib.unix_signal_add(GLib.PRIORITY_DEFAULT, signal.SIGINT, Gtk.main_quit)
+Gtk.main()

@@ -1,4 +1,4 @@
-#  Context_Box.py. (Modified 2022-04-20, 8:07 p.m. by Praxis)
+#  Context_Box.py. (Modified 2022-04-24, 3:30 p.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,6 +23,7 @@ class Context_Box(Gtk.Dialog):
         super().__init__(flags=0)
         # Set properties for the dialog window
         self.set_default_size(100, 25)
+        self.set_border_width(0)
         self.__form_items = form_items
         self.__parent_window = parent
         self.__reference_widget = reference_widget

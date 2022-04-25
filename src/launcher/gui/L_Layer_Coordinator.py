@@ -1,4 +1,4 @@
-#  L_Layer_Coordinator.py. (Modified 2022-04-18, 2:58 p.m. by Praxis)
+#  L_Layer_Coordinator.py. (Modified 2022-04-23, 8:30 p.m. by Praxis)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -50,8 +50,8 @@ class L_Layer_Coordinator:
         """ Private Task: This function instantiates layout manager objects for each layer and orders these objects based on their 'LAYER_ORDER' value """
         # Expected dictionary format: [layer manager, layer order, input passthrough]
         # Placing the CATEGORY_MENU in its own layer allows for drop-down lists that cover the content area
-        self.__layer_order["BANNER"] = {"LAYER_ORDER": 0, "LAYER_OBJECT": L_Banner_Layer(launcher_properties=self.__launcher_properties, message_callback=self.process_action), "PASS_THROUGH": False}
-        self.__layer_order["CONTENT"] = {"LAYER_ORDER": 1, "LAYER_OBJECT": L_Content_Manager(launcher_properties=self.__launcher_properties), "PASS_THROUGH": True}
+        self.__layer_order["BANNER"] = {"LAYER_ORDER": 1, "LAYER_OBJECT": L_Banner_Layer(launcher_properties=self.__launcher_properties, message_callback=self.process_action), "PASS_THROUGH": True}
+        self.__layer_order["CONTENT"] = {"LAYER_ORDER": 0, "LAYER_OBJECT": L_Content_Manager(launcher_properties=self.__launcher_properties), "PASS_THROUGH": False}
         self.__layer_order["CATEGORY_MENU"] = {"LAYER_ORDER": 2, "LAYER_OBJECT": L_Menu_Layer(launcher_properties=self.__launcher_properties, content_manager=self.__layer_order["CONTENT"]["LAYER_OBJECT"], message_callback=self.process_action), "PASS_THROUGH": True}
         for i in range(len(self.__layer_order)):
             for key in self.__layer_order:

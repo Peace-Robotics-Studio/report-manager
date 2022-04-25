@@ -195,8 +195,18 @@
     border: 1px solid #5b5b5b;
     padding: 2px;
 }
+.action-bar-search{
+    padding: 2px 8px;
+    margin: 0px;
+    font-size: 10pt;
+    min-height: 20px;
+    outline: none;
+    border-radius: 3px;
+    border: 0px;
+}
 .table-list-data {
     border: 1px solid #5b5b5b;
+    padding: 5px;
 }
 .table-list-container {
     margin-top: 20px;
@@ -234,9 +244,9 @@
 #edit-active.form-button {
     background-image: url("../icons/edit_light.png");
 }
-.duh {
+.treeview {
     margin: 0px;
     padding-right: 20px;
+    padding-left: 4px;
     color: orange;
-    background-color: blue;
 }

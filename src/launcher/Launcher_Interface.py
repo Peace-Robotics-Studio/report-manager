@@ -1,4 +1,4 @@
-#  Launcher_Interface.py. (Modified 2022-04-18, 3:37 p.m. by Praxis)
+#  Launcher_Interface.py. (Modified 2022-04-24, 3:30 p.m. by Praxis)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -38,6 +38,7 @@ class Report_Manager_Launcher(Gtk.Dialog):
         self.set_default_size(self.__launcher_properties['WIDTH'], self.__launcher_properties['HEIGHT'])
         self.set_decorated(False)  # Creates a borderless window without a title bar
         self.set_app_paintable(True)
+        self.set_border_width(0)
         self.connect('draw', self.draw)    # Capture signal and set callback
         self.connect("button-press-event", self.do_button_press_event)  # Capture signal and set callback
         self.connect("motion-notify-event", self.do_button_movement)    # Capture signal and set callback
@@ -95,4 +96,3 @@ class Report_Manager_Launcher(Gtk.Dialog):
                 self.response(Gtk.ResponseType.CANCEL)
             case "editor":
                 self.response(Gtk.ResponseType.OK)
-
