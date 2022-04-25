@@ -1,4 +1,4 @@
-#  TreeView Example.py. (Modified 2022-04-24, 8:22 p.m. by Praxis)
+#  TreeView Example.py. (Modified 2022-04-24, 9:23 p.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -17,10 +17,11 @@ import signal
 student_tree = {'08': [
                     ['Simpson, Lisa', 'F', 'active'],
                     ['Bueller, Feris', 'M', 'active'],
-                    ['Standish, Claire', 'F', 'active']
+                    ['Standish, Claire', 'F', 'active'],
+                    ['Wiggum, Ralph', 'M', 'active']
                 ],
                 '09': [
-                    ['Wiggum, Ralph', 'F', 'active'],
+                    ['Wiggum, Ralph', 'M', 'active'],
                     ['Frye, Cameron', 'M', 'active'],
                     ['Vernon, Richard', 'F', 'active']
                 ]}
@@ -63,8 +64,8 @@ class TreeViewFilteringExample(Gtk.Window):
         # Use an internal column for filtering
         self.filter = self.tree_store.filter_new()
         self.filter.set_visible_column(column=self.COLUMNS["VISIBLE"])
-        self.treeview = Gtk.TreeView(model=self.filter)
-        self.treeview.set_headers_visible(False)
+        self.tree_view = Gtk.TreeView(model=self.filter)
+        self.tree_view.set_headers_visible(False)
 
         # CellRenderers for text
         text_renderer = Gtk.CellRendererText()
@@ -76,12 +77,12 @@ class TreeViewFilteringExample(Gtk.Window):
             col_combined = Gtk.TreeViewColumn(title=column_title)
             col_combined.pack_start(cell=text_renderer, expand=False)
             col_combined.add_attribute(text_renderer, "text", column_number)
-            self.treeview.append_column(column=col_combined)
+            self.tree_view.append_column(column=col_combined)
 
 
         # Scrolled Window in case results don't fit in the available space
         self.sw = Gtk.ScrolledWindow()
-        self.sw.add(widget=self.treeview)
+        self.sw.add(widget=self.tree_view)
 
         vbox.pack_start(child=self.sw, expand=True, fill=True, padding=0)
 
@@ -111,13 +112,13 @@ class TreeViewFilteringExample(Gtk.Window):
         if search_query == "":  # If the search box is empty
             self.tree_store.foreach(self.reset_row, True)  # Iterate over the full TreeStore model and set the 'HIDDEN' column to True (Parameters: func, *user)
             if self.EXPAND_BY_DEFAULT:  # If rows are set to be expanded by default
-                self.treeview.expand_all()  # Set the TreeView flag for all rows
+                self.tree_view.expand_all()  # Set the TreeView flag for all rows
             else:
-                self.treeview.collapse_all()  # Otherwise, collapse all rows
+                self.tree_view.collapse_all()  # Otherwise, collapse all rows
         else:  # Something is in the search box
             self.tree_store.foreach(self.reset_row, False)  # Set the 'HIDDEN' field of all rows in the TreeStore to False
             self.tree_store.foreach(self.show_matches, search_query, show_subtrees_of_matches)  # Check to see if the row value matches the search query
-            self.treeview.expand_all()  # Expand all rows to display filtered results
+            self.tree_view.expand_all()  # Expand all rows to display filtered results
         self.filter.refilter()  # Trigger 'row_changed' signal to force evaluation of whether a row is visible or not based on the updated HIDDEN field
 
     def reset_row(self, model: Gtk.TreeModel, path: Gtk.TreePath, iter: Gtk.TreeIter, make_visible: object):

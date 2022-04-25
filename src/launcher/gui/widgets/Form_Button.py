@@ -1,4 +1,4 @@
-#  Form_Button.py. (Modified 2022-04-21, 11:05 p.m. by Praxis)
+#  Form_Button.py. (Modified 2022-04-24, 10:16 p.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -15,11 +15,11 @@ from gi.repository import Gtk, Gdk
 
 
 class Form_Button:
-    def __init__(self, callback: callable, name: str, active: bool = True):
+    def __init__(self, callback: callable, name: str, active: bool = True, tooltip_text: str = None):
         self.is_active = active
         self.__name = name
         self.form_button = Gtk.Button()
-        self.form_button.set_tooltip_text("button")
+        self.form_button.set_tooltip_text(tooltip_text)
         self.form_button.get_style_context().add_class('form-button')
         self.form_button.connect("clicked", callback, name)
         if active is True:

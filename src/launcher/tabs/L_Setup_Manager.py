@@ -1,4 +1,4 @@
-#  L_Setup_Manager.py. (Modified 2022-04-18, 2:57 p.m. by Praxis)
+#  L_Setup_Manager.py. (Modified 2022-04-24, 9:50 p.m. by Praxis)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -68,7 +68,7 @@ class L_Setup_Manager(Content_Manager):
 
     def option_clicked(self, value):
         # self.__setup_manager.set_state(value)
-        print("hello")
+        print(f"Setup_Manager: option_clicked()")
         # Check if button belongs to active option
         # Remove layout container for active option and load container for key value
 
