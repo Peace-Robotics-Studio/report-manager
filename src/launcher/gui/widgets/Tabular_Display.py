@@ -1,4 +1,4 @@
-#  Tabular_Display.py. (Modified 2022-04-24, 10:16 p.m. by Praxis)
+#  Tabular_Display.py. (Modified 2022-04-25, 7:22 p.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -71,9 +71,9 @@ class Tabular_Display:
     def add(self, widget: Gtk.Container):
         self.list_container.add(widget)
 
-    def create_tree_view(self, data: dict):
+    def create_tree_view(self, data: dict, gtypes: list):
 
-        self.tree_store = Gtk.TreeStore(bool, str, str, str)
+        self.tree_store = Gtk.TreeStore.new(types=gtypes)
         self.update_liststore(data)
 
         # Use an internal column for filtering
@@ -103,8 +103,12 @@ class Tabular_Display:
 
     def update(self, data: dict):
         self.current_data = self.format_data(data)
+
+        gtypes = [bool, str, str, str]
+        columns = self.get_column_names(data)
+
         if self.__displaying_tree_view is False:
-            self.create_tree_view(self.current_data)
+            self.create_tree_view(data=self.current_data, gtypes=gtypes)
             self.__displaying_tree_view = True
         else:
             self.update_liststore(self.current_data)
@@ -131,7 +135,11 @@ class Tabular_Display:
         for item in data[key]:  # For each item in value
             self.tree_store.append(parent=top_level_row, row=[True] + item)  # Make these items children of the top-level row. Adds the value 'True' to front of the list.
 
-    def format_data(self, data):
+    def get_column_names(self, data) -> list:
+        print(data.keys())
+        return []
+
+    def format_data(self, data) -> dict:
         grade_groups = {}
         for item_number, grade in enumerate(data['Grade'], start=0):
             key = grade
@@ -140,7 +148,7 @@ class Tabular_Display:
             grade_groups[key].append([data['Name'][item_number], data['Gender'][item_number], data['EnrStatus'][item_number]])
         return grade_groups
 
-    def __get_pixbuf_image(self, image_name):
+    def __get_pixbuf_image(self, image_name) -> GdkPixbuf.Pixbuf:
         pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
             filename=res_dir['ICONS'] + image_name,
             width=20,
