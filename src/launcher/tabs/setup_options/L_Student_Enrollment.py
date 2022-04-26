@@ -1,4 +1,4 @@
-#  L_Student_Enrollment.py. (Modified 2022-04-24, 8:25 p.m. by Praxis)
+#  L_Student_Enrollment.py. (Modified 2022-04-25, 11:10 p.m. by Praxis)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -49,11 +49,21 @@ class L_Student_Enrollment:
     def __load_student_data(self, file_name):
         """ Private Initializer: Load the contents of the selected CSV file into a dictionary. """
         self.__student_data.clear()  # Reset the dictionary to an empty state
-        with open(file_name, 'r') as csv_file:  # Open file
-            csv_reader = csv.DictReader(csv_file)  # Read contents of CSV file
-            for line in csv_reader:  # Parse data into dictionary format
-                for key, value in line.items():
-                    self.__student_data[key].append(value)
-        # Display dictionary data in a Gtk.TreeView
-        self.student_details_list.update(self.__student_data)
+        try:
+            with open(file_name, mode='r', encoding='utf-8-sig') as csv_file:  # Open file
+                csv_reader = csv.DictReader(csv_file)  # Read contents of CSV file
+                for line in csv_reader:  # Parse data into dictionary format
+                    for key, value in line.items():
+                        self.__student_data[key].append(value)
+        except:
+            # ToDo: display message to user in GUI
+            print("Unable to read CSV file.")
+
+        # Perform some basic checks on the data to ensure it is useable
+        if all (field in self.__student_data for field in ("Grade", "Name", "Gender")):  # Make sure the dictionary has these field names as keys
+            # Display dictionary data in a Gtk.TreeView
+            self.student_details_list.update(self.__student_data)
+        else:
+            # ToDo: display message to user in GUI
+            print("Student CSV data file does not contain all required fields: 'Grade', 'Name', 'Gender'")
 

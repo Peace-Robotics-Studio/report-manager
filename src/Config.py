@@ -1,4 +1,4 @@
-#  Config.py. (Modified 2022-04-24, 8:25 p.m. by Praxis)
+#  Config.py. (Modified 2022-04-25, 10:05 p.m. by Praxis)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -29,18 +29,20 @@ config_file_name = "configuration.json"
 config_file_path = res_dir["ROOT"] + "/" + config_file_name
 config_data = {}
 
+config_file_locked = False
+
 def load_json_from_file(file_path):
     """ Read in the contents of JSON file """
     with open(file_path) as file:
         return json.load(file)
 
 def save_json_to_file(file_path, json_data):
-    with open(file_path, 'w') as json_file:
-        json.dump(json_data, json_file)
+    if not config_file_locked:
+        with open(file_path, 'w') as json_file:
+            json.dump(json_data, json_file)
 
 def update_configuration_data():
     save_json_to_file(file_path=config_file_path, json_data=config_data)
-
 
 def pdf_to_text(filename):
     """ Scraped from https://stackoverflow.blog/2022/04/21/the-robots-are-coming-for-the-boring-parts-of-your-job/?cb=1 """
@@ -50,8 +52,19 @@ def pdf_to_text(filename):
         text += pdf.getPage(i).extractText()
     return text
 
-if os.path.isfile(config_file_path):
-    config_data = load_json_from_file(config_file_path)
+# Load the configuration data
+if os.path.isfile(config_file_path):  # Make sure the file exists
+    file_size = os.stat(config_file_path).st_size
+    if file_size != 0:  # Make sure the file is not empty
+        try:
+            config_data = load_json_from_file(config_file_path)  # Load the contents of the file into anto a dictionary
+        except:
+            # ToDo: Present message to user in GUI
+            print("Invalid json formatting in config file. Locking file to prevent over-writing contents.")
+            config_file_locked = True
+            config_data = {}
+    else:
+        config_data = {}
 else:
     config_data = {}
 

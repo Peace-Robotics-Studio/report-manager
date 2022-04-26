@@ -1,4 +1,4 @@
-#  Tabular_Display.py. (Modified 2022-04-25, 7:22 p.m. by Praxis)
+#  Tabular_Display.py. (Modified 2022-04-25, 11:08 p.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,10 +21,8 @@ class Tabular_Display:
     EXPAND_BY_DEFAULT = False
     COLUMNS = {
         "VISIBLE": 0,
-        "NAME": 1,
-        "GENDER": 2,
-        "ENROLLMENT": 3
     }
+
     def __init__(self, callback: callable):
         """ Constructor:  """
 
@@ -82,7 +80,7 @@ class Tabular_Display:
 
         self.tree_view = Gtk.TreeView(model=self.filter)
         self.tree_view.get_style_context().add_class('treeview')
-        self.tree_view.set_headers_visible(False)
+        # self.tree_view.set_headers_visible(False)
 
         text_renderer = Gtk.CellRendererText()
         text_renderer.set_padding(0, 0)
@@ -104,8 +102,15 @@ class Tabular_Display:
     def update(self, data: dict):
         self.current_data = self.format_data(data)
 
-        gtypes = [bool, str, str, str]
-        columns = self.get_column_names(data)
+        gtypes = [bool]
+        columns = list(data.keys())
+        columns.remove("Grade")
+        for column_number, field in enumerate(columns, start=1):
+            self.COLUMNS[field] = column_number
+
+        for item in self.current_data[next(iter(self.current_data))][0]:  # Get the first item from the list of values linked to the dictionary's first key
+            gtypes.append(type(item))
+
 
         if self.__displaying_tree_view is False:
             self.create_tree_view(data=self.current_data, gtypes=gtypes)
@@ -135,17 +140,18 @@ class Tabular_Display:
         for item in data[key]:  # For each item in value
             self.tree_store.append(parent=top_level_row, row=[True] + item)  # Make these items children of the top-level row. Adds the value 'True' to front of the list.
 
-    def get_column_names(self, data) -> list:
-        print(data.keys())
-        return []
-
     def format_data(self, data) -> dict:
         grade_groups = {}
+        fields_in_data = list(data.keys())
+        fields_in_data.remove("Grade")
         for item_number, grade in enumerate(data['Grade'], start=0):
             key = grade
             if key not in grade_groups:
                 grade_groups[key] = []
-            grade_groups[key].append([data['Name'][item_number], data['Gender'][item_number], data['EnrStatus'][item_number]])
+            student_data = []
+            for field in fields_in_data:
+                student_data.append(data[field][item_number])
+            grade_groups[key].append(student_data)
         return grade_groups
 
     def __get_pixbuf_image(self, image_name) -> GdkPixbuf.Pixbuf:
@@ -181,7 +187,7 @@ class Tabular_Display:
     def show_matches(self, model: Gtk.TreeModel, path: Gtk.TreePath, row_iter: Gtk.TreeIter, search_query, show_subtrees_of_matches: object):
         """ Callback for Gtk.TreeModel.foreach() implementing Gtk.TreeModelForeachFunc(model, path, iter, *data) """
         # User data: search_query; show_subtrees_of_matches
-        text = model.get_value(iter=row_iter, column=self.COLUMNS["NAME"]).lower()  # Get the string value stored in the row's NAME field
+        text = model.get_value(iter=row_iter, column=self.COLUMNS["Name"]).lower()  # Get the string value stored in the row's NAME field
         if search_query in text:  # Check to see if the search_query string is a substring of text
             # Propagate visibility change up
             self.make_path_visible(model=model, row_iter=row_iter)  # Make this row visible and search for parents to this node and make them visible
