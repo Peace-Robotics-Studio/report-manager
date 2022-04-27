@@ -1,4 +1,4 @@
-#  Form_Button.py. (Modified 2022-04-24, 10:16 p.m. by Praxis)
+#  Form_Button.py. (Modified 2022-04-26, 7:37 p.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -15,6 +15,7 @@ from gi.repository import Gtk, Gdk
 
 
 class Form_Button:
+    """ Buttons used in forms (such as Tabular_Display()) """
     def __init__(self, callback: callable, name: str, active: bool = True, tooltip_text: str = None):
         self.is_active = active
         self.__name = name

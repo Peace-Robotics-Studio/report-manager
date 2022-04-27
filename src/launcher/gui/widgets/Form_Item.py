@@ -1,4 +1,4 @@
-#  Form_Item.py. (Modified 2022-04-20, 8:14 p.m. by Praxis)
+#  Form_Item.py. (Modified 2022-04-26, 7:37 p.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -29,6 +29,7 @@ class Form_Item_Properties:
         return self.__properties_dictionary
 
 class Form_Item:
+    """ Option items added to the Context_Box() widget. """
     def __init__(self, item_properties_list=None):
         """ Constructor:
             label: The text applied to the form item,

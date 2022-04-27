@@ -1,4 +1,4 @@
-#  L_Student_Enrollment.py. (Modified 2022-04-25, 11:10 p.m. by Praxis)
+#  L_Student_Enrollment.py. (Modified 2022-04-26, 10:37 p.m. by Praxis)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,7 +22,7 @@ from ...gui.widgets.Tabular_Display import Tabular_Display
 class L_Student_Enrollment:
     def __init__(self, parent_window: Gtk.Window):
         """ Constructor: """
-
+        self.__student_roster_loaded = False
         self.__parent_window = parent_window  # Required by the Combo_Picker to obtain the updated window coordinates
         self.__student_data = defaultdict(list)  # Holds the contents of the student roster CSV file
         # Create a container to hold student enrollment data
@@ -62,7 +62,12 @@ class L_Student_Enrollment:
         # Perform some basic checks on the data to ensure it is useable
         if all (field in self.__student_data for field in ("Grade", "Name", "Gender")):  # Make sure the dictionary has these field names as keys
             # Display dictionary data in a Gtk.TreeView
-            self.student_details_list.update(self.__student_data)
+            if not self.__student_roster_loaded:
+                self.student_details_list.update(self.__student_data)
+                self.__student_roster_loaded = True
+            else:
+                self.student_details_list.empty()
+                self.student_details_list.update(self.__student_data)
         else:
             # ToDo: display message to user in GUI
             print("Student CSV data file does not contain all required fields: 'Grade', 'Name', 'Gender'")

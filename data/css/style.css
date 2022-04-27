@@ -150,11 +150,11 @@
     border-radius: 2px;
 }
 #picker-button.form-button {
-    margin-left: 3px;
+    margin-left: 6px;
     background-image: url("../icons/open_folder.png");
 }
 #picker-button.form-button:hover {
-    margin-left: 3px;
+    margin-left: 6px;
     background-image: url("../icons/open_folder_light.png");
 }
 #drop-config-button.form-button {

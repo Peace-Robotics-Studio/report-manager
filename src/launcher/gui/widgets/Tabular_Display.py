@@ -1,4 +1,4 @@
-#  Tabular_Display.py. (Modified 2022-04-25, 11:08 p.m. by Praxis)
+#  Tabular_Display.py. (Modified 2022-04-26, 10:56 p.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,6 +26,7 @@ class Tabular_Display:
     def __init__(self, callback: callable):
         """ Constructor:  """
 
+        self.fields_in_data = []
         self.__displaying_tree_view = False
         self.__layout_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
         self.__layout_container.set_vexpand(True)
@@ -44,6 +45,7 @@ class Tabular_Display:
         # Create an entry box to allow the user to modify the file path
         self.search_entry = Gtk.Entry()
         self.search_entry.get_style_context().add_class('action-bar-search')
+        self.search_entry.set_placeholder_text(text="Search")
 
         self.search_entry.set_icon_from_pixbuf(Gtk.EntryIconPosition.PRIMARY, self.__get_pixbuf_image("search_dark.png"))
         self.search_entry.connect("changed", self.search_query)
@@ -86,11 +88,12 @@ class Tabular_Display:
         text_renderer.set_padding(0, 0)
 
         for column_number, column_title in enumerate(list(self.COLUMNS.keys())[1:], start=1):
-            # Put the text into a column
-            col_combined = Gtk.TreeViewColumn(title=column_title)
-            col_combined.pack_start(cell=text_renderer, expand=False)
-            col_combined.add_attribute(text_renderer, "text", column_number)
-            self.tree_view.append_column(column=col_combined)
+            if column_title != 'Last' and column_title != 'First':  # Leave these fields hidden
+                # Put the text into a column
+                col_combined = Gtk.TreeViewColumn(title=column_title)
+                col_combined.pack_start(cell=text_renderer, expand=False)
+                col_combined.add_attribute(text_renderer, "text", column_number)
+                self.tree_view.append_column(column=col_combined)
 
         self.sw = Gtk.ScrolledWindow()
         self.sw.set_vexpand(True)
@@ -98,6 +101,15 @@ class Tabular_Display:
 
         self.add(self.sw)
         self.__displaying_tree_view = True
+
+    def empty(self):
+        contents = self.list_container.get_children()
+        for widget in contents:
+            widget.destroy()
+        self.__displaying_tree_view = False
+        self.COLUMNS = {"VISIBLE": 0}
+        self.search_entry.set_text("")
+
 
     def update(self, data: dict):
         self.current_data = self.format_data(data)
@@ -110,7 +122,6 @@ class Tabular_Display:
 
         for item in self.current_data[next(iter(self.current_data))][0]:  # Get the first item from the list of values linked to the dictionary's first key
             gtypes.append(type(item))
-
 
         if self.__displaying_tree_view is False:
             self.create_tree_view(data=self.current_data, gtypes=gtypes)
@@ -142,14 +153,14 @@ class Tabular_Display:
 
     def format_data(self, data) -> dict:
         grade_groups = {}
-        fields_in_data = list(data.keys())
-        fields_in_data.remove("Grade")
+        self.fields_in_data = list(data.keys())
+        self.fields_in_data.remove("Grade")
         for item_number, grade in enumerate(data['Grade'], start=0):
             key = grade
             if key not in grade_groups:
                 grade_groups[key] = []
             student_data = []
-            for field in fields_in_data:
+            for field in self.fields_in_data:
                 student_data.append(data[field][item_number])
             grade_groups[key].append(student_data)
         return grade_groups
@@ -173,9 +184,12 @@ class Tabular_Display:
                 self.tree_view.expand_all()  # Set the TreeView flag for all rows
             else:
                 self.tree_view.collapse_all()  # Otherwise, collapse all rows
-        else:  # Something is in the search box
+        else:  # A value has been entered into the search box
             self.tree_store.foreach(self.reset_row, False)  # Set the 'HIDDEN' field of all rows in the TreeStore to False
-            self.tree_store.foreach(self.show_matches, search_query, show_subtrees_of_matches)  # Check to see if the row value matches the search query
+            search_fields_for_match = ["Name"]  # Create a list of fields to search for a query match
+            if "Status" in self.fields_in_data:  # Check to see if 'Status' is a field in the data set
+                search_fields_for_match.append("Status")  # Add this field to the list for matching
+            self.tree_store.foreach(self.show_matches, search_fields_for_match, search_query, show_subtrees_of_matches)  # Check to see if the row value matches the search query
             self.tree_view.expand_all()  # Expand all rows to display filtered results
         self.filter.refilter()  # Trigger 'row_changed' signal to force evaluation of whether a row is visible or not based on the updated HIDDEN field
 
@@ -184,17 +198,17 @@ class Tabular_Display:
         # Set the value of the HIDDEN column pointed to by iter to bool value in make_visible
         self.tree_store.set_value(iter, self.COLUMNS["VISIBLE"], make_visible)  # Values: Gtk.TreeIter, int, GObject.Value
 
-    def show_matches(self, model: Gtk.TreeModel, path: Gtk.TreePath, row_iter: Gtk.TreeIter, search_query, show_subtrees_of_matches: object):
+    def show_matches(self, model: Gtk.TreeModel, path: Gtk.TreePath, row_iter: Gtk.TreeIter, search_list: list, search_query, show_subtrees_of_matches: object):
         """ Callback for Gtk.TreeModel.foreach() implementing Gtk.TreeModelForeachFunc(model, path, iter, *data) """
         # User data: search_query; show_subtrees_of_matches
-        text = model.get_value(iter=row_iter, column=self.COLUMNS["Name"]).lower()  # Get the string value stored in the row's NAME field
-        if search_query in text:  # Check to see if the search_query string is a substring of text
-            # Propagate visibility change up
-            self.make_path_visible(model=model, row_iter=row_iter)  # Make this row visible and search for parents to this node and make them visible
-            if show_subtrees_of_matches:  # If we are showing children of this node
-                # Propagate visibility change down
-                self.make_subtree_visible(model=model, row_iter=row_iter)  #
-            return
+        for field in search_list:
+            text = model.get_value(iter=row_iter, column=self.COLUMNS[field]).lower()  # Get the string value stored in the row's NAME field
+            if search_query in text:  # Check to see if the search_query string is a substring of text
+                # Propagate visibility change up
+                self.make_path_visible(model=model, row_iter=row_iter)  # Make this row visible and search for parents to this node and make them visible
+                if show_subtrees_of_matches:  # If we are showing children of this node
+                    # Propagate visibility change down
+                    self.make_subtree_visible(model=model, row_iter=row_iter)
 
     def make_path_visible(self, model: Gtk.TreeModel, row_iter: Gtk.TreeIter):
         """ Make the row pointed to by iter and its parent nodes visible """

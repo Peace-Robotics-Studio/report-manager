@@ -1,4 +1,4 @@
-#  Combo_Picker.py. (Modified 2022-04-24, 9:56 p.m. by Praxis)
+#  Combo_Picker.py. (Modified 2022-04-26, 7:33 p.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -42,17 +42,17 @@ class Combo_Picker:
         self.__layoutContainer.pack_start(file_dir, True, True, 0)
         # Create an event box to detect when the user clicks on the file path
         self.path_edit_sentinel = Gtk.EventBox()
-        self.path_edit_sentinel.connect('button-press-event', self.__path_box_clicked)
         file_dir.pack_start(child=self.path_edit_sentinel, expand=True, fill=True, padding=0)
         # Create an entry box to allow the user to modify the file path
         self.file_dir_entry = Gtk.Entry()
-        self.file_dir_entry.add_events(Gdk.EventMask.FOCUS_CHANGE_MASK)
+        self.file_dir_entry.add_events(Gdk.EventMask.FOCUS_CHANGE_MASK|Gdk.EventMask.BUTTON_PRESS_MASK)
         self.file_dir_entry.connect("focus-out-event", self.__entry_focus_lost)
-        self.file_dir_entry.connect("changed", self.__entry_key_release)
+        self.file_dir_entry.connect("changed", self.__entry_changed)
+        self.file_dir_entry.connect("button-press-event", self.__entry_activated)
         self.file_dir_entry.get_style_context().add_class('launcher-widget-entry-insert')
         self.file_dir_entry.set_has_frame(False)
-        self.file_dir_entry.set_max_width_chars(100)
-        self.file_dir_entry.grab_focus_without_selecting()
+        self.file_dir_entry.set_max_width_chars(200)
+        self.file_dir_entry.set_can_focus(False)
         self.__update_displayed_path(False)
         self.path_edit_sentinel.add(self.file_dir_entry)
         # Create a button to display a Gtk.FileChooserDialog
@@ -71,6 +71,11 @@ class Combo_Picker:
 
     # Public Methods
 
+    def __entry_activated(self, arg1, arg2):
+        self.file_dir_entry.set_editable(True)
+        self.file_dir_entry.set_can_focus(True)
+        self.file_dir_entry.grab_focus_without_selecting()
+
     def get_layout_container(self) -> Gtk.Container:
         """ Public Accessor: Returns Gtk.Container object. """
         return self.__layoutContainer
@@ -79,7 +84,8 @@ class Combo_Picker:
 
     def __picker_config_context(self, button):
         """ Private Callback: This function creates a context menu when the picker config button is activated. """
-        form_items = [Form_Item_Properties(label="Save Path", response_key="HKEY", callback=self.__save_picker_config_data, toggled_on=True, decorator="checkbox")]
+        form_items = [Form_Item_Properties(label="Save Path", response_key="HKEY", callback=self.__save_picker_config_data, toggled_on=True, decorator="checkbox"),
+                      Form_Item_Properties(label="Save Changes", response_key="HKEY", callback=self.__save_picker_config_data, toggled_on=True, decorator="checkbox")]
         config_context = Context_Box(parent=self.__parent_window, reference_widget=button, align="right", form_items=form_items)
         response = config_context.run()
         # if response == Gtk.ResponseType.OK:
@@ -89,15 +95,6 @@ class Combo_Picker:
     def __save_picker_config_data(self, button, name):
         # ToDo: Save preference to configuration file
         print(f"ToDo: Save preference to configuration file: {name}")
-
-    def __path_box_clicked(self, widget, event):
-        """ Private Callback: This function is triggered by a Gtk.EventBox containing the Gtk.Entry widget. """
-        print("clicked in box")
-        if 'GDK_BUTTON_PRESS' in str(event.type):  # If the user made a "single click"
-            if event.button == Gdk.BUTTON_PRIMARY:  # If it is a left click
-                # https://developer.gnome.org/gtk3/stable/GtkContainer.html
-                #  = widget.get_children()[0].get_text()
-                self.__make_path_editable()
 
     def __update_displayed_path(self, active_state):
         """ Private Initializer: This function sets the text in the Gtk.Entry widget. """
@@ -112,18 +109,14 @@ class Combo_Picker:
     def __make_path_editable(self):
         """ Private Task: This function modifies the Gtk.Entry widget so that the directory path can be edited. """
         self.__set_entry_text_colour(is_valid=self.__is_path_valid(), active_state=True)
-        # self.file_dir_entry.set_editable(True)
-        # self.file_dir_entry.set_can_focus(True)
-        # self.file_dir_entry.grab_focus_without_selecting()
 
     def __entry_focus_lost(self, widget, event):
         """ Private Callback: This function is triggered by the Gtk.Entry widget losing keyboard focus. """
-        # self.file_dir_entry.set_editable(False)
-        # self.file_dir_entry.set_can_focus(False)
+        self.file_dir_entry.set_editable(False)
+        self.file_dir_entry.set_can_focus(False)
         self.__set_entry_text_colour(is_valid=self.__is_path_valid(), active_state=False)
-        # ToDo: Save the path to database or file for future runs
 
-    def __entry_key_release(self, widget):
+    def __entry_changed(self, widget):
         """ Private Callback: This function is triggered by a keyboard key being released while focused on the Gtk.Entry widget. """
         self.directory_path = self.file_dir_entry.get_text()
         self.__set_entry_text_colour(is_valid=self.__is_path_valid(), active_state=True)
