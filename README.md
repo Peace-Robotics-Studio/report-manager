@@ -12,7 +12,7 @@ clone git repository and execute 'Run.py'
 * PyCharm 2022.1.0
 * PyGObject 3.42.0
 * PyCairo 1.21.0
-* Requires > Python3.10
+* Requires >= Python3.10
 
 #### Donations
 * [Buy us a Coffee](https://ko-fi.com/mccolmrobotics)
