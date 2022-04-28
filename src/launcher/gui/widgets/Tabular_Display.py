@@ -1,4 +1,4 @@
-#  Tabular_Display.py. (Modified 2022-04-26, 10:56 p.m. by Praxis)
+#  Tabular_Display.py. (Modified 2022-04-27, 9:45 p.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -85,6 +85,8 @@ class Tabular_Display:
         # self.tree_view.set_headers_visible(False)
 
         text_renderer = Gtk.CellRendererText()
+        text_renderer.set_property("editable", True)
+        text_renderer.connect("edited", self.text_edited)
         text_renderer.set_padding(0, 0)
 
         for column_number, column_title in enumerate(list(self.COLUMNS.keys())[1:], start=1):
@@ -101,6 +103,10 @@ class Tabular_Display:
 
         self.add(self.sw)
         self.__displaying_tree_view = True
+
+    def text_edited(self, widget, path, text):
+        # self.liststore[path][1] = text
+        print(f"Cell edited: {path} with {text}")
 
     def empty(self):
         contents = self.list_container.get_children()
