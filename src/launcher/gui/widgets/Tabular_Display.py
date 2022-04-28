@@ -25,7 +25,6 @@ class Tabular_Display:
 
     def __init__(self, callback: callable):
         """ Constructor:  """
-
         self.fields_in_data = []
         self.__displaying_tree_view = False
         self.__layout_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
@@ -74,7 +73,7 @@ class Tabular_Display:
     def create_tree_view(self, data: dict, gtypes: list):
 
         self.tree_store = Gtk.TreeStore.new(types=gtypes)
-        self.update_liststore(data)
+        self.update_treestore(data)
 
         # Use an internal column for filtering
         self.filter = self.tree_store.filter_new()
@@ -82,6 +81,7 @@ class Tabular_Display:
 
         self.tree_view = Gtk.TreeView(model=self.filter)
         self.tree_view.get_style_context().add_class('treeview')
+        self.tree_view.connect("cursor-changed", self.test)
         # self.tree_view.set_headers_visible(False)
 
         text_renderer = Gtk.CellRendererText()
@@ -103,6 +103,10 @@ class Tabular_Display:
 
         self.add(self.sw)
         self.__displaying_tree_view = True
+
+    def test(self, widget):
+        model, iter = self.tree_view.get_selection().get_selected()
+        print(model.get(iter, 1, 2))
 
     def text_edited(self, widget, path, text):
         # self.liststore[path][1] = text
@@ -133,10 +137,10 @@ class Tabular_Display:
             self.create_tree_view(data=self.current_data, gtypes=gtypes)
             self.__displaying_tree_view = True
         else:
-            self.update_liststore(self.current_data)
+            self.update_treestore(self.current_data)
         self.__layout_container.show_all()
 
-    def update_liststore(self, data):
+    def update_treestore(self, data):
         if self.__displaying_tree_view:
             self.tree_store.clear()
         sorted_keys = sorted(data.keys())  # Sort grade keys in ascending order
