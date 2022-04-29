@@ -1,4 +1,4 @@
-#  Tabular_Display.py. (Modified 2022-04-27, 9:45 p.m. by Praxis)
+#  Tabular_Display.py. (Modified 2022-04-28, 11:06 p.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -33,12 +33,14 @@ class Tabular_Display:
         self.__action_bar = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
         self.__action_bar.get_style_context().add_class('action-bar')
         self.__action_bar.set_hexpand(True)
-        plus_button = Form_Button(name="plus", callback=callback, tooltip_text="Add student")
-        self.__action_bar.add(plus_button.add())
-        minus_button = Form_Button(name="minus", active=False, callback=callback, tooltip_text="Remove student")
-        self.__action_bar.add(minus_button.add())
-        edit_button = Form_Button(name="edit", active=False, callback=callback, tooltip_text="Edit student")
-        self.__action_bar.add(edit_button.add())
+        expand_button = Form_Button(name="expand", callback=callback, tooltip_text="Expand All")
+        self.__action_bar.add(expand_button.add())
+        collapse_button = Form_Button(name="collapse", active=False, callback=callback, tooltip_text="Collapse All")
+        self.__action_bar.add(collapse_button.add())
+        restore_button = Form_Button(name="restore", active=False, callback=callback, tooltip_text="Restore Defaults")
+        self.__action_bar.add(restore_button.add())
+        save_button = Form_Button(name="save", active=False, callback=callback, tooltip_text="Save Changes")
+        self.__action_bar.add(save_button.add())
         self.__layout_container.add(self.__action_bar)
 
         # Create an entry box to allow the user to modify the file path
@@ -71,31 +73,60 @@ class Tabular_Display:
         self.list_container.add(widget)
 
     def create_tree_view(self, data: dict, gtypes: list):
-
+        # Create a TreeStore using a list of column types (required to initialize storage containers)
         self.tree_store = Gtk.TreeStore.new(types=gtypes)
-        self.update_treestore(data)
+        self.update_treestore(data)  # Format the data and store it in TreeStore container
 
         # Use an internal column for filtering
         self.filter = self.tree_store.filter_new()
         self.filter.set_visible_column(column=self.COLUMNS["VISIBLE"])
-
+        # Create a new TreeView and assign it a model (data store)
         self.tree_view = Gtk.TreeView(model=self.filter)
         self.tree_view.get_style_context().add_class('treeview')
         self.tree_view.connect("cursor-changed", self.test)
         # self.tree_view.set_headers_visible(False)
 
-        text_renderer = Gtk.CellRendererText()
-        text_renderer.set_property("editable", True)
-        text_renderer.connect("edited", self.text_edited)
-        text_renderer.set_padding(0, 0)
+        # Standard text renderer
+        renderer_text = Gtk.CellRendererText()
+        renderer_text.set_padding(0, 0)
 
-        for column_number, column_title in enumerate(list(self.COLUMNS.keys())[1:], start=1):
-            if column_title != 'Last' and column_title != 'First':  # Leave these fields hidden
-                # Put the text into a column
-                col_combined = Gtk.TreeViewColumn(title=column_title)
-                col_combined.pack_start(cell=text_renderer, expand=False)
-                col_combined.add_attribute(text_renderer, "text", column_number)
-                self.tree_view.append_column(column=col_combined)
+        # An editable text field to be used for 'Usual Name'
+        renderer_editable_text = Gtk.CellRendererText()
+        renderer_editable_text.set_property("editable", True)
+        renderer_editable_text.connect("edited", self.text_edited)
+        renderer_editable_text.set_padding(0, 0)
+
+        liststore_manufacturers = Gtk.ListStore(str)
+        manufacturers = ["M", "F"]
+        for item in manufacturers:
+            liststore_manufacturers.append([item])
+
+        renderer_combo = Gtk.CellRendererCombo()  # Inherits from Gtk.CellRendererText
+        renderer_combo.set_property("editable", True)  # Whether the text can be modified by the user
+        renderer_combo.set_property("model", liststore_manufacturers)  # Model containing the possible values for the combo box
+        renderer_combo.set_property("text-column", 0)  # Column in the data model to get the strings from
+        renderer_combo.set_property("has-entry", False)  # False: don't allow any strings other than in the registered model, despite being editable
+        renderer_combo.connect("edited", self.on_combo_changed)  # not 'changed'? 'edited' is the signal connected to CellRendererText
+
+        # Loop through the generated list of data fields and create columns for some of them.
+        for column_number, column_title in enumerate(list(self.COLUMNS.keys())[1:], start=1):  # Start count at 1, ignoring the 'visible' bool field.
+            if column_title != 'Last' and column_title != 'First':  # Ignore these fields. They are for data access convenience.
+                if column_title == 'Identity':
+                    column_combo = Gtk.TreeViewColumn(title=column_title)
+                    column_combo.pack_start(cell=renderer_combo, expand=False)
+                    column_combo.add_attribute(renderer_combo, "text", column_number)
+                    self.tree_view.append_column(column=column_combo)
+                elif column_title == 'Usual':
+                    # Put the text into a TreeView column
+                    column_editable = Gtk.TreeViewColumn(title=column_title)
+                    column_editable.pack_start(cell=renderer_editable_text, expand=False)
+                    column_editable.add_attribute(renderer_editable_text, "text", column_number)
+                    self.tree_view.append_column(column=column_editable)
+                else:
+                    column = Gtk.TreeViewColumn(title=column_title)
+                    column.pack_start(cell=renderer_text, expand=False)
+                    column.add_attribute(renderer_text, "text", column_number)
+                    self.tree_view.append_column(column=column)
 
         self.sw = Gtk.ScrolledWindow()
         self.sw.set_vexpand(True)
@@ -103,6 +134,9 @@ class Tabular_Display:
 
         self.add(self.sw)
         self.__displaying_tree_view = True
+
+    def on_combo_changed(self, widget, path, text):
+        self.tree_store[path][self.COLUMNS['Identity']] = text
 
     def test(self, widget):
         model, iter = self.tree_view.get_selection().get_selected()
@@ -113,53 +147,60 @@ class Tabular_Display:
         print(f"Cell edited: {path} with {text}")
 
     def empty(self):
+        """ Delete the TreeView from its list_container """
         contents = self.list_container.get_children()
         for widget in contents:
             widget.destroy()
+        # Reset attributes list to initial values
         self.__displaying_tree_view = False
         self.COLUMNS = {"VISIBLE": 0}
         self.search_entry.set_text("")
 
-
     def update(self, data: dict):
+        """ Add data to TreeStore """
+        # Format the data into a usable dictionary format
         self.current_data = self.format_data(data)
 
-        gtypes = [bool]
-        columns = list(data.keys())
-        columns.remove("Grade")
-        for column_number, field in enumerate(columns, start=1):
-            self.COLUMNS[field] = column_number
-
+        # Store a list of field names
+        gtypes = [bool]  # Create a list containing column types of gtypes
+        columns = list(data.keys())  # Get a list of all keys in the data dict
+        columns.remove("Grade")  # Remove the 'Grade' field since it will be used as a top-level category
+        for column_number, field in enumerate(columns, start=1):  # Loop through the list of field names
+            self.COLUMNS[field] = column_number  # Assign a column position number to each field name. Used when adding attributes to columns
+        # Create a list of types corresponding to each field name
         for item in self.current_data[next(iter(self.current_data))][0]:  # Get the first item from the list of values linked to the dictionary's first key
-            gtypes.append(type(item))
-
-        if self.__displaying_tree_view is False:
-            self.create_tree_view(data=self.current_data, gtypes=gtypes)
-            self.__displaying_tree_view = True
-        else:
-            self.update_treestore(self.current_data)
-        self.__layout_container.show_all()
+            gtypes.append(type(item))  # Store the gtype value for each of the components in this item
+        # Create a TreeView to display the data
+        if self.__displaying_tree_view is False:  # Check to see if this TreeView already exists
+            self.create_tree_view(data=self.current_data, gtypes=gtypes)  # Create a new TreeView object
+            self.__displaying_tree_view = True  # Record that a TreeView object exists
+        else:  # TreeView created previously. Update its TreeStore
+            self.update_treestore(self.current_data)  # Update the information shown by this TreeView
+        self.__layout_container.show_all()  # Show all widgets
 
     def update_treestore(self, data):
-        if self.__displaying_tree_view:
-            self.tree_store.clear()
+        """ data: formatted dict of student info imported from cvs. """
+        if self.__displaying_tree_view:  # This TreeView was created previously
+            self.tree_store.clear()  # Clear all data from its TreeStore
         sorted_keys = sorted(data.keys())  # Sort grade keys in ascending order
         sorted_keys.remove('KF')  # Remove kindergarten from the list of keys
         self.add_values(data, 'KF')  # Add kindergarten values first
         for key in sorted_keys:  # Add values for all remaining keys
-            self.add_values(data, key)
+            self.add_values(data, key)  # Add each grade and associated students
 
     def add_values(self, data, key):
-        # Strip any leading '0' from the key
-        category_name = f"Grade {key[1] if key.startswith('0') else key} ({len(data[key])})"
-        # Arrange the data used in the top-level row label
-        category_list_values = [True, category_name]  # The base list of values for each row
-        if len(data[key][0]) > 1:  # Check if the data value comprises more than a single string
+        """ Called by update_treestore(). Creates a top-level expandable category row and adds child rows. Each child row
+            contains information about a single student. """
+        # Create a label for the top-level row
+        category_name = f"Grade {key[1] if key.startswith('0') else key} ({len(data[key])})"  # Strip any leading '0' from the key
+        # Format the data used by the top-level row label
+        category_list_values = [True, category_name]  # List of values for each row [Visible = True, Grade # (count)
+        if len(data[key][0]) > 1:  # Check if the data for each student includes more than a string value of their name
             for i in range(len(data[key][0]) - 1):  # For each additional item in the value
-                category_list_values += [""]  # Add an empty string
+                category_list_values += [""]  # Add an empty string to the top-level row name to fill column spaces
         top_level_row = self.tree_store.append(parent=None, row=category_list_values)  # Store the list 'category_list_values' in the TreeStore
-        for item in data[key]:  # For each item in value
-            self.tree_store.append(parent=top_level_row, row=[True] + item)  # Make these items children of the top-level row. Adds the value 'True' to front of the list.
+        for item in data[key]:  # For each student in this grade
+            self.tree_store.append(parent=top_level_row, row=[True] + item)  # Set these entries as children of the top-level row. Add the value 'True' to front of the data list.
 
     def format_data(self, data) -> dict:
         grade_groups = {}

@@ -244,6 +244,30 @@
 #edit-active.form-button {
     background-image: url("../icons/edit_light.png");
 }
+#expand-inactive.form-button {
+    background-image: url("../icons/expand_dark.png");
+}
+#expand-active.form-button {
+    background-image: url("../icons/expand_light.png");
+}
+#collapse-inactive.form-button {
+    background-image: url("../icons/collapse_dark.png");
+}
+#collapse-active.form-button {
+    background-image: url("../icons/collapse_light.png");
+}
+#restore-inactive.form-button {
+    background-image: url("../icons/restore_dark.png");
+}
+#restore-active.form-button {
+    background-image: url("../icons/restore_light.png");
+}
+#save-inactive.form-button {
+    background-image: url("../icons/save_dark.png");
+}
+#save-active.form-button {
+    background-image: url("../icons/save_light.png");
+}
 .treeview {
     margin: 0px;
     padding-right: 20px;
