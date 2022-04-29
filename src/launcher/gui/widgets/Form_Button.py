@@ -38,9 +38,11 @@ class Form_Button:
             self.form_button.get_style_context().remove_class('inactive-item')
             self.form_button.get_style_context().add_class('active-item')
             self.form_button.set_name(self.__name + "-active")
+            self.is_active = True
 
     def set_inactive(self):
         if self.is_active is True:
             self.form_button.get_style_context().remove_class('active-item')
             self.form_button.get_style_context().add_class('inactive-item')
             self.form_button.set_name(self.__name + "-inactive")
+            self.is_active = False

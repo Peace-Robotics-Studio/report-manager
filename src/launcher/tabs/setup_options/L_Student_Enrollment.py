@@ -31,7 +31,7 @@ class L_Student_Enrollment:
         self.__layout_container.set_hexpand(True)
         self.__layout_container.set_vexpand(True)
         # # Create a widget to hold tabular data. Must be created before the Combo_Picker
-        self.student_details_list = Tabular_Display(callback=self.action_buttons_clicked)
+        self.student_details_list = Tabular_Display()
         # # Create a widget for selecting CSV files to be displayed in the Table_List
         roster_file_dir = Combo_Picker(label="Student Roster:", css_class="enrollment-combo-picker", parent_window=self.__parent_window, callback=self.__load_student_data)
         self.__layout_container.pack_start(roster_file_dir.get_layout_container(), False, False, 0)
@@ -41,10 +41,6 @@ class L_Student_Enrollment:
     def get_layout_container(self):
         """ Public Accessor: Returns the main Gtk.Container holding widgets for this class. """
         return self.__layout_container
-
-    def action_buttons_clicked(self, button, name):
-        """ Public Callback: Called after buttons in the Table_List action bar are clicked. """
-        print(name)
 
     def __load_student_data(self, file_name):
         """ Private Initializer: Load the contents of the selected CSV file into a dictionary. """

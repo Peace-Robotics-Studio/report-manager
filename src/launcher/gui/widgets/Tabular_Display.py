@@ -22,8 +22,8 @@ class Tabular_Display:
     COLUMNS = {
         "VISIBLE": 0,
     }
-
-    def __init__(self, callback: callable):
+    TOGGLE_BUTTONS = {}
+    def __init__(self):
         """ Constructor:  """
         self.fields_in_data = []
         self.__displaying_tree_view = False
@@ -33,13 +33,15 @@ class Tabular_Display:
         self.__action_bar = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
         self.__action_bar.get_style_context().add_class('action-bar')
         self.__action_bar.set_hexpand(True)
-        expand_button = Form_Button(name="expand", callback=callback, tooltip_text="Expand All")
-        self.__action_bar.add(expand_button.add())
-        collapse_button = Form_Button(name="collapse", active=False, callback=callback, tooltip_text="Collapse All")
-        self.__action_bar.add(collapse_button.add())
-        restore_button = Form_Button(name="restore", active=False, callback=callback, tooltip_text="Restore Defaults")
+        # expand_button = Form_Button(name="expand", callback=self.button_clicked, tooltip_text="Expand All")
+        # self.__action_bar.add(expand_button.add())
+        self.register_button(name="expand", callback=self.button_clicked, tooltip="Expand All", interaction_type="toggle", group_key="display_list", active=True)
+        self.register_button(name="collapse", callback=self.button_clicked, tooltip="Collapse All", interaction_type="toggle", group_key="display_list", active=False)
+        # collapse_button = Form_Button(name="collapse", active=False, callback=self.button_clicked, tooltip_text="Collapse All")
+        # self.__action_bar.add(collapse_button.add())
+        restore_button = Form_Button(name="restore", active=False, callback=self.button_clicked, tooltip_text="Restore Defaults")
         self.__action_bar.add(restore_button.add())
-        save_button = Form_Button(name="save", active=False, callback=callback, tooltip_text="Save Changes")
+        save_button = Form_Button(name="save", active=False, callback=self.button_clicked, tooltip_text="Save Changes")
         self.__action_bar.add(save_button.add())
         self.__layout_container.add(self.__action_bar)
 
@@ -64,6 +66,36 @@ class Tabular_Display:
                    "title=\"Report Manager Wiki\">Instructions for exporting student data from MyEd BC</a>")
         instructions.get_style_context().add_class('instructions-link')
         self.__layout_container.add(instructions)
+
+    def button_clicked(self, button, name):
+        if name == "expand":
+            self.tree_view.expand_all()
+            if self.TOGGLE_BUTTONS[name]["status"] == True:
+                self.__toggle_button(name)
+        elif name == "collapse":
+            self.tree_view.collapse_all()
+            if self.TOGGLE_BUTTONS[name]["status"] == True:
+                self.__toggle_button(name)
+
+    def register_button(self, name: str, callback: callable, tooltip: str, interaction_type: str, group_key: str, active: bool):
+        button = Form_Button(name=name, callback=callback, tooltip_text=tooltip, active=active)
+        self.__action_bar.add(button.add())
+        if interaction_type == "toggle":
+            self.TOGGLE_BUTTONS[name] = {"status": active, "object": button, "group_key": group_key}
+
+    def __toggle_button(self, name):
+        if self.TOGGLE_BUTTONS[name]["status"]:  # Button is active
+            self.TOGGLE_BUTTONS[name]["object"].set_inactive()  # Set this button as inactive
+            self.TOGGLE_BUTTONS[name]["status"] = False  # Set its active status to False
+            for button_name, properties in self.TOGGLE_BUTTONS.items():  # Loop through all registered buttons
+                if properties["group_key"] == self.TOGGLE_BUTTONS[name]["group_key"]:  # Find buttons with matching group keys
+                    if button_name != name:  # Exclude this button from the matches
+                        # print(self.TOGGLE_BUTTONS[button_name]["status"])
+                        self.__toggle_button(button_name)
+        else:
+            self.TOGGLE_BUTTONS[name]["object"].set_active()
+            self.TOGGLE_BUTTONS[name]["status"] = True
+
 
     def get_layout_container(self) -> Gtk.Container:
         """ Public Accessor: Returns Gtk.Container object. """
@@ -140,7 +172,7 @@ class Tabular_Display:
 
     def test(self, widget):
         model, iter = self.tree_view.get_selection().get_selected()
-        print(model.get(iter, 1, 2))
+        # print(model.get(iter, 1, 2))
 
     def text_edited(self, widget, path, text):
         # self.liststore[path][1] = text

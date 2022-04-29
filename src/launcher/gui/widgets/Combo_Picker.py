@@ -84,8 +84,7 @@ class Combo_Picker:
 
     def __picker_config_context(self, button):
         """ Private Callback: This function creates a context menu when the picker config button is activated. """
-        form_items = [Form_Item_Properties(label="Save Path", response_key="HKEY", callback=self.__save_picker_config_data, toggled_on=True, decorator="checkbox"),
-                      Form_Item_Properties(label="Save Changes", response_key="HKEY", callback=self.__save_picker_config_data, toggled_on=True, decorator="checkbox")]
+        form_items = [Form_Item_Properties(label="Save Path", response_key="HKEY", callback=self.__save_picker_config_data, toggled_on=True, decorator="checkbox")]
         config_context = Context_Box(parent=self.__parent_window, reference_widget=button, align="right", form_items=form_items)
         response = config_context.run()
         # if response == Gtk.ResponseType.OK:
