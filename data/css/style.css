@@ -226,17 +226,17 @@
 .inactive-item {
     margin-right: 3px;
 }
-#minus-inactive.form-button {
-    background-image: url("../icons/minus.png");
+#remove-inactive.form-button {
+    background-image: url("../icons/remove.png");
 }
-#minus-active.form-button {
-    background-image: url("../icons/minus_light.png");
+#remove-active.form-button {
+    background-image: url("../icons/remove_light.png");
 }
-#plus-inactive.form-button {
-    background-image: url("../icons/plus.png");
+#add-inactive.form-button {
+    background-image: url("../icons/add.png");
 }
-#plus-active.form-button {
-    background-image: url("../icons/plus_light.png");
+#add-active.form-button {
+    background-image: url("../icons/add_light.png");
 }
 #edit-inactive.form-button {
     background-image: url("../icons/edit.png");
@@ -273,4 +273,23 @@
     padding-right: 20px;
     padding-left: 4px;
     color: #a5bdbd;
+}
+#student-frame.table-list-container {
+    margin-right: 10px;
+    margin-top: 0px;
+}
+#gender-frame.table-list-container {
+    margin: 0px;
+}
+.entry-with-label {
+    padding: 2px 8px;
+    margin: 0px 0px 10px 5px;
+    font-size: 11pt;
+    min-height: 23px;
+    outline: none;
+    border-radius: 3px;
+    border: 0px;
+}
+.entry-label {
+    margin-bottom: 10px;
 }

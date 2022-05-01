@@ -1,4 +1,4 @@
-#  L_Setup_Manager.py. (Modified 2022-04-24, 9:50 p.m. by Praxis)
+#  L_Setup_Manager.py. (Modified 2022-04-30, 11:23 a.m. by Praxis)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -16,9 +16,11 @@ from gi.repository import Gtk
 from ..gui.ABS_Content_Manager import Content_Manager
 from ..gui.L_Menu import L_Menu
 from .setup_options.L_Student_Enrollment import L_Student_Enrollment
+from .setup_options.L_Pronouns import L_Pronouns
 
 
 class L_Setup_Manager(Content_Manager):
+    """ As per "The Quick Python Book": class doc strings list the available methods along with usage information. """
     def __init__(self, parent_window: Gtk.Window, message_callback):
         """ Constructor: Inherits from Content_Manager abstract class """
         super().__init__()
@@ -31,6 +33,7 @@ class L_Setup_Manager(Content_Manager):
         self.options_content_area = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)  # Create a box to hold the options display data
         menu_button_keys = dict(
             MENU_0={"LABEL": "Enrollment", "ACTIVE": True, "CONTENT_MANAGER": L_Student_Enrollment(parent_window=parent_window)},
+            MENU_1={"LABEL": "Pronouns", "ACTIVE": False, "CONTENT_MANAGER": L_Pronouns()}
         )
         self.__category_menu = L_Menu(orientation="vertical",
                                       container_css_class="launcher-feedback-options-menu",

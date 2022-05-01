@@ -1,4 +1,4 @@
-#  L_Student_Enrollment.py. (Modified 2022-04-26, 10:37 p.m. by Praxis)
+#  L_Student_Enrollment.py. (Modified 2022-04-30, 6:48 p.m. by Praxis)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -12,11 +12,9 @@ import gi
 gi.require_version('Gtk', '3.0')
 import csv
 from collections import defaultdict
-
 from gi.repository import Gtk
 from ...gui.widgets.Combo_Picker import Combo_Picker
-from ...gui.widgets.Tabular_Display import Tabular_Display
-
+from ...gui.widgets.Treeview_Frame import Treeview_Frame
 
 
 class L_Student_Enrollment:
@@ -31,11 +29,17 @@ class L_Student_Enrollment:
         self.__layout_container.set_hexpand(True)
         self.__layout_container.set_vexpand(True)
         # # Create a widget to hold tabular data. Must be created before the Combo_Picker
-        self.student_details_list = Tabular_Display()
+        self.student_details_list = Treeview_Frame()
         # # Create a widget for selecting CSV files to be displayed in the Table_List
         roster_file_dir = Combo_Picker(label="Student Roster:", css_class="enrollment-combo-picker", parent_window=self.__parent_window, callback=self.__load_student_data)
         self.__layout_container.pack_start(roster_file_dir.get_layout_container(), False, False, 0)
         self.__layout_container.pack_start(self.student_details_list.get_layout_container(), False, True, 0)
+        instructions = Gtk.Label()
+        instructions.set_xalign(0)
+        instructions.set_markup("<a href=\"https://github.com/Peace-Robotics-Studio/report-manager/wiki/Feature-Guide\" "
+                   "title=\"Report Manager Wiki\">Instructions for exporting student data from MyEd BC</a>")
+        instructions.get_style_context().add_class('instructions-link')
+        self.__layout_container.add(instructions)
         self.__layout_container.show_all()
 
     def get_layout_container(self):

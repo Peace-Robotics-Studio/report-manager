@@ -1,4 +1,4 @@
-#  Tabular_Display.py. (Modified 2022-04-28, 11:06 p.m. by Praxis)
+#  Treeview_Frame.py. (Modified 2022-04-30, 9:24 p.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -9,100 +9,48 @@
 #  furnished to do so.
 
 import gi
-import cairo
 
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, Gdk, GdkPixbuf
 from ....Config import *
-from .Form_Button import Form_Button
+from .Action_Frame import Action_Frame
 
 
-class Tabular_Display:
+class Treeview_Frame(Action_Frame):
     EXPAND_BY_DEFAULT = False
     COLUMNS = {
         "VISIBLE": 0,
     }
-    TOGGLE_BUTTONS = {}
     def __init__(self):
         """ Constructor:  """
+        super().__init__()
+        self.filter = None
+        self.tree_view = None
+        self.tree_store = None
         self.fields_in_data = []
         self.__displaying_tree_view = False
-        self.__layout_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
-        self.__layout_container.set_vexpand(True)
-        self.__layout_container.get_style_context().add_class('table-list-container')
-        self.__action_bar = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
-        self.__action_bar.get_style_context().add_class('action-bar')
-        self.__action_bar.set_hexpand(True)
-        # expand_button = Form_Button(name="expand", callback=self.button_clicked, tooltip_text="Expand All")
-        # self.__action_bar.add(expand_button.add())
-        self.register_button(name="expand", callback=self.button_clicked, tooltip="Expand All", interaction_type="toggle", group_key="display_list", active=True)
-        self.register_button(name="collapse", callback=self.button_clicked, tooltip="Collapse All", interaction_type="toggle", group_key="display_list", active=False)
-        # collapse_button = Form_Button(name="collapse", active=False, callback=self.button_clicked, tooltip_text="Collapse All")
-        # self.__action_bar.add(collapse_button.add())
-        restore_button = Form_Button(name="restore", active=False, callback=self.button_clicked, tooltip_text="Restore Defaults")
-        self.__action_bar.add(restore_button.add())
-        save_button = Form_Button(name="save", active=False, callback=self.button_clicked, tooltip_text="Save Changes")
-        self.__action_bar.add(save_button.add())
-        self.__layout_container.add(self.__action_bar)
+
+        # Add buttons to the action bar of the Display widget
+        self.register_button(name="expand", id="TF-expand", callback=self.button_clicked, tooltip="Expand All", interaction_type="toggle", group_key="display_list", active=True)
+        self.register_button(name="collapse", id="TF-collapse", callback=self.button_clicked, tooltip="Collapse All", interaction_type="toggle", group_key="display_list", active=False)
+        self.register_button(name="restore", id="TF-restore", callback=self.button_clicked, tooltip="Restore Defaults", active=False)
+        self.register_button(name="save", id="TF-save", callback=self.button_clicked, tooltip="Save Changes", active=False)
 
         # Create an entry box to allow the user to modify the file path
         self.search_entry = Gtk.Entry()
         self.search_entry.get_style_context().add_class('action-bar-search')
         self.search_entry.set_placeholder_text(text="Search")
-
         self.search_entry.set_icon_from_pixbuf(Gtk.EntryIconPosition.PRIMARY, self.__get_pixbuf_image("search_dark.png"))
         self.search_entry.connect("changed", self.search_query)
-        self.__action_bar.pack_end(self.search_entry, False, False, 0)
+        self.add_to_action_bar(item=self.search_entry, pack="end")
 
-        self.list_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
-        self.list_container.get_style_context().add_class('table-list-data')
-        self.__layout_container.add(self.list_container)
-        self.list_container.set_hexpand(True)
-        self.list_container.set_vexpand(True)
-
-        instructions = Gtk.Label()
-        instructions.set_xalign(0)
-        instructions.set_markup("<a href=\"https://github.com/Peace-Robotics-Studio/report-manager/wiki/Feature-Guide\" "
-                   "title=\"Report Manager Wiki\">Instructions for exporting student data from MyEd BC</a>")
-        instructions.get_style_context().add_class('instructions-link')
-        self.__layout_container.add(instructions)
-
-    def button_clicked(self, button, name):
-        if name == "expand":
+    def button_clicked(self, button: Gtk.Widget, id: str):
+        if id == "TF-expand":
             self.tree_view.expand_all()
-            if self.TOGGLE_BUTTONS[name]["status"] == True:
-                self.__toggle_button(name)
-        elif name == "collapse":
+            # self.toggle_button_clicked(id)
+        elif id == "TF-collapse":
             self.tree_view.collapse_all()
-            if self.TOGGLE_BUTTONS[name]["status"] == True:
-                self.__toggle_button(name)
-
-    def register_button(self, name: str, callback: callable, tooltip: str, interaction_type: str, group_key: str, active: bool):
-        button = Form_Button(name=name, callback=callback, tooltip_text=tooltip, active=active)
-        self.__action_bar.add(button.add())
-        if interaction_type == "toggle":
-            self.TOGGLE_BUTTONS[name] = {"status": active, "object": button, "group_key": group_key}
-
-    def __toggle_button(self, name):
-        if self.TOGGLE_BUTTONS[name]["status"]:  # Button is active
-            self.TOGGLE_BUTTONS[name]["object"].set_inactive()  # Set this button as inactive
-            self.TOGGLE_BUTTONS[name]["status"] = False  # Set its active status to False
-            for button_name, properties in self.TOGGLE_BUTTONS.items():  # Loop through all registered buttons
-                if properties["group_key"] == self.TOGGLE_BUTTONS[name]["group_key"]:  # Find buttons with matching group keys
-                    if button_name != name:  # Exclude this button from the matches
-                        # print(self.TOGGLE_BUTTONS[button_name]["status"])
-                        self.__toggle_button(button_name)
-        else:
-            self.TOGGLE_BUTTONS[name]["object"].set_active()
-            self.TOGGLE_BUTTONS[name]["status"] = True
-
-
-    def get_layout_container(self) -> Gtk.Container:
-        """ Public Accessor: Returns Gtk.Container object. """
-        return self.__layout_container
-
-    def add(self, widget: Gtk.Container):
-        self.list_container.add(widget)
+            # self.toggle_button_clicked(id)
 
     def create_tree_view(self, data: dict, gtypes: list):
         # Create a TreeStore using a list of column types (required to initialize storage containers)
@@ -128,14 +76,14 @@ class Tabular_Display:
         renderer_editable_text.connect("edited", self.text_edited)
         renderer_editable_text.set_padding(0, 0)
 
-        liststore_manufacturers = Gtk.ListStore(str)
-        manufacturers = ["M", "F"]
-        for item in manufacturers:
-            liststore_manufacturers.append([item])
+        liststore_genders = Gtk.ListStore(str)
+        gender_list = ["M", "F"]
+        for gender in gender_list:
+            liststore_genders.append([gender])
 
         renderer_combo = Gtk.CellRendererCombo()  # Inherits from Gtk.CellRendererText
         renderer_combo.set_property("editable", True)  # Whether the text can be modified by the user
-        renderer_combo.set_property("model", liststore_manufacturers)  # Model containing the possible values for the combo box
+        renderer_combo.set_property("model", liststore_genders)  # Model containing the possible values for the combo box
         renderer_combo.set_property("text-column", 0)  # Column in the data model to get the strings from
         renderer_combo.set_property("has-entry", False)  # False: don't allow any strings other than in the registered model, despite being editable
         renderer_combo.connect("edited", self.on_combo_changed)  # not 'changed'? 'edited' is the signal connected to CellRendererText
@@ -160,11 +108,11 @@ class Tabular_Display:
                     column.add_attribute(renderer_text, "text", column_number)
                     self.tree_view.append_column(column=column)
 
-        self.sw = Gtk.ScrolledWindow()
-        self.sw.set_vexpand(True)
-        self.sw.add(widget=self.tree_view)
+        scrollable_window = Gtk.ScrolledWindow()
+        scrollable_window.set_vexpand(True)
+        scrollable_window.add(widget=self.tree_view)
 
-        self.add(self.sw)
+        self.display_data(scrollable_window)
         self.__displaying_tree_view = True
 
     def on_combo_changed(self, widget, path, text):
@@ -191,7 +139,7 @@ class Tabular_Display:
     def update(self, data: dict):
         """ Add data to TreeStore """
         # Format the data into a usable dictionary format
-        self.current_data = self.format_data(data)
+        current_data = self.format_data(data)
 
         # Store a list of field names
         gtypes = [bool]  # Create a list containing column types of gtypes
@@ -200,15 +148,15 @@ class Tabular_Display:
         for column_number, field in enumerate(columns, start=1):  # Loop through the list of field names
             self.COLUMNS[field] = column_number  # Assign a column position number to each field name. Used when adding attributes to columns
         # Create a list of types corresponding to each field name
-        for item in self.current_data[next(iter(self.current_data))][0]:  # Get the first item from the list of values linked to the dictionary's first key
+        for item in current_data[next(iter(current_data))][0]:  # Get the first item from the list of values linked to the dictionary's first key
             gtypes.append(type(item))  # Store the gtype value for each of the components in this item
         # Create a TreeView to display the data
         if self.__displaying_tree_view is False:  # Check to see if this TreeView already exists
-            self.create_tree_view(data=self.current_data, gtypes=gtypes)  # Create a new TreeView object
+            self.create_tree_view(data=current_data, gtypes=gtypes)  # Create a new TreeView object
             self.__displaying_tree_view = True  # Record that a TreeView object exists
         else:  # TreeView created previously. Update its TreeStore
-            self.update_treestore(self.current_data)  # Update the information shown by this TreeView
-        self.__layout_container.show_all()  # Show all widgets
+            self.update_treestore(current_data)  # Update the information shown by this TreeView
+        self.show_all()  # Show all widgets
 
     def update_treestore(self, data):
         """ data: formatted dict of student info imported from cvs. """

@@ -1,4 +1,4 @@
-#  L_Reports.py. (Modified 2022-04-17, 10:35 p.m. by Praxis)
+#  L_Reports.py. (Modified 2022-04-29, 10:17 p.m. by Praxis)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -15,14 +15,14 @@ from gi.repository import Gtk
 
 class L_Reports:
     def __init__(self):
-        self.__layoutContainer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        self.__layout_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.__build_content()
 
     def get_layout_container(self):
-        return self.__layoutContainer
+        return self.__layout_container
 
     def __build_content(self):
         label = Gtk.Label()  # Add a label to the box
         label.set_text("Reports Area")  # Set the value of the label text
         label.get_style_context().add_class('label-notification')  # Connect a CSS class to the label
-        self.__layoutContainer.add(label)
+        self.__layout_container.add(label)
