@@ -1,4 +1,4 @@
-#  Action_Frame.py. (Modified 2022-04-30, 10:01 p.m. by Praxis)
+#  Action_Frame.py. (Modified 2022-05-01, 8:36 p.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -33,6 +33,18 @@ class Action_Frame(ABC):
         self.__action_bar.set_hexpand(True)
         self.__layout_container.add(self.__action_bar)
 
+        self.__action_bar_buttons = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
+        self.__action_bar.pack_start(child=self.__action_bar_buttons, expand=False, fill=False, padding=0)
+
+        self.__action_bar_buttons_start = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
+        self.__action_bar_buttons.pack_start(child=self.__action_bar_buttons_start, expand=False, fill=False, padding=0)
+
+        self.__action_bar_buttons_center = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
+        self.__action_bar_buttons.pack_start(child=self.__action_bar_buttons_center, expand=False, fill=False, padding=0)
+
+        self.__action_bar_buttons_end = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
+        self.__action_bar_buttons.pack_start(child=self.__action_bar_buttons_end, expand=False, fill=False, padding=0)
+
         self.list_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
         self.list_container.get_style_context().add_class('table-list-data')
         self.__layout_container.add(self.list_container)
@@ -58,11 +70,16 @@ class Action_Frame(ABC):
         else:
             self.__action_bar.pack_start(child=item, expand=expand, fill=fill, padding=padding)
 
-    def register_button(self, name: str, id: str, callback: callable, tooltip: str, interaction_type: str = "Button", group_key: str = "", active: bool = True):
+    def register_button(self, name: str, id: str, callback: callable, tooltip: str, interaction_type: str = "Button", group_key: str = "", active: bool = True, pack_order: str = "CENTER"):
         if id not in self.BUTTON_CALLBACKS:
             button = Form_Button(name=name, id=id, callback=self.button_clicked_intercept, tooltip_text=tooltip, active=active)
             self.BUTTON_CALLBACKS[id] = callback
-            self.__action_bar.add(button.add())
+            if pack_order == "END":
+                self.__action_bar_buttons_end.add(button.add())
+            elif pack_order == "CENTER":
+                self.__action_bar_buttons_center.add(button.add())
+            else:
+                self.__action_bar_buttons_start.add(button.add())
             if interaction_type == "toggle":
                 self.TOGGLE_BUTTONS[id] = {"status": active, "object": button, "group_key": group_key}
         else:

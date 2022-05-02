@@ -1,4 +1,4 @@
-#  L_Student_Enrollment.py. (Modified 2022-04-30, 6:48 p.m. by Praxis)
+#  L_Student_Enrollment.py. (Modified 2022-05-01, 9:46 p.m. by Praxis)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -14,7 +14,7 @@ import csv
 from collections import defaultdict
 from gi.repository import Gtk
 from ...gui.widgets.Combo_Picker import Combo_Picker
-from ...gui.widgets.Treeview_Frame import Treeview_Frame
+from ...gui.widgets.Treestore_Frame import Treestore_Frame
 
 
 class L_Student_Enrollment:
@@ -28,46 +28,100 @@ class L_Student_Enrollment:
         # self.__layoutContainer.get_style_context().add_class('')
         self.__layout_container.set_hexpand(True)
         self.__layout_container.set_vexpand(True)
-        # # Create a widget to hold tabular data. Must be created before the Combo_Picker
-        self.student_details_list = Treeview_Frame()
-        # # Create a widget for selecting CSV files to be displayed in the Table_List
+        # Create a widget to hold tabular data. Must be created before the Combo_Picker
+        self.student_details_list = Treestore_Frame()
+        # Add buttons to the action bar of the Display widget
+        self.student_details_list.register_button(name="restore", id="TF-restore", callback=self.__button_clicked, tooltip="Restore Defaults", active=False)
+        self.student_details_list.register_button(name="save", id="TF-save", callback=self.__button_clicked, tooltip="Save Changes", active=False)
+        # Create a widget for selecting CSV files to be displayed in the Table_List
         roster_file_dir = Combo_Picker(label="Student Roster:", css_class="enrollment-combo-picker", parent_window=self.__parent_window, callback=self.__load_student_data)
         self.__layout_container.pack_start(roster_file_dir.get_layout_container(), False, False, 0)
         self.__layout_container.pack_start(self.student_details_list.get_layout_container(), False, True, 0)
         instructions = Gtk.Label()
         instructions.set_xalign(0)
         instructions.set_markup("<a href=\"https://github.com/Peace-Robotics-Studio/report-manager/wiki/Feature-Guide\" "
-                   "title=\"Report Manager Wiki\">Instructions for exporting student data from MyEd BC</a>")
+                                "title=\"Report Manager Wiki\">Instructions for exporting student data from MyEd BC</a>")
         instructions.get_style_context().add_class('instructions-link')
         self.__layout_container.add(instructions)
         self.__layout_container.show_all()
+
+    def __button_clicked(self, button, id):
+        print(f"{id} clicked (Student Enrollment)")
 
     def get_layout_container(self):
         """ Public Accessor: Returns the main Gtk.Container holding widgets for this class. """
         return self.__layout_container
 
+    def __format_data(self, data) -> dict:
+        """ Private task:  """
+        grade_groups = {}
+        fields_in_data = list(data.keys())
+        fields_in_data.remove("Grade")
+        for item_number, grade in enumerate(data['Grade'], start=0):
+            key = grade
+            if key not in grade_groups:
+                grade_groups[key] = []
+            student_data = []
+            for field in fields_in_data:
+                student_data.append(data[field][item_number])
+            grade_groups[key].append(student_data)
+        return grade_groups
+
     def __load_student_data(self, file_name):
         """ Private Initializer: Load the contents of the selected CSV file into a dictionary. """
         self.__student_data.clear()  # Reset the dictionary to an empty state
         try:
-            with open(file_name, mode='r', encoding='utf-8-sig') as csv_file:  # Open file
+            with open(file_name, mode='r', encoding='utf-8-sig') as csv_file:  # Open file using utf-8 encoding
                 csv_reader = csv.DictReader(csv_file)  # Read contents of CSV file
                 for line in csv_reader:  # Parse data into dictionary format
                     for key, value in line.items():
                         self.__student_data[key].append(value)
         except:
             # ToDo: display message to user in GUI
-            print("Unable to read CSV file.")
+            print('\033[3;30;43m' + ' Unable to read CSV file! ' + '\033[0m')
 
-        # Perform some basic checks on the data to ensure it is useable
+        # Perform some basic checks on the data to ensure it is usable
         if all (field in self.__student_data for field in ("Grade", "Name", "Gender")):  # Make sure the dictionary has these field names as keys
             # Display dictionary data in a Gtk.TreeView
+            data_fields = list(self.__student_data.keys())  # Get a list of all keys in the data dict
+            data_fields.remove("Grade")  # Remove the 'Grade' field since it will be used as a top-level category
+
+            # Format the data into a usable dictionary format
+            # Here, usable means sorting the data by a chosen field key (in this case, 'Grade') in preparation for using the grade
+            # value as a top-level row heading.
+            formatted_data = self.__format_data(self.__student_data)
+
+            # Establish display order of top-level rows
+            sorted_keys = sorted(formatted_data.keys())  # Sort grade keys in ascending order
+            # The sorted() function places numerical values before alphabetical values, so move Kindergarten to the front of the list
+            if 'KF' in sorted_keys:  # Make sure that Kindergarten ('KF') is in the list
+                sorted_keys.remove('KF')  # Remove kindergarten from the sorted list of keys
+                sorted_keys = ['KF'] + sorted_keys  # Add KF to the front of the sorted list
+
+            # Create a label for each top-level row. Rows will be displayed in the order that they appear in the row_order list
+            row_order = {}
+            for key in sorted_keys:
+                if key == 'KF':
+                    row_order[key] = f"Kindergarten ({len(formatted_data[key])})"
+                else:
+                    row_order[key] = f"Grade {key[1] if key.startswith('0') else key} ({len(formatted_data[key])})"  # Strip any leading '0' from the key
+
+            # Set the order of visible columns. Only columns in this dict will be visible
+            column_properties = {"Name": {"renderer": "static-text", "searchable": True}}
+            if 'Usual' in data_fields:
+                column_properties["Usual"] = {"renderer": "editable-text", "searchable": False}
+            column_properties["Gender"] = {"renderer": "static-text", "searchable": False}
+            if 'Identity' in data_fields:
+                column_properties["Identity"] = {"renderer": "selectable", "options": ["M", "F"], "searchable": False}
+            if 'Status' in data_fields:
+                column_properties["Status"] = {"renderer": "static-text", "searchable": True}
+
+            # Keep track of whether a list has already been displayed
             if not self.__student_roster_loaded:
-                self.student_details_list.update(self.__student_data)
                 self.__student_roster_loaded = True
             else:
-                self.student_details_list.empty()
-                self.student_details_list.update(self.__student_data)
+                self.student_details_list.reset()
+            self.student_details_list.update(data_fields=data_fields, column_properties=column_properties, row_order=row_order, data=formatted_data)
         else:
             # ToDo: display message to user in GUI
             print("Student CSV data file does not contain all required fields: 'Grade', 'Name', 'Gender'")

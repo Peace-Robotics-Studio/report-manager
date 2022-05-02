@@ -1,4 +1,4 @@
-#  L_Pronouns.py. (Modified 2022-04-30, 11:24 p.m. by Praxis)
+#  L_Pronouns.py. (Modified 2022-05-01, 11:19 p.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -13,16 +13,23 @@ gi.require_version('Gtk', '3.0')
 
 from gi.repository import Gtk
 from ...gui.widgets.Action_Frame import Action_Frame
+from ...gui.widgets.Treestore_Frame import Treestore_Frame
+from ...gui.widgets.Liststore_Frame import Liststore_Frame
 
 
 class L_Pronouns:
+    GENDER_PRONOUNS = [{"Gender": "Male", "Symbol": "M", "Pronouns": ["he", "him", "his"]},
+                       {"Gender": "Female", "Symbol": "F", "Pronouns": ["she", "her", "hers"]},
+                       {"Gender": "Non-Binary", "Symbol": "NB", "Pronouns": ["they", "name", "theirs"]}]
+
     def __init__(self):
         self.__layout_container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
 
-        gender_list = Action_Frame(css_name="student-frame")
+        gender_list = Liststore_Frame(css_name="student-frame")
         gender_list.register_button(name="add", id="gender-add", callback=self.button_clicked, tooltip="Add", active=True)
         gender_list.register_button(name="remove", id="gender-remove", callback=self.button_clicked, tooltip="Remove", active=False)
         self.__layout_container.add(gender_list.get_layout_container())
+        self.__populate_gender_liststore(gender_list)
 
         right_side = Gtk.Grid(column_spacing=0, row_spacing=0)
         right_side.set_vexpand(True)
@@ -34,7 +41,7 @@ class L_Pronouns:
         identity_label.get_style_context().add_class('entry-label')
         right_side.attach(child=identity_label, left=0, top=0, width=1, height=1)
         identity_entry = Gtk.Entry()
-        identity_entry.set_placeholder_text(text="Enter label")
+        identity_entry.set_placeholder_text(text="Label")
         identity_entry.connect("changed", self.added_gender_label)
         identity_entry.get_style_context().add_class('entry-with-label')
         identity_entry.set_hexpand(True)
@@ -51,11 +58,9 @@ class L_Pronouns:
         pronouns_entry.set_hexpand(True)
         right_side.attach(child=pronouns_entry, left=1, top=1, width=1, height=1)
 
-        student_list = Action_Frame(css_name="gender-frame")
-        student_list.register_button(name="add", id="student-add", callback=self.button_clicked, tooltip="Add", active=True)
-        student_list.register_button(name="remove", id="student-remove", callback=self.button_clicked, tooltip="Remove", active=False)
-        student_list.register_button(name="expand", id="student-expand", callback=self.button_clicked, tooltip="Expand All", interaction_type="toggle", group_key="display_list", active=True)
-        student_list.register_button(name="collapse", id="student-collapse", callback=self.button_clicked, tooltip="Collapse All", interaction_type="toggle", group_key="display_list", active=False)
+        student_list = Treestore_Frame(css_name="gender-frame")
+        student_list.register_button(name="add", id="student-add", callback=self.button_clicked, tooltip="Add", active=True, pack_order="START")
+        student_list.register_button(name="remove", id="student-remove", callback=self.button_clicked, tooltip="Remove", active=False, pack_order="START")
         right_side.attach(child=student_list.get_layout_container(), left=0, top=2, width=2, height=1)
 
     def get_layout_container(self) -> Gtk.Container:
@@ -67,3 +72,8 @@ class L_Pronouns:
 
     def added_gender_label(self, entry):
         print(f"entry_changed: {entry}")
+
+    def __populate_gender_liststore(self, gender_listview: Liststore_Frame):
+        # Column_field -> (Label, Expand-Column)
+        column_fields = [("Gender", True), ("Symbol", False)]
+        gender_listview.update(data=self.GENDER_PRONOUNS, column_fields=column_fields)
