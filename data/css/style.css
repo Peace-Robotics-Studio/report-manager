@@ -275,11 +275,12 @@
     color: #a5bdbd;
 }
 #student-frame.table-list-container {
-    margin-right: 10px;
     margin-top: 0px;
 }
 #gender-frame.table-list-container {
     margin: 0px;
+    margin-right: 10px;
+    min-width: 160px;
 }
 .entry-with-label {
     padding: 2px 8px;
@@ -292,4 +293,7 @@
 }
 .entry-label {
     margin-bottom: 10px;
+}
+#symbol-label {
+    margin-left: 20px;
 }

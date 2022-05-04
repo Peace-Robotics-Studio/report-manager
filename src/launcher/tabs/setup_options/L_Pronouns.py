@@ -1,4 +1,4 @@
-#  L_Pronouns.py. (Modified 2022-05-01, 11:19 p.m. by Praxis)
+#  L_Pronouns.py. (Modified 2022-05-03, 10:40 p.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,7 +25,7 @@ class L_Pronouns:
     def __init__(self):
         self.__layout_container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
 
-        gender_list = Liststore_Frame(css_name="student-frame")
+        gender_list = Liststore_Frame(css_name="gender-frame")
         gender_list.register_button(name="add", id="gender-add", callback=self.button_clicked, tooltip="Add", active=True)
         gender_list.register_button(name="remove", id="gender-remove", callback=self.button_clicked, tooltip="Remove", active=False)
         self.__layout_container.add(gender_list.get_layout_container())
@@ -33,19 +33,30 @@ class L_Pronouns:
 
         right_side = Gtk.Grid(column_spacing=0, row_spacing=0)
         right_side.set_vexpand(True)
-        right_side.set_size_request(width=200, height=-1)
         self.__layout_container.add(right_side)
+        box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+        right_side.attach(child=box, left=0, top=0, width=2, height=1)
+
 
         identity_label = Gtk.Label(label="Identity:")
         identity_label.set_xalign(1)
         identity_label.get_style_context().add_class('entry-label')
-        right_side.attach(child=identity_label, left=0, top=0, width=1, height=1)
-        identity_entry = Gtk.Entry()
+        box.add(identity_label)
+        identity_entry = Gtk.Entry(width_chars=20, xalign=0)
         identity_entry.set_placeholder_text(text="Label")
         identity_entry.connect("changed", self.added_gender_label)
         identity_entry.get_style_context().add_class('entry-with-label')
-        identity_entry.set_hexpand(True)
-        right_side.attach(child=identity_entry, left=1, top=0, width=1, height=1)
+        box.add(identity_entry)
+        symbol_label = Gtk.Label(label="Symbol:")
+        symbol_label.set_xalign(1)
+        symbol_label.get_style_context().add_class('entry-label')
+        symbol_label.set_name("symbol-label")
+        box.add(symbol_label)
+        symbol_entry = Gtk.Entry(width_chars=9, xalign=0)
+        symbol_entry.connect("changed", self.added_gender_label)
+        symbol_entry.get_style_context().add_class('entry-with-label')
+        box.add(symbol_entry)
+
 
         pronouns_label = Gtk.Label(label="Pronouns:")
         pronouns_label.set_xalign(1)
@@ -58,7 +69,7 @@ class L_Pronouns:
         pronouns_entry.set_hexpand(True)
         right_side.attach(child=pronouns_entry, left=1, top=1, width=1, height=1)
 
-        student_list = Treestore_Frame(css_name="gender-frame")
+        student_list = Treestore_Frame(css_name="student-frame")
         student_list.register_button(name="add", id="student-add", callback=self.button_clicked, tooltip="Add", active=True, pack_order="START")
         student_list.register_button(name="remove", id="student-remove", callback=self.button_clicked, tooltip="Remove", active=False, pack_order="START")
         right_side.attach(child=student_list.get_layout_container(), left=0, top=2, width=2, height=1)
