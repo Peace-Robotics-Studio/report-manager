@@ -42,32 +42,32 @@ class L_Pronouns:
         identity_label.set_xalign(1)
         identity_label.get_style_context().add_class('entry-label')
         box.add(identity_label)
-        identity_entry = Gtk.Entry(width_chars=20, xalign=0)
-        identity_entry.set_placeholder_text(text="Label")
-        identity_entry.connect("changed", self.added_gender_label)
-        identity_entry.get_style_context().add_class('entry-with-label')
-        box.add(identity_entry)
+        self.identity_entry = Gtk.Entry(width_chars=20, xalign=0)
+        self.identity_entry.set_placeholder_text(text="Label")
+        self.identity_entry.connect("changed", self.added_gender_label)
+        self.identity_entry.get_style_context().add_class('entry-with-label')
+        box.add(self.identity_entry)
         symbol_label = Gtk.Label(label="Symbol:")
         symbol_label.set_xalign(1)
         symbol_label.get_style_context().add_class('entry-label')
         symbol_label.set_name("symbol-label")
         box.add(symbol_label)
-        symbol_entry = Gtk.Entry(width_chars=9, xalign=0)
-        symbol_entry.connect("changed", self.added_gender_label)
-        symbol_entry.get_style_context().add_class('entry-with-label')
-        box.add(symbol_entry)
+        self.symbol_entry = Gtk.Entry(width_chars=9, xalign=0)
+        self.symbol_entry.connect("changed", self.added_gender_label)
+        self.symbol_entry.get_style_context().add_class('entry-with-label')
+        box.add(self.symbol_entry)
 
 
         pronouns_label = Gtk.Label(label="Pronouns:")
         pronouns_label.set_xalign(1)
         pronouns_label.get_style_context().add_class('entry-label')
         right_side.attach(child=pronouns_label, left=0, top=1, width=1, height=1)
-        pronouns_entry = Gtk.Entry()
-        pronouns_entry.set_placeholder_text(text="Space-separated list")
-        pronouns_entry.connect("changed", self.added_gender_label)
-        pronouns_entry.get_style_context().add_class('entry-with-label')
-        pronouns_entry.set_hexpand(True)
-        right_side.attach(child=pronouns_entry, left=1, top=1, width=1, height=1)
+        self.pronouns_entry = Gtk.Entry()
+        self.pronouns_entry.set_placeholder_text(text="Space-separated list")
+        self.pronouns_entry.connect("changed", self.added_gender_label)
+        self.pronouns_entry.get_style_context().add_class('entry-with-label')
+        self.pronouns_entry.set_hexpand(True)
+        right_side.attach(child=self.pronouns_entry, left=1, top=1, width=1, height=1)
 
         student_list = Treestore_Frame(css_name="student-frame")
         student_list.register_button(name="add", id="student-add", callback=self.button_clicked, tooltip="Add", active=True, pack_order="START")
@@ -90,4 +90,15 @@ class L_Pronouns:
         gender_listview.update(data=self.GENDER_PRONOUNS, column_fields=column_fields, selection_callback=self.__gender_selected)
 
     def __gender_selected(self, gender_identifier):
-        print(gender_identifier)
+        """ Callbackk for Liststore_Frame's Gtk.TreeView ::cursor-changed signal """
+        self.__display_gender_properties(gender_label=gender_identifier['Gender'])
+
+    def __display_gender_properties(self, gender_label: str):
+        self.identity_entry.set_text(gender_label)
+        for gender in self.GENDER_PRONOUNS:
+            if gender['Gender'] == gender_label:
+                self.symbol_entry.set_text(gender['Symbol'])
+                pronouns = ""
+                for pronoun in gender['Pronouns']:
+                    pronouns += f"{pronoun} "
+                self.pronouns_entry.set_text(pronouns)
