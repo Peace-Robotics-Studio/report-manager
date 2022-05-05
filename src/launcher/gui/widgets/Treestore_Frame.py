@@ -1,4 +1,4 @@
-#  Treestore_Frame.py. (Modified 2022-05-01, 9:46 p.m. by Praxis)
+#  Treestore_Frame.py. (Modified 2022-05-04, 10:15 p.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -59,7 +59,7 @@ class Treestore_Frame(Action_Frame):
         # Create a new TreeView and assign it a model (data store)
         self.tree_view = Gtk.TreeView(model=self.filter)
         self.tree_view.get_style_context().add_class(self.__treeview_css_class)
-        self.tree_view.connect("cursor-changed", self.test)
+        self.tree_view.connect("cursor-changed", self.item_selected)
         # Standard text renderer
         renderer_text = Gtk.CellRendererText()
         renderer_text.set_padding(0, 0)
@@ -112,9 +112,9 @@ class Treestore_Frame(Action_Frame):
     def on_combo_changed(self, cell_renderer_combo, path, text, field):
         self.tree_store[path][self.COLUMNS[field]] = text
 
-    def test(self, widget):
+    def item_selected(self, widget):
         model, iter = self.tree_view.get_selection().get_selected()
-        # print(model.get(iter, 1, 2))
+        print(model.get(iter, 1, 2))
 
     def text_edited(self, widget, path, text):
         # self.liststore[path][1] = text

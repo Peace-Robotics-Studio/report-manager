@@ -1,4 +1,4 @@
-#  L_Pronouns.py. (Modified 2022-05-03, 10:40 p.m. by Praxis)
+#  L_Pronouns.py. (Modified 2022-05-04, 10:47 p.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -87,4 +87,7 @@ class L_Pronouns:
     def __populate_gender_liststore(self, gender_listview: Liststore_Frame):
         # Column_field -> (Label, Expand-Column)
         column_fields = [("Gender", True), ("Symbol", False)]
-        gender_listview.update(data=self.GENDER_PRONOUNS, column_fields=column_fields)
+        gender_listview.update(data=self.GENDER_PRONOUNS, column_fields=column_fields, selection_callback=self.__gender_selected)
+
+    def __gender_selected(self, gender_identifier):
+        print(gender_identifier)
