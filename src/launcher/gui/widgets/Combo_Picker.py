@@ -1,4 +1,4 @@
-#  Combo_Picker.py. (Modified 2022-04-26, 7:33 p.m. by Praxis)
+#  Combo_Picker.py. (Modified 2022-05-06, 10:15 p.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -100,23 +100,26 @@ class Combo_Picker:
         if self.directory_path == "":
             self.file_dir_entry.set_placeholder_text("Select a CSV file")
         else:
-
+            # print("__update_displayed_path()")
             self.file_dir_entry.set_text(self.directory_path)
             self.file_dir_entry.set_position(len(self.directory_path))
-            self.__set_entry_text_colour(is_valid=self.__is_path_valid(), active_state=active_state)
+            # self.__set_entry_text_colour(is_valid=self.__is_path_valid(), active_state=active_state)
 
     def __make_path_editable(self):
         """ Private Task: This function modifies the Gtk.Entry widget so that the directory path can be edited. """
+        # print("__make_path_editable()")
         self.__set_entry_text_colour(is_valid=self.__is_path_valid(), active_state=True)
 
     def __entry_focus_lost(self, widget, event):
         """ Private Callback: This function is triggered by the Gtk.Entry widget losing keyboard focus. """
+        # print("__entry_focus_lost()")
         self.file_dir_entry.set_editable(False)
         self.file_dir_entry.set_can_focus(False)
         self.__set_entry_text_colour(is_valid=self.__is_path_valid(), active_state=False)
 
     def __entry_changed(self, widget):
         """ Private Callback: This function is triggered by a keyboard key being released while focused on the Gtk.Entry widget. """
+        # print("__entry_changed()")
         self.directory_path = self.file_dir_entry.get_text()
         self.__set_entry_text_colour(is_valid=self.__is_path_valid(), active_state=True)
 

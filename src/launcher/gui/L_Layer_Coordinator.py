@@ -1,4 +1,4 @@
-#  L_Layer_Coordinator.py. (Modified 2022-04-24, 8:25 p.m. by Praxis)
+#  L_Layer_Coordinator.py. (Modified 2022-05-07, 5:33 p.m. by Praxis)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -70,6 +70,7 @@ class L_Layer_Coordinator:
         return self.__interface_layer
 
     def process_action(self, action: str, data=None):
+        """ Callback: Process dialog messages and send to top-level parent """
         match action:
             case "quit" | "editor":
                 self.__h_dialog.exit_launcher(action)

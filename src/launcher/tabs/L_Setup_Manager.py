@@ -1,4 +1,4 @@
-#  L_Setup_Manager.py. (Modified 2022-04-30, 11:23 a.m. by Praxis)
+#  L_Setup_Manager.py. (Modified 2022-05-07, 8:44 p.m. by Praxis)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -7,6 +7,7 @@
 #  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 #  copies of the Software, and to permit persons to whom the Software is
 #  furnished to do so.
+
 
 import gi
 
@@ -31,18 +32,35 @@ class L_Setup_Manager(Content_Manager):
         self.__content_options_menu_css_class = 'launcher-feedback-options-menu-container'
         self.__content_options_container_css_class = 'launcher-feedback-options-container'
         self.options_content_area = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)  # Create a box to hold the options display data
-        menu_button_keys = dict(
-            MENU_0={"LABEL": "Enrollment", "ACTIVE": True, "CONTENT_MANAGER": L_Student_Enrollment(parent_window=parent_window)},
-            MENU_1={"LABEL": "Pronouns", "ACTIVE": False, "CONTENT_MANAGER": L_Pronouns()}
+        self.menu_button_keys = dict(
+            MENU_0={"TYPE": "Text",
+                    "PACK": "Start",
+                    "LABEL": "Enrollment",
+                    "ACTIVE": True,
+                    "INFO": "Load a CSV file containing student data",
+                    "CONTENT_MANAGER": L_Student_Enrollment(parent_window=parent_window)},
+            MENU_1={"TYPE": "Text",
+                    "PACK": "Start",
+                    "LABEL": "Pronouns",
+                    "ACTIVE": False,
+                    "INFO": "Manage custom pronouns",
+                    "CONTENT_MANAGER": L_Pronouns()}
         )
-        self.__category_menu = L_Menu(orientation="vertical",
+        self.__category_menu = L_Menu(id="setup_menu",
+                                      orientation="vertical",
                                       container_css_class="launcher-feedback-options-menu",
-                                      button_values=menu_button_keys,
+                                      button_values=self.menu_button_keys,
                                       align_button_labels="left",
                                       button_css_class="launcher-feedback-options-button",
                                       content_manager=self,
                                       message_callback=self.option_clicked)
         self.__build_content()
+
+    def get_menu_buttons(self):
+        menu_keys = {}
+        for key, values in self.menu_button_keys.items():
+            menu_keys[key] = values['INFO']
+        return menu_keys
 
     def __build_content(self):
         """ Private Initializer: This function composes the feedback tab layout """

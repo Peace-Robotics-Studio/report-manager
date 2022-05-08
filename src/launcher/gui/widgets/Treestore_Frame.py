@@ -1,4 +1,4 @@
-#  Treestore_Frame.py. (Modified 2022-05-04, 10:15 p.m. by Praxis)
+#  Treestore_Frame.py. (Modified 2022-05-07, 2:43 p.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,7 +25,8 @@ class Treestore_Frame(Action_Frame):
         self.filter = None
         self.tree_view = None
         self.tree_store = None
-        self.search_in_fields = []
+        self.tree_store_columns = {}
+        self.default_search_fields = []
         self.__displaying_tree_view = False
         self.COLUMNS = {"VISIBLE": 0}
         self.__treeview_css_class = 'treeview'
@@ -69,7 +70,8 @@ class Treestore_Frame(Action_Frame):
         renderer_editable_text.connect("edited", self.text_edited)
         renderer_editable_text.set_padding(0, 0)
         # Loop through the list of column fields and create TreeView columns
-        for column_title, properties in column_properties.items():
+        for column_number, (column_title, properties) in enumerate(column_properties.items()):
+            self.tree_store_columns[column_title] = column_number
             if properties["renderer"] == "selectable":
                 column_combo = Gtk.TreeViewColumn(title=column_title)
                 renderer_combo = self.__get_renderer_combo(options=properties["options"], field=column_title)
@@ -114,7 +116,8 @@ class Treestore_Frame(Action_Frame):
 
     def item_selected(self, widget):
         model, iter = self.tree_view.get_selection().get_selected()
-        print(model.get(iter, 1, 2))
+        if iter:
+            print(model.get(iter, 1, 2))
 
     def text_edited(self, widget, path, text):
         # self.liststore[path][1] = text
@@ -129,7 +132,13 @@ class Treestore_Frame(Action_Frame):
         self.__displaying_tree_view = False
         self.COLUMNS = {"VISIBLE": 0}
         self.search_entry.set_text("")
-        self.search_in_fields = []
+        self.tree_store_columns = {}
+        self.default_search_fields = []
+
+    def set_column_visibility(self, title: str, visible: bool):
+        if title in self.tree_store_columns:
+            column = self.tree_view.get_column(self.tree_store_columns[title])
+            column.set_visible(visible)
 
     def update(self, data: dict, data_fields: list, column_properties: dict, row_order: dict) -> None:
         """ Public initializer: Organizes data used for creating a TreeView, its columns, """
@@ -148,12 +157,14 @@ class Treestore_Frame(Action_Frame):
             for field, properties in column_properties.items():
                 # Find all fields flagged as searchable and add them to the search_in_fields list
                 if properties["searchable"]:
-                    self.search_in_fields.append(field)
+                    self.default_search_fields.append(field)
             # Create the TreeView
             self.__create_tree_view(data=data, column_properties=column_properties, gtypes=gtypes, row_order=row_order)  # Create a new TreeView object
             self.__displaying_tree_view = True  # Record that a TreeView object exists
         else:  # TreeView created previously. Update its TreeStore
-            self.__update_treestore(data=data, row_order=row_order)  # Update the information shown by this TreeView
+            self.reset()
+            self.update(data=data, data_fields=data_fields, column_properties=column_properties, row_order=row_order)
+            # self.__update_treestore(data=data, row_order=row_order)  # Update the information shown by this TreeView
         self.show_all()  # Show all widgets
 
     def __update_treestore(self, data: dict, row_order: dict) -> None:
@@ -186,7 +197,6 @@ class Treestore_Frame(Action_Frame):
         # See: https://stackoverflow.com/questions/56029759/how-to-filter-a-gtk-tree-view-that-uses-a-treestore-and-not-a-liststore
         if self.__displaying_tree_view:
             search_query = self.search_entry.get_text().lower()  # Get text from the entry widget and set to lower case
-            show_subtrees_of_matches = False  # Check children of row matches
             if search_query == "":  # If the search box is empty
                 self.tree_store.foreach(self.__reset_row, True)  # Iterate over the full TreeStore model and set the 'HIDDEN' column to True (Parameters: func, *user)
                 if self.EXPAND_BY_DEFAULT:  # If rows are set to be expanded by default
@@ -194,9 +204,15 @@ class Treestore_Frame(Action_Frame):
                 else:
                     self.tree_view.collapse_all()  # Otherwise, collapse all rows
             else:  # A value has been entered into the search box
-                self.tree_store.foreach(self.__reset_row, False)  # Set the 'HIDDEN' field of all rows in the TreeStore to False
-                self.tree_store.foreach(self.__show_matches, self.search_in_fields, search_query, show_subtrees_of_matches)  # Check to see if the row value matches the search query
-                self.tree_view.expand_all()  # Expand all rows to display filtered results
+                self.filter_list(string_to_match=search_query, fields_to_search=self.default_search_fields)
+
+    def filter_list(self, string_to_match: str, fields_to_search: list):
+        if self.__displaying_tree_view:
+            show_subtrees_of_matches = False  # Check children of row matches
+            # Function prototype: foreach(func, *user_data)
+            self.tree_store.foreach(self.__reset_row, False)  # Set the 'HIDDEN' field of all rows in the TreeStore to False
+            self.tree_store.foreach(self.__show_matches, fields_to_search, string_to_match.lower(), show_subtrees_of_matches)  # Check to see if the row value matches the search query
+            self.tree_view.expand_all()  # Expand all rows to display filtered results
             self.filter.refilter()  # Trigger 'row_changed' signal to force evaluation of whether a row is visible or not based on the updated HIDDEN field
 
     def __reset_row(self, model: Gtk.TreeModel, path: Gtk.TreePath, iter: Gtk.TreeIter, make_visible: object):
@@ -205,10 +221,12 @@ class Treestore_Frame(Action_Frame):
         self.tree_store.set_value(iter, self.COLUMNS["VISIBLE"], make_visible)  # Values: Gtk.TreeIter, int, GObject.Value
 
     def __show_matches(self, model: Gtk.TreeModel, path: Gtk.TreePath, row_iter: Gtk.TreeIter, search_list: list, search_query, show_subtrees_of_matches: object):
-        """ Private callback: Callback for Gtk.TreeModel.foreach() implementing Gtk.TreeModelForeachFunc(model, path, iter, *data) """
+        """ Private callback: Callback for Gtk.TreeModel.foreach() implementing Gtk.TreeModelForeachFunc(model, path, iter, *data)
+            This function loops though all rows in a treeview, looking for text matches in each of the listed search_fields and setting the
+            visibility flag to True for matches. """
         # User data: search_query; show_subtrees_of_matches
         for field in search_list:
-            text = model.get_value(iter=row_iter, column=self.COLUMNS[field]).lower()  # Get the string value stored in the row's NAME field
+            text = model.get_value(iter=row_iter, column=self.COLUMNS[field]).lower()  # Get the string value stored in 'field' for this field in 'search_list'
             if search_query in text:  # Check to see if the search_query string is a substring of text
                 # Propagate visibility change up
                 self.__make_path_visible(model=model, row_iter=row_iter)  # Make this row visible and search for parents to this node and make them visible

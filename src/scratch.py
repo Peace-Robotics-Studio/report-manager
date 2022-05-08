@@ -1,4 +1,4 @@
-#  scratch.py. (Modified 2022-04-28, 8:16 p.m. by Praxis)
+#  scratch.py. (Modified 2022-05-07, 10:40 p.m. by Praxis)
 #  Copyright (c) 2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -9,84 +9,50 @@
 #  furnished to do so.
 
 import gi
-gi.require_version('Gtk', '3.0')
+
+gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
 
 
-class CellRendererTextWindow(Gtk.Window):
-
+class ExpanderExample(Gtk.Window):
     def __init__(self):
-        Gtk.Window.__init__(self, title="CellRendererText Example")
+        super().__init__(title="Expander Demo")
 
-        self.set_default_size(200, 200)
+        self.set_size_request(350, 100)
 
-        self.liststore = Gtk.ListStore(str, str)
-        self.liststore.append(["Fedora", "http://fedoraproject.org/"])
-        self.liststore.append(["Slackware", "http://www.slackware.com/"])
-        self.liststore.append(["Sidux", "http://sidux.com/"])
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+        self.add(vbox)
 
-        treeview = Gtk.TreeView(model=self.liststore)
+        text_expander = Gtk.Expander(
+                label="This expander displays additional information"
+        )
+        text_expander.set_expanded(True)
+        vbox.add(text_expander)
 
-        self.completion = Gtk.EntryCompletion(model = self.liststore)
-        self.completion.set_text_column(1)
-        self.completion.connect('match-selected', self.renderer_match_selected)
+        msg = """
+This message is quite long, complicated even:
+    - It has a list with a sublist:
+        - of 3 elements;
+        
+        - taking several lines;
+        - with indentation.
+"""
+        details = Gtk.Label(label=msg)
+        text_expander.add(details)
 
-        renderer_text = Gtk.CellRendererText()
-        column_text = Gtk.TreeViewColumn("Text", renderer_text, text=0)
-        treeview.append_column(column_text)
+        widget_expander = Gtk.Expander(label="Expand for more controls")
+        vbox.add(widget_expander)
 
-######## CellRendererText with EntryCompletion example
-        renderer_text = Gtk.CellRendererText()
-        renderer_text.connect('editing-started', self.renderer_text_editing_started)
-        renderer_text.connect('edited', self.text_edited)
-        renderer_text.set_property("editable", True)
+        expander_hbox = Gtk.HBox()
+        widget_expander.add(expander_hbox)
 
-        column_text_autocomplete = Gtk.TreeViewColumn("Editable Text", renderer_text, text=1)
-        treeview.append_column(column_text_autocomplete)
+        expander_hbox.add(Gtk.Label(label="Text message"))
+        expander_hbox.add(Gtk.Button(label="Click me"))
 
-######## CellRendererCombo with EntryCompletion example
-        renderer_combo = Gtk.CellRendererCombo(model = self.liststore)
-        renderer_combo.set_property("text-column", 1)
-        renderer_combo.connect('editing-started', self.renderer_combo_editing_started)
-        renderer_combo.connect('changed', self.combo_changed)
-        renderer_combo.set_property("editable", True)
-
-        column_combo_autocomplete = Gtk.TreeViewColumn("Editable Combo", renderer_combo, text=1)
-        treeview.append_column(column_combo_autocomplete)
+        self.show_all()
 
 
-        self.add(treeview)
-
-    def renderer_match_selected (self, completion, model, tree_iter):
-        ''' beware ! the model and tree_iter passed in here are the model from the
-        EntryCompletion, which may or may not be the same as the model of the Treeview '''
-        text_match =  model[tree_iter][1]
-        self.liststore[self.path][1] = text_match
-
-    def renderer_text_editing_started (self, renderer, editable, path):
-        ''' since the editable widget gets created for every edit, we need to
-        connect the completion to every editable upon creation '''
-        editable.set_completion(self.completion)
-        self.path = path # save the path for later usage
-
-    def text_edited(self, widget, path, text):
-        self.liststore[path][1] = text
-
-    def renderer_combo_editing_started (self, renderer, combo, path):
-        ''' since the editable widget gets created for every edit, we need to
-        connect the completion to every editable upon creation '''
-        editable = combo.get_child() # get the entry of the combobox
-        editable.set_completion(self.completion)
-        self.path = path # save the path for later usage
-
-    def combo_changed (self, combo, path, tree_iter):
-        ''' the path is from the treeview and the tree_iter is from the model
-        of the combobox which may or may not be the same model as the treeview'''
-        combo_model = combo.get_property('model')
-        text = combo_model[tree_iter][1]
-        self.liststore[path][1] = text
-
-win = CellRendererTextWindow()
+win = ExpanderExample()
 win.connect("destroy", Gtk.main_quit)
 win.show_all()
 Gtk.main()

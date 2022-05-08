@@ -1,4 +1,4 @@
-#  L_Pronouns.py. (Modified 2022-05-04, 10:47 p.m. by Praxis)
+#  L_Pronouns.py. (Modified 2022-05-07, 2:43 p.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -12,19 +12,19 @@ import gi
 gi.require_version('Gtk', '3.0')
 
 from gi.repository import Gtk
-from ...gui.widgets.Action_Frame import Action_Frame
 from ...gui.widgets.Treestore_Frame import Treestore_Frame
 from ...gui.widgets.Liststore_Frame import Liststore_Frame
+from .L_Load_Student_Data import L_Load_Student_Data
 
 
 class L_Pronouns:
     GENDER_PRONOUNS = [{"Gender": "Male", "Symbol": "M", "Pronouns": ["he", "him", "his"]},
                        {"Gender": "Female", "Symbol": "F", "Pronouns": ["she", "her", "hers"]},
-                       {"Gender": "Non-Binary", "Symbol": "NB", "Pronouns": ["they", "name", "theirs"]}]
+                       {"Gender": "Non-Binary", "Symbol": "NB", "Pronouns": ["they", "<name>", "theirs"]}]
 
     def __init__(self):
         self.__layout_container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-
+        self.__showing_student_list = False
         gender_list = Liststore_Frame(css_name="gender-frame")
         gender_list.register_button(name="add", id="gender-add", callback=self.button_clicked, tooltip="Add", active=True)
         gender_list.register_button(name="remove", id="gender-remove", callback=self.button_clicked, tooltip="Remove", active=False)
@@ -42,6 +42,7 @@ class L_Pronouns:
         identity_label.set_xalign(1)
         identity_label.get_style_context().add_class('entry-label')
         box.add(identity_label)
+
         self.identity_entry = Gtk.Entry(width_chars=20, xalign=0)
         self.identity_entry.set_placeholder_text(text="Label")
         self.identity_entry.connect("changed", self.added_gender_label)
@@ -52,6 +53,7 @@ class L_Pronouns:
         symbol_label.get_style_context().add_class('entry-label')
         symbol_label.set_name("symbol-label")
         box.add(symbol_label)
+
         self.symbol_entry = Gtk.Entry(width_chars=9, xalign=0)
         self.symbol_entry.connect("changed", self.added_gender_label)
         self.symbol_entry.get_style_context().add_class('entry-with-label')
@@ -62,6 +64,7 @@ class L_Pronouns:
         pronouns_label.set_xalign(1)
         pronouns_label.get_style_context().add_class('entry-label')
         right_side.attach(child=pronouns_label, left=0, top=1, width=1, height=1)
+
         self.pronouns_entry = Gtk.Entry()
         self.pronouns_entry.set_placeholder_text(text="Space-separated list")
         self.pronouns_entry.connect("changed", self.added_gender_label)
@@ -69,10 +72,22 @@ class L_Pronouns:
         self.pronouns_entry.set_hexpand(True)
         right_side.attach(child=self.pronouns_entry, left=1, top=1, width=1, height=1)
 
-        student_list = Treestore_Frame(css_name="student-frame")
-        student_list.register_button(name="add", id="student-add", callback=self.button_clicked, tooltip="Add", active=True, pack_order="START")
-        student_list.register_button(name="remove", id="student-remove", callback=self.button_clicked, tooltip="Remove", active=False, pack_order="START")
-        right_side.attach(child=student_list.get_layout_container(), left=0, top=2, width=2, height=1)
+        self.student_list = Treestore_Frame(css_name="student-frame")
+        self.student_list.register_button(name="add", id="student-add", callback=self.button_clicked, tooltip="Add", active=True, pack_order="START")
+        self.student_list.register_button(name="remove", id="student-remove", callback=self.button_clicked, tooltip="Remove", active=False, pack_order="START")
+        self.show_student_data()
+        L_Load_Student_Data.register_callback(self.show_student_data)  # Register callback function to be triggered when data set changes
+        right_side.attach(child=self.student_list.get_layout_container(), left=0, top=2, width=2, height=1)
+        gender_list.select_row(row=0)
+
+    def show_student_data(self):
+        if self.__showing_student_list:
+            self.student_list.reset()
+        if L_Load_Student_Data.FORMATTED_DATA is not None:
+            self.student_list.update(data_fields=L_Load_Student_Data.DATA_FIELDS, column_properties=L_Load_Student_Data.COLUMN_PROPERTIES, row_order=L_Load_Student_Data.ROW_ORDER, data=L_Load_Student_Data.FORMATTED_DATA)
+            self.student_list.set_column_visibility("Usual", False)
+            self.student_list.set_column_visibility("Status", False)
+            self.__showing_student_list = True
 
     def get_layout_container(self) -> Gtk.Container:
         """ Public Accessor: Returns the main Gtk.Container holding widgets for this class. """
@@ -82,7 +97,8 @@ class L_Pronouns:
         print(f"Button Clicked: {id}")
 
     def added_gender_label(self, entry):
-        print(f"entry_changed: {entry}")
+        # print(f"entry_changed: {entry}")
+        pass
 
     def __populate_gender_liststore(self, gender_listview: Liststore_Frame):
         # Column_field -> (Label, Expand-Column)
@@ -94,10 +110,13 @@ class L_Pronouns:
         self.__display_gender_properties(gender_label=gender_identifier['Gender'])
 
     def __display_gender_properties(self, gender_label: str):
+        # if self.__showing_student_list is False:
+        #     self.show_student_data()
         self.identity_entry.set_text(gender_label)
         for gender in self.GENDER_PRONOUNS:
             if gender['Gender'] == gender_label:
                 self.symbol_entry.set_text(gender['Symbol'])
+                self.student_list.filter_list(string_to_match=gender['Symbol'], fields_to_search=['Gender'])
                 pronouns = ""
                 for pronoun in gender['Pronouns']:
                     pronouns += f"{pronoun} "

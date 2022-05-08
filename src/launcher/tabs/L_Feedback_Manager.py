@@ -1,4 +1,4 @@
-#  L_Feedback_Manager.py. (Modified 2022-04-17, 6:34 p.m. by Praxis)
+#  L_Feedback_Manager.py. (Modified 2022-05-07, 8:44 p.m. by Praxis)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -30,21 +30,53 @@ class L_Feedback_Manager(Content_Manager):
         self.__content_options_container_css_class = 'launcher-feedback-options-container'
         self.options_content_area = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)  # Create a box to hold the options display data
         self.__feedback_manager = L_Feedback_Files(active_option="MENU_0")
-        menu_button_keys = dict(
-            MENU_0={"LABEL": "Recent Files", "ACTIVE": True, "CONTENT_MANAGER": self.__feedback_manager},
-            MENU_1={"LABEL": "By Grade", "ACTIVE": False, "CONTENT_MANAGER": self.__feedback_manager},
-            MENU_2={"LABEL": "By Teacher", "ACTIVE": False, "CONTENT_MANAGER": self.__feedback_manager},
-            MENU_3={"LABEL": "By Class Code", "ACTIVE": False, "CONTENT_MANAGER": self.__feedback_manager},
-            MENU_4={"LABEL": "By Date", "ACTIVE": False, "CONTENT_MANAGER": self.__feedback_manager}
+        self.menu_button_keys = dict(
+            MENU_0={"TYPE": "Text",
+                    "PACK": "Start",
+                    "LABEL": "Recent Files",
+                    "ACTIVE": True,
+                    "INFO": "Recent feedback summary files",
+                    "CONTENT_MANAGER": self.__feedback_manager},
+            MENU_1={"TYPE": "Text",
+                    "PACK": "Start",
+                    "LABEL": "By Grade",
+                    "ACTIVE": False,
+                    "INFO": "Summary files by grade",
+                    "CONTENT_MANAGER": self.__feedback_manager},
+            MENU_2={"TYPE": "Text",
+                    "PACK": "Start",
+                    "LABEL": "By Teacher",
+                    "ACTIVE": False,
+                    "INFO": "Summary files by teacher",
+                    "CONTENT_MANAGER": self.__feedback_manager},
+            MENU_3={"TYPE": "Text",
+                    "PACK": "Start",
+                    "LABEL": "By Class Code",
+                    "ACTIVE": False,
+                    "INFO": "Summary files by class code",
+                    "CONTENT_MANAGER": self.__feedback_manager},
+            MENU_4={"TYPE": "Text",
+                    "PACK": "Start",
+                    "LABEL": "By Date",
+                    "ACTIVE": False,
+                    "INFO": "Summary files by date",
+                    "CONTENT_MANAGER": self.__feedback_manager}
         )
-        self.__category_menu = L_Menu(orientation="vertical",
+        self.__category_menu = L_Menu(id="feedback_menu",
+                                      orientation="vertical",
                                       container_css_class="launcher-feedback-options-menu",
-                                      button_values=menu_button_keys,
+                                      button_values=self.menu_button_keys,
                                       align_button_labels="left",
                                       button_css_class="launcher-feedback-options-button",
                                       content_manager=self,
                                       message_callback=self.option_clicked)
         self.__build_content()
+
+    def get_menu_buttons(self):
+        menu_keys = {}
+        for key, values in self.menu_button_keys.items():
+            menu_keys[key] = values['INFO']
+        return menu_keys
 
     def __build_content(self):
         """ Private Initializer: This function composes the feedback tab layout """

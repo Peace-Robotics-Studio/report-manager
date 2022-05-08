@@ -1,4 +1,4 @@
-#  L_Student_Enrollment.py. (Modified 2022-05-01, 9:46 p.m. by Praxis)
+#  L_Student_Enrollment.py. (Modified 2022-05-07, 2:33 p.m. by Praxis)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -9,6 +9,7 @@
 #  furnished to do so.
 
 import gi
+
 gi.require_version('Gtk', '3.0')
 import csv
 from collections import defaultdict
@@ -22,19 +23,14 @@ class L_Student_Enrollment:
     def __init__(self, parent_window: Gtk.Window):
         """ Constructor: """
         self.RAW_DATA = defaultdict(list)
-        self.__student_data = L_Load_Student_Data()
-
+        self.__student_roster_loaded = False
         # Create a container to hold student enrollment data
         self.__layout_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.__layout_container.set_hexpand(True)
         self.__layout_container.set_vexpand(True)
 
-
-
         # Create a widget to hold tabular data. Must be created before the Combo_Picker
         self.student_details_list = Treestore_Frame()
-
-
 
         # Add buttons to the action bar of the Display widget
         self.student_details_list.register_button(name="restore", id="TF-restore", callback=self.__button_clicked, tooltip="Restore Defaults", active=False)
@@ -67,7 +63,16 @@ class L_Student_Enrollment:
                 for line in csv_reader:  # Parse data into dictionary format
                     for key, value in line.items():
                         self.RAW_DATA[key].append(value)
-            self.__student_data.load_data()
-        except:
+            if L_Load_Student_Data.load_data(self.RAW_DATA):
+                # Keep track of whether a list has already been displayed
+                if not self.__student_roster_loaded:
+                    self.__student_roster_loaded = True
+                else:
+                    self.student_details_list.reset()
+                self.student_details_list.update(data_fields=L_Load_Student_Data.DATA_FIELDS, column_properties=L_Load_Student_Data.COLUMN_PROPERTIES, row_order=L_Load_Student_Data.ROW_ORDER, data=L_Load_Student_Data.FORMATTED_DATA)
+            else:
+                print("Error loading student data")
+        except Exception as e:
+            print(e)
             # ToDo: display message to user in GUI
             print('\033[3;30;43m' + ' Unable to read CSV file! ' + '\033[0m')

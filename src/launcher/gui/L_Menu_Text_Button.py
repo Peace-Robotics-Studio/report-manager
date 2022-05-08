@@ -1,4 +1,4 @@
-#  L_Menu_Button.py. (Modified 2022-04-17, 3:26 p.m. by Praxis)
+#  L_Menu_Text_Button.py. (Modified 2022-05-07, 6:25 p.m. by Praxis)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -12,7 +12,7 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
-class L_Menu_Button:
+class L_Menu_Text_Button:
     def __init__(self, key: str, label: str, style_class: str, callback: classmethod, label_alignment: str ="default"):
         """ Constructor
             key: identification name of the button

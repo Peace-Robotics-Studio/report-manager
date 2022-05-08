@@ -1,4 +1,4 @@
-#  Liststore_Frame.py. (Modified 2022-05-04, 10:47 p.m. by Praxis)
+#  Liststore_Frame.py. (Modified 2022-05-07, 11:32 a.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -51,6 +51,9 @@ class Liststore_Frame(Action_Frame):
         self.display_data(scrollable_window)
         self.__displaying_tree_view = True
 
+    def select_row(self, row: int):
+        self.treeview.set_cursor(Gtk.TreePath(row))
+
     def item_selected(self, widget, selection_callback):
         model, iter = self.treeview.get_selection().get_selected()
         results = {}
@@ -85,6 +88,9 @@ class Liststore_Frame(Action_Frame):
         else:  # TreeView created previously. Update its TreeStore
             self.__update_liststore(data=data, column_fields=column_fields)  # Update the information shown by this TreeView
         self.show_all()  # Show all widgets
+
+    def set_cursor(self, row_number: int):
+        pass
 
     def __update_liststore(self, data: dict, column_fields: list) -> None:
         """ Private Task:  """

@@ -27,8 +27,8 @@
 .launcher-menu-container {
     color: #dbdbdb;
     background-color: #2b2b2b;
-    margin-right: 6px;
     margin-left: 5px;
+    margin-right: 6px;
 }
 .launcher-menu-button {
     border: 0px;
@@ -296,4 +296,24 @@
 }
 #symbol-label {
     margin-left: 20px;
+}
+.image-button {
+    border-image: none;
+    margin: 0px;
+    padding: 0px;
+    border: 0px;
+    box-shadow: none;
+    background-repeat: no-repeat;
+    background-position: center;
+    outline: none;
+    border-radius: 2px;
+}
+.active-help-button {
+    background-color: #2b2b2b;
+    margin-right: 6px;
+    padding-right: 5px;
+    background-image: url("../icons/help_dark.png");
+}
+.active-help-button:hover {
+    background-image: url("../icons/help_light.png");
 }
