@@ -1,4 +1,4 @@
-#  L_Menu_Layer.py. (Modified 2022-05-07, 9:35 p.m. by Praxis)
+#  L_Menu_Layer.py. (Modified 2022-05-08, 3:51 p.m. by Praxis)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -67,6 +67,8 @@ class L_Menu_Layer(Content_Layer):
                                       button_css_class="launcher-menu-button",
                                       content_manager=content_manager,
                                       message_callback=self.__process_action)
+
+        help_manager.set_close_help_callback(self.__category_menu.help_button_clicked)
 
         self.__menu_container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
 

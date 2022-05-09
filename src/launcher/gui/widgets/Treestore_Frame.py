@@ -1,4 +1,4 @@
-#  Treestore_Frame.py. (Modified 2022-05-07, 2:43 p.m. by Praxis)
+#  Treestore_Frame.py. (Modified 2022-05-08, 2:54 p.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,7 +19,7 @@ from .Action_Frame import Action_Frame
 class Treestore_Frame(Action_Frame):
     EXPAND_BY_DEFAULT = False
 
-    def __init__(self, css_class: str = "table-list-container", css_name: str = None):
+    def __init__(self, css_class: str = "table-list-container", css_name: str = None, active_toggle: str = "EXPAND"):
         """ Constructor:  """
         super().__init__(css_class=css_class, css_name=css_name)
         self.filter = None
@@ -33,6 +33,7 @@ class Treestore_Frame(Action_Frame):
         # Add the 'expand' and 'collapse' buttons
         self.register_button(name="expand", id="TF-expand", callback=self.__toggle_clicked, tooltip="Expand All", interaction_type="toggle", group_key="display_list", active=True)
         self.register_button(name="collapse", id="TF-collapse", callback=self.__toggle_clicked, tooltip="Collapse All", interaction_type="toggle", group_key="display_list", active=False)
+        self.__set_toggle_state(active_toggle=active_toggle)
         # Create an entry box to allow the user to modify the file path
         self.search_entry = Gtk.Entry()
         self.search_entry.get_style_context().add_class('action-bar-search')
@@ -40,6 +41,21 @@ class Treestore_Frame(Action_Frame):
         self.search_entry.set_icon_from_pixbuf(Gtk.EntryIconPosition.PRIMARY, self.__get_pixbuf_image("search_dark.png"))
         self.search_entry.connect("changed", self.__search_query)
         self.add_to_action_bar(item=self.search_entry, pack="end")
+
+    def __set_toggle_state(self, active_toggle: str):
+        if active_toggle != "EXPAND":
+            self.toggle_button_clicked("TF-expand")  # This makes the TF-collapse button active
+
+    def set_treeview_expanded(self, is_expanded: bool):
+        if is_expanded:
+            self.tree_view.expand_all()
+            self.__set_toggle_state(active_toggle="COLLAPSE")
+        else:
+            self.tree_view.collapse_all()
+            self.__set_toggle_state(active_toggle="EXPAND")
+
+    def hide_column_titles(self, headers_visible: bool):
+        self.tree_view.set_headers_visible(not headers_visible)
 
     def __toggle_clicked(self, button: Gtk.Widget, id: str) -> None:
         """ Private callback: Called when the 'expand' or 'collapse' button is clicked. """
@@ -53,7 +69,7 @@ class Treestore_Frame(Action_Frame):
         """ Private initializer: Instantiates a TreeView object and adds display columns """
         # Create a TreeStore using a list of column types (required to initialize storage containers)
         self.tree_store = Gtk.TreeStore.new(types=gtypes)
-        self.__update_treestore(data=data, row_order=row_order)  # Format the data and store it in TreeStore container
+        self.__update_treestore(data=data, row_order=row_order, number_of_treestore_data_fields=len(gtypes))  # Format the data and store it in TreeStore container
         # Use an internal column for filtering
         self.filter = self.tree_store.filter_new()
         self.filter.set_visible_column(column=self.COLUMNS["VISIBLE"])
@@ -151,6 +167,7 @@ class Treestore_Frame(Action_Frame):
             # A list of types to be stored in the TreeView columns is required by Gtk.TreeStore.new()
             gtypes = [bool]  # The initial type of 'bool' is added to the list of columns to store a row visibility flag
             # Generate a list of data types for each item that will be stored in the TreeStore -> create_tree_view()
+            # ToDo: This fails if the first item has no associated data
             for item in data[next(iter(data))][0]:  # Get the first item from the list of values linked to the dictionary's first key
                 gtypes.append(type(item))  # Store the gtype value for each of the components in this list
             # Search through the column_properties dictionary and register searchable TreeView columns
@@ -167,7 +184,7 @@ class Treestore_Frame(Action_Frame):
             # self.__update_treestore(data=data, row_order=row_order)  # Update the information shown by this TreeView
         self.show_all()  # Show all widgets
 
-    def __update_treestore(self, data: dict, row_order: dict) -> None:
+    def __update_treestore(self, data: dict, row_order: dict, number_of_treestore_data_fields: int) -> None:
         """ Private Task:  """
         if self.__displaying_tree_view:  # This TreeView was created previously
             self.tree_store.clear()  # Clear all data from its TreeStore
@@ -175,12 +192,11 @@ class Treestore_Frame(Action_Frame):
         for row_field, label in row_order.items():  # Add values for all remaining keys
             # Format the data used by the top-level row label
             category_list_values = [True, label]  # List of values for each row [Visible = True, Grade # (count)
-            if len(data[row_field][0]) > 1:  # Check if the data for each student includes more than a string value of their name
-                for i in range(len(data[row_field][0]) - 1):  # For each additional item in the value
-                    category_list_values += [""]  # Add an empty string to the top-level row name to fill column spaces
+            for i in range(number_of_treestore_data_fields - 2):  # For each additional item in the value
+                category_list_values += [""]  # Add an empty string to the top-level row name to fill column spaces
             # Add the top-level row
             top_level_row = self.tree_store.append(parent=None, row=category_list_values)  # Store the list 'category_list_values' in the TreeStore
-            # Attach all child rows 
+            # Attach all child rows
             for item in data[row_field]:  # For each student in this grade
                 self.tree_store.append(parent=top_level_row, row=[True] + item)  # Set these entries as children of the top-level row. Add the value 'True' to front of the data list.
 
@@ -201,6 +217,7 @@ class Treestore_Frame(Action_Frame):
                 self.tree_store.foreach(self.__reset_row, True)  # Iterate over the full TreeStore model and set the 'HIDDEN' column to True (Parameters: func, *user)
                 if self.EXPAND_BY_DEFAULT:  # If rows are set to be expanded by default
                     self.tree_view.expand_all()  # Set the TreeView flag for all rows
+                    self.__set_toggle_state(active_toggle="COLLAPSE")
                 else:
                     self.tree_view.collapse_all()  # Otherwise, collapse all rows
             else:  # A value has been entered into the search box
@@ -213,6 +230,7 @@ class Treestore_Frame(Action_Frame):
             self.tree_store.foreach(self.__reset_row, False)  # Set the 'HIDDEN' field of all rows in the TreeStore to False
             self.tree_store.foreach(self.__show_matches, fields_to_search, string_to_match.lower(), show_subtrees_of_matches)  # Check to see if the row value matches the search query
             self.tree_view.expand_all()  # Expand all rows to display filtered results
+            self.__set_toggle_state(active_toggle="COLLAPSE")
             self.filter.refilter()  # Trigger 'row_changed' signal to force evaluation of whether a row is visible or not based on the updated HIDDEN field
 
     def __reset_row(self, model: Gtk.TreeModel, path: Gtk.TreePath, iter: Gtk.TreeIter, make_visible: object):

@@ -1,4 +1,4 @@
-#  L_Load_Student_Data.py. (Modified 2022-05-07, 2:14 p.m. by Praxis)
+#  L_Load_Student_Data.py. (Modified 2022-05-08, 1:28 p.m. by Praxis)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -12,9 +12,10 @@
 class L_Load_Student_Data:
     FORMATTED_DATA = None
     RAW_DATA = None
-    ROW_ORDER = None
-    COLUMN_PROPERTIES = None
-    DATA_FIELDS = None
+    ROW_ORDER = None  # The order that rows appear in the TreeView with formatted labels ('KF': 'Kindergarten (##)')
+    COLUMN_PROPERTIES = None    # DATA_FIELD_NAME: {"renderer": (static-text | editable-text | selectable), "searchable": (True | False)}.
+                                # The fields in this list are used for creating TreeViewColumns
+    DATA_FIELDS = None  # A list of data fields taken from the raw data to be used for storing in a TreeStore
     REGISTERED_CALLBACKS = []
 
     @classmethod

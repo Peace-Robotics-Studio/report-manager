@@ -66,7 +66,8 @@
     padding: 4px;
 }
 .launcher-feedback-navigation-button {
-    margin-right: 5px;
+    margin-right: 3px;
+    padding: 3px 8px;
 }
 .launcher-feedback-options-menu-container {
     min-width: 100px;
@@ -316,4 +317,41 @@
 }
 .active-help-button:hover {
     background-image: url("../icons/help_light.png");
+}
+.launcher_help_content {
+    min-width: 460px;
+    margin-top: 10px
+}
+.launcher_help_directory {
+    padding: 2px;
+}
+.launcher_help_directory_treeview {
+    margin-top: 0px;
+}
+.launcher_help_action_bar {
+    background-color: #2b2b2b;
+    padding: 4px;
+}
+.large-title {
+    font-size: 16pt;
+}
+.medium-title {
+    font-size: 14pt;
+}
+.small-title {
+    font-size: 12pt;
+}
+.help-text {
+    color: green;
+}
+.help-link {
+    margin-left: 13px;
+    margin-top: 3px;
+}
+.help-link link {
+    color: orange;
+}
+.help-text-section {
+    margin-bottom: 15px;
+    padding: 0px 7px;
 }

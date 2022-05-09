@@ -1,4 +1,4 @@
-#  Config.py. (Modified 2022-04-26, 11:19 p.m. by Praxis)
+#  Config.py. (Modified 2022-05-08, 10:16 a.m. by Praxis)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,7 +24,7 @@ res_dir = dict(
     ICONS=RES_FOLDER + "icons/",
 )
 
-version_number = "v2022.04.26"
+version_number = "v2022.5.8"
 config_file_name = "configuration.json"
 config_file_path = res_dir["ROOT"] + "/" + config_file_name
 config_data = {}

@@ -1,4 +1,4 @@
-#  L_Setup_Manager.py. (Modified 2022-05-07, 8:44 p.m. by Praxis)
+#  L_Setup_Manager.py. (Modified 2022-05-08, 1:14 p.m. by Praxis)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -33,13 +33,13 @@ class L_Setup_Manager(Content_Manager):
         self.__content_options_container_css_class = 'launcher-feedback-options-container'
         self.options_content_area = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)  # Create a box to hold the options display data
         self.menu_button_keys = dict(
-            MENU_0={"TYPE": "Text",
+            PANEL_0={"TYPE": "Text",
                     "PACK": "Start",
                     "LABEL": "Enrollment",
                     "ACTIVE": True,
                     "INFO": "Load a CSV file containing student data",
                     "CONTENT_MANAGER": L_Student_Enrollment(parent_window=parent_window)},
-            MENU_1={"TYPE": "Text",
+            PANEL_1={"TYPE": "Text",
                     "PACK": "Start",
                     "LABEL": "Pronouns",
                     "ACTIVE": False,

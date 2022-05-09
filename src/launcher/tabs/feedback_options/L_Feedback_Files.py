@@ -1,4 +1,4 @@
-#  L_Feedback_Files.py. (Modified 2022-04-20, 8:37 p.m. by Praxis)
+#  L_Feedback_Files.py. (Modified 2022-05-08, 1:16 p.m. by Praxis)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -31,15 +31,15 @@ class L_Feedback_Files:
 
     def set_state(self, key):
         match key:
-            case "MENU_0":  # Existing Files
+            case "PANEL_0":  # Existing Files
                 self.display_recent_files()
-            case "MENU_1":  # By Grade
+            case "PANEL_1":  # By Grade
                 self.display_by_grade()
-            case "MENU_2":  # By Teacher
+            case "PANEL_2":  # By Teacher
                 self.display_by_teacher()
-            case "MENU_3":  # By Class
+            case "PANEL_3":  # By Class
                 self.display_by_class()
-            case "MENU_4":  # By Date
+            case "PANEL_4":  # By Date
                 self.display_by_date()
 
     def display_recent_files(self):

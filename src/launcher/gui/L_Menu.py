@@ -1,4 +1,4 @@
-#  L_Menu.py. (Modified 2022-05-07, 10:18 p.m. by Praxis)
+#  L_Menu.py. (Modified 2022-05-08, 3:45 p.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -102,6 +102,9 @@ class L_Menu:
                     self.__class__.ACTIVE_PANEL = None
         else:
             self.__class__.ACTIVE_PANEL = key
+
+    def help_button_clicked(self):
+        self.load_menu_request("MENU_3")
 
     def load_menu_request(self, key) -> None:
         """ Public Processor: This function coordinates menu actions with the GUI_Manager. """

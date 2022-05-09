@@ -1,4 +1,4 @@
-#  L_Pronouns.py. (Modified 2022-05-07, 2:43 p.m. by Praxis)
+#  L_Pronouns.py. (Modified 2022-05-08, 2:31 p.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -72,7 +72,7 @@ class L_Pronouns:
         self.pronouns_entry.set_hexpand(True)
         right_side.attach(child=self.pronouns_entry, left=1, top=1, width=1, height=1)
 
-        self.student_list = Treestore_Frame(css_name="student-frame")
+        self.student_list = Treestore_Frame(css_name="student-frame", active_toggle="COLLAPSE")
         self.student_list.register_button(name="add", id="student-add", callback=self.button_clicked, tooltip="Add", active=True, pack_order="START")
         self.student_list.register_button(name="remove", id="student-remove", callback=self.button_clicked, tooltip="Remove", active=False, pack_order="START")
         self.show_student_data()
