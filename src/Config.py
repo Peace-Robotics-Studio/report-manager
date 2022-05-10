@@ -1,4 +1,4 @@
-#  Config.py. (Modified 2022-05-08, 10:16 a.m. by Praxis)
+#  Config.py. (Modified 2022-05-09, 10:36 p.m. by Praxis)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,6 +22,7 @@ res_dir = dict(
     CSS=RES_FOLDER + "css/",
     GUI=RES_FOLDER + "gui/",
     ICONS=RES_FOLDER + "icons/",
+    IMAGES=RES_FOLDER + "images/"
 )
 
 version_number = "v2022.5.8"

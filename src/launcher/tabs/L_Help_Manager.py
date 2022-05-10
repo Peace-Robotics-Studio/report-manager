@@ -1,4 +1,4 @@
-#  L_Help_Manager.py. (Modified 2022-05-08, 11:04 p.m. by Praxis)
+#  L_Help_Manager.py. (Modified 2022-05-09, 10:46 p.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -12,8 +12,7 @@ import gi
 gi.require_version('Gtk', '3.0')
 from ..gui.L_Menu import L_Menu
 from ..gui.widgets.Treestore_Frame import Treestore_Frame
-from ..gui.widgets.Action_Frame import Action_Frame
-from .setup_options.L_Load_Student_Data import L_Load_Student_Data
+from ...Config import res_dir
 
 from gi.repository import Gtk
 
@@ -92,6 +91,8 @@ class L_Help_Manager:
         test = [
             [("H2", "Title")],
             [
+                ("H3", "Subtitle"),
+                ("IMAGE", "test.png"),
                 ("TEXT", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."),
                 ("LINK", "https://github.com/Peace-Robotics-Studio/report-manager/wiki/Obtaining-Data-From-MyEd", "Instructions for exporting student data from MyEd", "Report Manager Wiki")
             ],
@@ -134,6 +135,13 @@ class L_Help_Manager:
                     new_label.set_markup(f"<a href=\"{link_href}\" title=\"{link_title}\">{link_text}</a>")
                     new_label.get_style_context().add_class(conversion[text_block[0]])
                     new_label.set_xalign(0)
+                elif text_block[0] == 'IMAGE':
+                    new_label = Gtk.Image()
+                    new_label.set_from_file(res_dir['IMAGES'] + 'test.png')
+                elif text_block[0] == 'H3':
+                    new_label.set_label(text_block[1])
+                    new_label.set_xalign(0)
+                    new_label.get_style_context().add_class(conversion[text_block[0]])
                 else:
                     new_label.set_label(text_block[1])
                     new_label.get_style_context().add_class(conversion[text_block[0]])

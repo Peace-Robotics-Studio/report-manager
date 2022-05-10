@@ -319,7 +319,7 @@
     background-image: url("../icons/help_light.png");
 }
 .launcher_help_content {
-    min-width: 460px;
+    min-width: 450px;
     margin-top: 10px
 }
 .launcher_help_directory {
@@ -340,12 +340,13 @@
 }
 .small-title {
     font-size: 12pt;
+    margin-left: 7px;
 }
 .help-text {
     color: green;
 }
 .help-link {
-    margin-left: 13px;
+    margin-left: 10px;
     margin-top: 3px;
 }
 .help-link link {
@@ -353,5 +354,6 @@
 }
 .help-text-section {
     margin-bottom: 15px;
-    padding: 0px 7px;
+    padding-left: 3px;
+    padding-right: 12px;
 }

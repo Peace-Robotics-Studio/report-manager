@@ -1,4 +1,4 @@
-#  L_Reports.py. (Modified 2022-05-07, 8:20 p.m. by Praxis)
+#  L_Reports.py. (Modified 2022-05-09, 10:39 p.m. by Praxis)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -12,6 +12,7 @@ import gi
 gi.require_version('Gtk', '3.0')
 
 from gi.repository import Gtk
+from ...Config import *
 
 class L_Reports:
     def __init__(self):
@@ -29,3 +30,6 @@ class L_Reports:
         label.set_text("Reports Area")  # Set the value of the label text
         label.get_style_context().add_class('label-notification')  # Connect a CSS class to the label
         self.__layout_container.add(label)
+        image = Gtk.Image()
+        image.set_from_file(res_dir['IMAGES'] + 'test.png')
+        self.__layout_container.add(image)
