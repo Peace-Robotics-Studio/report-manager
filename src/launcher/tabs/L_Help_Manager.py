@@ -1,4 +1,4 @@
-#  L_Help_Manager.py. (Modified 2022-05-09, 10:46 p.m. by Praxis)
+#  L_Help_Manager.py. (Modified 2022-05-11, 10:59 p.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -14,7 +14,7 @@ from ..gui.L_Menu import L_Menu
 from ..gui.widgets.Treestore_Frame import Treestore_Frame
 from ...Config import res_dir
 
-from gi.repository import Gtk
+from gi.repository import Gtk,  GdkPixbuf
 
 class L_Help_Manager:
     RAW_DATA = {
@@ -92,7 +92,7 @@ class L_Help_Manager:
             [("H2", "Title")],
             [
                 ("H3", "Subtitle"),
-                ("IMAGE", "test.png"),
+                ("IMAGE", "test.png", 75),
                 ("TEXT", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."),
                 ("LINK", "https://github.com/Peace-Robotics-Studio/report-manager/wiki/Obtaining-Data-From-MyEd", "Instructions for exporting student data from MyEd", "Report Manager Wiki")
             ],
@@ -105,7 +105,6 @@ class L_Help_Manager:
                 ("LINK", "https://github.com/Peace-Robotics-Studio/report-manager/wiki/Obtaining-Data-From-MyEd", "Instructions for exporting student data from MyEd", "Report Manager Wiki")
             ]
         ]
-
         conversion = dict(
             H1='large-title',
             H2='medium-title',
@@ -136,8 +135,19 @@ class L_Help_Manager:
                     new_label.get_style_context().add_class(conversion[text_block[0]])
                     new_label.set_xalign(0)
                 elif text_block[0] == 'IMAGE':
-                    new_label = Gtk.Image()
-                    new_label.set_from_file(res_dir['IMAGES'] + 'test.png')
+                    new_label = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+                    new_label.get_style_context().add_class('help-image-container')
+                    new_label.set_hexpand(True)
+                    label_image = Gtk.Image()
+                    label_image.set_hexpand(True)
+                    label_image.set_halign(Gtk.Align.CENTER)
+                    new_label.add(label_image)
+                    pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
+                        filename=res_dir['IMAGES'] + text_block[1],
+                        height=text_block[2],
+                        width=-1,
+                        preserve_aspect_ratio=True)
+                    label_image.set_from_pixbuf(pixbuf)
                 elif text_block[0] == 'H3':
                     new_label.set_label(text_block[1])
                     new_label.set_xalign(0)
