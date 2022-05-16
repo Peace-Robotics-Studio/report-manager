@@ -44,12 +44,6 @@ class L_Student_Enrollment:
         roster_file_dir = Combo_Picker(label="Student Roster:", css_class="enrollment-combo-picker", parent_window=parent_window, callback=self.__load_student_data)
         self.__layout_container.pack_start(roster_file_dir.get_layout_container(), False, False, 0)
         self.__layout_container.pack_start(self.student_details_list.get_layout_container(), False, True, 0)
-        instructions = Gtk.Label()
-        instructions.set_xalign(0)
-        instructions.set_markup("<a href=\"https://github.com/Peace-Robotics-Studio/report-manager/wiki/Feature-Guide\" "
-                                "title=\"Report Manager Wiki\">Instructions for exporting student data from MyEd BC</a>")
-        instructions.get_style_context().add_class('instructions-link')
-        self.__layout_container.add(instructions)
         self.__layout_container.show_all()
 
     def __button_clicked(self, button, id):
@@ -58,9 +52,9 @@ class L_Student_Enrollment:
     def __add_help_page(self):
         help_page = L_Help_Page(tab_id=self.__page_id["TAB_ID"], panel_id=self.__page_id["PANEL_ID"])
         help_page.set_page_title(title="Student Enrollment")
-        help_page.add_section_title(title="Subtitle", section=1)
-        help_page.add_image(image_file="test.png", height=75, section=1)
-        help_page.add_text(text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.", section=1)
+        help_page.add_section_title(title="Student Data From MyEd", section=1)
+        help_page.add_image(image_file="t0-p0 student enrollment.png", height=75, section=1, path_key='T0P0_IMAGES')
+        help_page.add_text(text="stuff", section=1)
         help_page.add_link(url="https://github.com/Peace-Robotics-Studio/report-manager/wiki/Obtaining-Data-From-MyEd", link_text="Instructions for exporting student data from MyEd",
                       alt_text="Report Manager Wiki", section=1)
 

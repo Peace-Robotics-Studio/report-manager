@@ -22,10 +22,11 @@ res_dir = dict(
     CSS=RES_FOLDER + "css/",
     GUI=RES_FOLDER + "gui/",
     ICONS=RES_FOLDER + "icons/",
-    IMAGES=RES_FOLDER + "images/"
+    IMAGES=RES_FOLDER + "images/",
+    T0P0_IMAGES=RES_FOLDER + "images/tab_0/panel_0/"
 )
 
-version_number = "v2022.5.8"
+version_number = "v2022.5.16"
 config_file_name = "configuration.json"
 config_file_path = res_dir["ROOT"] + "/" + config_file_name
 config_data = {}

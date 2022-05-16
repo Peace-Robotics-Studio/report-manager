@@ -73,7 +73,7 @@ class L_Help_Page_Renderer:
                     label_image.set_halign(Gtk.Align.CENTER)
                     new_label.add(label_image)
                     pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
-                        filename=res_dir['IMAGES'] + text_block[1],
+                        filename=res_dir[text_block[3]] + text_block[1],
                         height=text_block[2],
                         width=-1,
                         preserve_aspect_ratio=True)
@@ -82,8 +82,13 @@ class L_Help_Page_Renderer:
                     new_label.set_label(text_block[1])
                     new_label.set_xalign(0)
                     new_label.get_style_context().add_class(self.CSS_FORMATTING[text_block[0]])
+                elif text_block[0] == 'H2':
+                    new_label.set_label(text_block[1])
+                    new_label.set_xalign(0.5)
+                    new_label.get_style_context().add_class(self.CSS_FORMATTING[text_block[0]])
                 else:
                     new_label.set_label(text_block[1])
                     new_label.get_style_context().add_class(self.CSS_FORMATTING[text_block[0]])
+                    new_label.set_xalign(0)
                 new_section.add(new_label)
         self.scrollable_window_content.show_all()

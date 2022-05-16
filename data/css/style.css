@@ -344,6 +344,7 @@
 }
 .help-text {
     color: #a8c2b9;
+    margin-left: 10px;
 }
 .help-link {
     margin-left: 10px;
@@ -354,7 +355,7 @@
 }
 .help-text-section {
     margin-bottom: 15px;
-    padding-left: 3px;
+    padding-left: 10px;
     padding-right: 12px;
 }
 .help-image-container {

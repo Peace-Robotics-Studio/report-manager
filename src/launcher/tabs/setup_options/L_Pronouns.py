@@ -107,7 +107,7 @@ class L_Pronouns:
         help_page = L_Help_Page(tab_id=self.__page_id["TAB_ID"], panel_id=self.__page_id["PANEL_ID"])
         help_page.set_page_title(title="Pronouns")
         help_page.add_section_title(title="Subtitle", section=1)
-        help_page.add_image(image_file="test.png", height=75, section=1)
+        help_page.add_image(image_file="t0-p0 save path.png", height=75, section=1, path_key='T0P0_IMAGES')
         help_page.add_text(text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.", section=1)
         help_page.add_link(url="https://github.com/Peace-Robotics-Studio/report-manager/wiki/Obtaining-Data-From-MyEd", link_text="Instructions for exporting student data from MyEd",
                       alt_text="Report Manager Wiki", section=1)

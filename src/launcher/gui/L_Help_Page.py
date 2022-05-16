@@ -43,10 +43,10 @@ class L_Help_Page:
             self.section_index[section] = []
         self.section_index[section].append((size, title))
 
-    def add_image(self, image_file: str, height: int, section: int = 1):
+    def add_image(self, image_file: str, path_key: str, height: int = 75, section: int = 1):
         if section not in self.section_index:
             self.section_index[section] = []
-        self.section_index[section].append(("IMAGE", "test.png", 75))
+        self.section_index[section].append(("IMAGE", image_file, height, path_key))
 
     def add_link(self, url: str, link_text: str, alt_text: str, section: int = 1):
         if section not in self.section_index:
