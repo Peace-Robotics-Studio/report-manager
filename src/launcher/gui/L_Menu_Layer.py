@@ -1,4 +1,4 @@
-#  L_Menu_Layer.py. (Modified 2022-05-08, 3:51 p.m. by Praxis)
+#  L_Menu_Layer.py. (Modified 2022-05-15, 9:37 p.m. by Praxis)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -29,26 +29,26 @@ class L_Menu_Layer(Content_Layer):
         super().__init__()
         self.__launcher_properties = launcher_properties
         self.__process_action = message_callback  # Dialog OK | CANCEL messages - Open the editor or quit the application
-        help_manager = L_Help_Manager()
-        menu_buttons = dict(
+        help_manager = L_Help_Manager(tab_id="MENU_3")
+        self.menu_buttons = dict(
             MENU_0={"TYPE": "Text",
                     "PACK": "Start",
                     "LABEL": "Setup",
                     "ACTIVE": True,  # This is the tab that is displayed after the application is initialized
                     "INFO": "",
-                    "CONTENT_MANAGER": L_Setup_Manager(parent_window=launcher_properties["WINDOW_HANDLE"], message_callback=self.__process_action)},
+                    "CONTENT_MANAGER": L_Setup_Manager(tab_id="MENU_0", parent_window=launcher_properties["WINDOW_HANDLE"], message_callback=self.__process_action)},
             MENU_1={"TYPE": "Text",
                     "PACK": "Start",
                     "LABEL": "Quick Reports",
                     "ACTIVE": False,
                     "INFO": "",
-                    "CONTENT_MANAGER": L_Reports()},
+                    "CONTENT_MANAGER": L_Reports(tab_id="MENU_1")},
             MENU_2={"TYPE": "Text",
                     "PACK": "Start",
                     "LABEL": "Feedback",
                     "ACTIVE": False,
                     "INFO": "",
-                    "CONTENT_MANAGER": L_Feedback_Manager(message_callback=self.__process_action)},
+                    "CONTENT_MANAGER": L_Feedback_Manager(tab_id="MENU_2", message_callback=self.__process_action)},
             MENU_3={"TYPE": "Special",
                     "PACK": "End",
                     "LABEL": None,
@@ -56,14 +56,14 @@ class L_Menu_Layer(Content_Layer):
                     "ACTIVE": True,
                     "INFO": "",
                     "ACTIVE_CLASS": "active-help-button",
-                    "TOOLTIP": "Help",
+                    "TOOLTIP": "Help Topics",
                     "ACTION_CALLBACK": help_manager.update,
                     "CONTENT_MANAGER": help_manager}
         )
         self.__category_menu = L_Menu(id="main_menu",
                                       orientation="horizontal",
                                       container_css_class="launcher-menu-container",
-                                      button_values=menu_buttons,
+                                      button_values=self.menu_buttons,
                                       button_css_class="launcher-menu-button",
                                       content_manager=content_manager,
                                       message_callback=self.__process_action)
@@ -87,7 +87,7 @@ class L_Menu_Layer(Content_Layer):
         """ Public Processor: """
         print(data)
 
-
-
-
-
+    def get_tab_id(self, content_manager_object):
+        for key, val in self.menu_buttons.items():
+            if val["CONTENT_MANAGER"] == content_manager_object:
+                print("match")

@@ -1,4 +1,4 @@
-#  L_Pronouns.py. (Modified 2022-05-08, 2:31 p.m. by Praxis)
+#  L_Pronouns.py. (Modified 2022-05-15, 3:30 p.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -15,6 +15,7 @@ from gi.repository import Gtk
 from ...gui.widgets.Treestore_Frame import Treestore_Frame
 from ...gui.widgets.Liststore_Frame import Liststore_Frame
 from .L_Load_Student_Data import L_Load_Student_Data
+from ...gui.L_Help_Page import L_Help_Page
 
 
 class L_Pronouns:
@@ -22,7 +23,9 @@ class L_Pronouns:
                        {"Gender": "Female", "Symbol": "F", "Pronouns": ["she", "her", "hers"]},
                        {"Gender": "Non-Binary", "Symbol": "NB", "Pronouns": ["they", "<name>", "theirs"]}]
 
-    def __init__(self):
+    def __init__(self, page_id: dict):
+        self.__page_id = page_id
+        self.__add_help_page()
         self.__layout_container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         self.__showing_student_list = False
         gender_list = Liststore_Frame(css_name="gender-frame")
@@ -99,6 +102,15 @@ class L_Pronouns:
     def added_gender_label(self, entry):
         # print(f"entry_changed: {entry}")
         pass
+
+    def __add_help_page(self):
+        help_page = L_Help_Page(tab_id=self.__page_id["TAB_ID"], panel_id=self.__page_id["PANEL_ID"])
+        help_page.set_page_title(title="Pronouns")
+        help_page.add_section_title(title="Subtitle", section=1)
+        help_page.add_image(image_file="test.png", height=75, section=1)
+        help_page.add_text(text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.", section=1)
+        help_page.add_link(url="https://github.com/Peace-Robotics-Studio/report-manager/wiki/Obtaining-Data-From-MyEd", link_text="Instructions for exporting student data from MyEd",
+                      alt_text="Report Manager Wiki", section=1)
 
     def __populate_gender_liststore(self, gender_listview: Liststore_Frame):
         # Column_field -> (Label, Expand-Column)

@@ -1,4 +1,4 @@
-#  L_Feedback_Manager.py. (Modified 2022-05-08, 1:17 p.m. by Praxis)
+#  L_Feedback_Manager.py. (Modified 2022-05-15, 7:58 p.m. by Praxis)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,9 +19,10 @@ from .feedback_options.L_Feedback_Files import L_Feedback_Files
 
 
 class L_Feedback_Manager(Content_Manager):
-    def __init__(self, message_callback):
+    def __init__(self, tab_id: str, message_callback):
         """ Constructor: Inherits from Content_Manager abstract class """
         super().__init__()
+        self.__tab_id = tab_id
         self.__process_action = message_callback
         self.__content_container_css_class = 'launcher-feedback-content-container'
         self.__navigation_bar_css_class = 'launcher-feedback-navigation-bar'
@@ -29,7 +30,7 @@ class L_Feedback_Manager(Content_Manager):
         self.__content_options_menu_css_class = 'launcher-feedback-options-menu-container'
         self.__content_options_container_css_class = 'launcher-feedback-options-container'
         self.options_content_area = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)  # Create a box to hold the options display data
-        self.__feedback_manager = L_Feedback_Files(active_option="PANEL_0")
+        self.__feedback_manager = L_Feedback_Files(tab_id=tab_id, active_option="PANEL_0")
         self.menu_button_keys = dict(
             PANEL_0={"TYPE": "Text",
                     "PACK": "Start",
@@ -63,6 +64,7 @@ class L_Feedback_Manager(Content_Manager):
                     "CONTENT_MANAGER": self.__feedback_manager}
         )
         self.__category_menu = L_Menu(id="feedback_menu",
+                                      parent_id=tab_id,
                                       orientation="vertical",
                                       container_css_class="launcher-feedback-options-menu",
                                       button_values=self.menu_button_keys,

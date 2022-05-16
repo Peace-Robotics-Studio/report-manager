@@ -1,4 +1,4 @@
-#  L_Setup_Manager.py. (Modified 2022-05-08, 1:14 p.m. by Praxis)
+#  L_Setup_Manager.py. (Modified 2022-05-15, 7:58 p.m. by Praxis)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,9 +22,10 @@ from .setup_options.L_Pronouns import L_Pronouns
 
 class L_Setup_Manager(Content_Manager):
     """ As per "The Quick Python Book": class doc strings list the available methods along with usage information. """
-    def __init__(self, parent_window: Gtk.Window, message_callback):
+    def __init__(self, tab_id: str, parent_window: Gtk.Window, message_callback):
         """ Constructor: Inherits from Content_Manager abstract class """
         super().__init__()
+        self.__tab_id = tab_id
         self.__process_action = message_callback
         self.__content_container_css_class = 'launcher-feedback-content-container'
         self.__navigation_bar_css_class = 'launcher-feedback-navigation-bar'
@@ -38,15 +39,16 @@ class L_Setup_Manager(Content_Manager):
                     "LABEL": "Enrollment",
                     "ACTIVE": True,
                     "INFO": "Load a CSV file containing student data",
-                    "CONTENT_MANAGER": L_Student_Enrollment(parent_window=parent_window)},
+                    "CONTENT_MANAGER": L_Student_Enrollment(page_id={"TAB_ID": self.__tab_id, "PANEL_ID": "PANEL_0"}, parent_window=parent_window)},
             PANEL_1={"TYPE": "Text",
                     "PACK": "Start",
                     "LABEL": "Pronouns",
                     "ACTIVE": False,
                     "INFO": "Manage custom pronouns",
-                    "CONTENT_MANAGER": L_Pronouns()}
+                    "CONTENT_MANAGER": L_Pronouns(page_id={"TAB_ID": self.__tab_id, "PANEL_ID": "PANEL_1"})}
         )
         self.__category_menu = L_Menu(id="setup_menu",
+                                      parent_id=tab_id,
                                       orientation="vertical",
                                       container_css_class="launcher-feedback-options-menu",
                                       button_values=self.menu_button_keys,

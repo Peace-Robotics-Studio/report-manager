@@ -1,4 +1,4 @@
-#  L_Content_Manager.py. (Modified 2022-04-17, 12:14 p.m. by Praxis)
+#  L_Content_Manager.py. (Modified 2022-05-13, 9:49 p.m. by Praxis)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,12 +24,7 @@ class L_Content_Manager(Content_Manager):
         super().__init__()
         self.__launcher_properties = launcher_properties
         self.__content_container_css_class = 'launcher-content-container'
-        self.__build_layer()
 
-    # Private Methods
-
-    def __build_layer(self) -> None:
-        """ Initialization: composes layout of content area """
         self.__content_area = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.__content_area.get_style_context().add_class(self.__content_container_css_class)
         self.__content_area.set_margin_top(self.__launcher_properties['BANNER_HEIGHT'] + self.__launcher_properties['MENU_BUTTON_HEIGHT'])  # Set the top margin to the height of the banner + menu bar

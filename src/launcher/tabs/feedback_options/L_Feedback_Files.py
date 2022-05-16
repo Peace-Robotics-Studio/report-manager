@@ -1,4 +1,4 @@
-#  L_Feedback_Files.py. (Modified 2022-05-08, 1:16 p.m. by Praxis)
+#  L_Feedback_Files.py. (Modified 2022-05-15, 4:46 p.m. by Praxis)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -12,11 +12,14 @@ import gi
 gi.require_version('Gtk', '3.0')
 
 from gi.repository import Gtk
+from ...gui.L_Help_Page import L_Help_Page
 
 class L_Feedback_Files:
     """ This class is called by """
-    def __init__(self, active_option: str):
+    def __init__(self, tab_id: str, active_option: str):
         """ Constructor """
+        self.__tab_id = tab_id
+        self.__add_help_page()
         self.__layoutContainer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.__layoutContainer.set_hexpand(True)
         self.__layoutContainer.set_vexpand(True)
@@ -41,6 +44,23 @@ class L_Feedback_Files:
                 self.display_by_class()
             case "PANEL_4":  # By Date
                 self.display_by_date()
+
+    def __add_help_page(self):
+        help_page_0 = L_Help_Page(tab_id=self.__tab_id, panel_id="PANEL_0")
+        help_page_0.set_page_title(title="Display Recent Files")
+
+        help_page_1 = L_Help_Page(tab_id=self.__tab_id, panel_id="PANEL_1")
+        help_page_1.set_page_title(title="Feedback By Grade")
+
+        help_page_2 = L_Help_Page(tab_id=self.__tab_id, panel_id="PANEL_2")
+        help_page_2.set_page_title(title="Feedback By Teacher")
+
+        help_page_3 = L_Help_Page(tab_id=self.__tab_id, panel_id="PANEL_3")
+        help_page_3.set_page_title(title="Feedback By Class")
+
+        help_page_4 = L_Help_Page(tab_id=self.__tab_id, panel_id="PANEL_4")
+        help_page_4.set_page_title(title="Feedback By Date")
+
 
     def display_recent_files(self):
         self.page_label.set_text("Recent Feedback Summaries")  # Set the value of the label text

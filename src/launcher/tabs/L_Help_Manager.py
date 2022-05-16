@@ -1,4 +1,4 @@
-#  L_Help_Manager.py. (Modified 2022-05-11, 10:59 p.m. by Praxis)
+#  L_Help_Manager.py. (Modified 2022-05-15, 10:49 p.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -12,37 +12,13 @@ import gi
 gi.require_version('Gtk', '3.0')
 from ..gui.L_Menu import L_Menu
 from ..gui.widgets.Treestore_Frame import Treestore_Frame
-from ..gui.L_Help_Page_Directory import L_Help_Page_Directory
+from ..gui.L_Help_Page_Renderer import L_Help_Page_Renderer
+from ..gui.L_Help_Page import L_Help_Page
 from ...Config import res_dir
 
 from gi.repository import Gtk,  GdkPixbuf
 
 class L_Help_Manager:
-    """ This class stores data for an inidividual page """
-    RAW_DATA = {
-        "MENU_0": {
-            "PROPERTIES": {"TITLE": "Setup", "INDEX_TITLE": "Setup"},
-            "PANELS": {
-                "PANEL_0": {"PROPERTIES": {"TITLE": "Enrollment", "INDEX_TITLE": "Enrollment"}},
-                "PANEL_1": {"PROPERTIES": {"TITLE": "Pronouns", "INDEX_TITLE": "Pronouns"}}
-            }
-        },
-        "MENU_1": {
-            "PROPERTIES": {"TITLE": "Quick Reports", "INDEX_TITLE": "Quick Reports"},
-            "PANELS": {}
-        },
-        "MENU_2": {
-            "PROPERTIES": {"TITLE": "Feedback", "INDEX_TITLE": "Feedback"},
-            "PANELS": {
-                "PANEL_0": {"PROPERTIES": {"TITLE": "Recent Files", "INDEX_TITLE": "Recent Files"}},
-                "PANEL_1": {"PROPERTIES": {"TITLE": "By Grade", "INDEX_TITLE": "By Grade"}},
-                "PANEL_2": {"PROPERTIES": {"TITLE": "By Teacher", "INDEX_TITLE": "By Teacher"}},
-                "PANEL_3": {"PROPERTIES": {"TITLE": "By Class Code", "INDEX_TITLE": "By Class Code"}},
-                "PANEL_4": {"PROPERTIES": {"TITLE": "By Date", "INDEX_TITLE": "By Date"}}
-            }
-        }
-    }
-
     FORMATTED_DATA = {
         'MENU_0': [
             ['Enrollment', 'MENU_0.PANEL_0'],
@@ -66,9 +42,10 @@ class L_Help_Manager:
 
     COLUMN_PROPERTIES = {"Title": {"renderer": "static-text", "searchable": True}}
 
-    def __init__(self):
+    def __init__(self, tab_id: str):
+        self.__tab_id = tab_id
         self.__close_help_menu_callback = None
-        self.__page_directory = L_Help_Page_Directory()
+        self.__page_renderer = L_Help_Page_Renderer()
         self.__layout_container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         self.__navigation_button_css_class = 'launcher-feedback-navigation-button'
 
@@ -91,16 +68,7 @@ class L_Help_Manager:
         help_contents.set_vexpand(True)
         self.__layout_container.pack_start(help_contents, True, True, 0)
 
-        help_contents.add(widget=self.__page_directory.get_layout_container())
-
-
-
-
-
-        # test_label = Gtk.Label()
-        # test_label.set_markup("<span color='red' size='large'>1</span> 22 \r <span font_family='monospace'>333</span>")
-
-
+        help_contents.add(widget=self.__page_renderer.get_layout_container())
 
         action_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         action_box.get_style_context().add_class('launcher_help_action_bar')
@@ -115,18 +83,22 @@ class L_Help_Manager:
         button_grid.attach(child=help_close, left=0, top=0, width=1, height=1)
 
     def get_layout_container(self):
+        """ Public Convenience: Returns the layout container for this object. """
         return self.__layout_container
 
     def set_close_help_callback(self, callback: callable):
+        """ Callback Reference: Allows two buttons to trigger the same action (help button and close button) """
+        # This function is executed in L_Menu_Layer after the creation of the 'main_menu' navigation menu
         self.__close_help_menu_callback = callback
 
     def update(self):
-        # print(f"Tab: {L_Menu.ACTIVE_TAB}; Panel: {L_Menu.ACTIVE_PANEL}")
-        self.__page_directory.show_page(tab_id=L_Menu.ACTIVE_TAB, panel_id=L_Menu.ACTIVE_PANEL)
+        """ Get the page_renderer to display the help page registered to current combination of active tab and panel ids. """
+        # Display page for the active tab_id and it's active panel (panel_id is stored in a dict indexed by tab_id
+        self.__page_renderer.show_page(tab_id=L_Menu.ACTIVE_TAB, panel_id=L_Menu.ACTIVE_PANEL[L_Menu.ACTIVE_TAB])
 
     def close_button_clicked(self, button):
-        self.__close_help_menu_callback()
+        """ Callback: Triggers the toggling logic connected with the help special button in the navigation menu """
+        # This function points to L_Menu.help_button_clicked().
+        self.__close_help_menu_callback()  # Call the function registered as the callback for the close button in the action bar
 
-    @classmethod
-    def add_page(cls, ):
 

@@ -1,4 +1,4 @@
-#  L_Student_Enrollment.py. (Modified 2022-05-07, 2:33 p.m. by Praxis)
+#  L_Student_Enrollment.py. (Modified 2022-05-15, 3:30 p.m. by Praxis)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -17,13 +17,17 @@ from gi.repository import Gtk
 from ...gui.widgets.Combo_Picker import Combo_Picker
 from ...gui.widgets.Treestore_Frame import Treestore_Frame
 from .L_Load_Student_Data import L_Load_Student_Data
+from ...gui.L_Help_Page import L_Help_Page
 
 
 class L_Student_Enrollment:
-    def __init__(self, parent_window: Gtk.Window):
+    def __init__(self, page_id: dict, parent_window: Gtk.Window):
         """ Constructor: """
+
+        self.__page_id = page_id
         self.RAW_DATA = defaultdict(list)
         self.__student_roster_loaded = False
+        self.__add_help_page()
         # Create a container to hold student enrollment data
         self.__layout_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.__layout_container.set_hexpand(True)
@@ -50,6 +54,15 @@ class L_Student_Enrollment:
 
     def __button_clicked(self, button, id):
         print(f"{id} clicked (Student Enrollment)")
+
+    def __add_help_page(self):
+        help_page = L_Help_Page(tab_id=self.__page_id["TAB_ID"], panel_id=self.__page_id["PANEL_ID"])
+        help_page.set_page_title(title="Student Enrollment")
+        help_page.add_section_title(title="Subtitle", section=1)
+        help_page.add_image(image_file="test.png", height=75, section=1)
+        help_page.add_text(text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.", section=1)
+        help_page.add_link(url="https://github.com/Peace-Robotics-Studio/report-manager/wiki/Obtaining-Data-From-MyEd", link_text="Instructions for exporting student data from MyEd",
+                      alt_text="Report Manager Wiki", section=1)
 
     def get_layout_container(self):
         """ Public Accessor: Returns the main Gtk.Container holding widgets for this class. """

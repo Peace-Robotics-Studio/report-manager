@@ -1,4 +1,4 @@
-#  L_Menu_Special_Button.py. (Modified 2022-05-07, 7:05 p.m. by Praxis)
+#  L_Menu_Special_Button.py. (Modified 2022-05-15, 9:48 p.m. by Praxis)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -32,7 +32,7 @@ class L_Menu_Special_Button:
                 case "left" | "right":
                     self.__button.get_child().set_xalign(0) if label_alignment == "left" else self.__button.get_child().set_xalign(1)
         if tooltip is not None:
-            self.__button.set_tooltip_text(tooltip)
+            self.__button.set_tooltip_text(tooltip)  # This doesn't appear to work. Bug with Gtk.Overlay with pass_through set to True
         self.__button.connect("clicked", self.button_clicked)
         self.__button.get_style_context().add_class(style_class)
         self.set_active_state(active_state)
@@ -43,6 +43,7 @@ class L_Menu_Special_Button:
         return self.__button
 
     def set_active_state(self, is_active: bool):
+        """ Public Task: Set the CSS state for active or inactive button """
         self.__active_state = is_active
         if is_active:
             if self.__active_class is not None:
@@ -56,7 +57,9 @@ class L_Menu_Special_Button:
                 self.__button.get_style_context().add_class(self.__inactive_class)
 
     def button_clicked(self, button):
+        """ Callback: Triggered by button click """
         self.__callback(self.__key)
 
     def set_style_name(self, style_name):
+        """ Set the CSS name """
         self.__button.set_name(style_name)
