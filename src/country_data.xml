@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ country_data.xml. (Modified 2022-05-16, 10:17 p.m. by Praxis)
-  ~ Copyright (c) 2022 Peace Robotics Studio
+  ~ country_data.xml. (Modified 2022-05-18, 10:35 p.m. by Praxis)
+  ~ Copyright (c) 2022-2022 Peace Robotics Studio
   ~ Licensed under the MIT License.
   ~ Permission is hereby granted, free of charge, to any person obtaining a copy
   ~ of this software and associated documentation files (the "Software"), to deal
@@ -12,11 +12,43 @@
   -->
 
 <help_pages>
-    <tab id="0">
-        <page id="00">
-            <title class="H2">Student Enrollment</title>
+    <tab id="MENU_0">
+        <page id="PANEL_0">
+            <page_title class="H2">Student Enrollment</page_title>
             <section>
-                <subtitle class="H3">Student Data From MyEd</subtitle>
+                <title class="H3">Student Data From MyEd</title>
+                <image name="t0-p0 student enrollment.png"/>
+                <text>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore
+                    et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+                    aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+                    cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+                    culpa qui officia deserunt mollit anim id est laborum.
+                </text>
+                <link url="https://github.com/Peace-Robotics-Studio/report-manager/wiki/Obtaining-Data-From-MyEd" alt="Report Manager Wiki">Instructions for exporting student data from MyEd</link>
+            </section>
+        </page>
+        <page id="PANEL_1">
+            <page_title class="H2">Student Enrollment</page_title>
+            <section>
+                <title class="H3">Student Data From MyEd</title>
+                <image name="t0-p0 student enrollment.png"/>
+                <text>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore
+                    et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+                    aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+                    cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+                    culpa qui officia deserunt mollit anim id est laborum.
+                </text>
+                <link url="https://github.com/Peace-Robotics-Studio/report-manager/wiki/Obtaining-Data-From-MyEd" alt="Report Manager Wiki">Instructions for exporting student data from MyEd</link>
+            </section>
+        </page>
+    </tab>
+    <tab id="MENU_1">
+        <page id="ROOT">
+            <page_title class="H2">Student Enrollment</page_title>
+            <section>
+                <title class="H3">Student Data From MyEd</title>
                 <image name="t0-p0 student enrollment.png"/>
                 <text>
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore
