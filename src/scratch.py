@@ -1,4 +1,4 @@
-#  scratch.py. (Modified 2022-05-18, 10:42 p.m. by Praxis)
+#  scratch.py. (Modified 2022-05-19, 10:51 p.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -67,15 +67,35 @@ print("++++++++++++++++++++++++++++++++++++++++++=")
 # print(element.attrib)
 # print(element.get("x"))
 
+test = [
+    [("H2", "Title")],
+    [
+        ("H3", "Subtitle"),
+        ("IMAGE", "test.png", 75),
+        ("TEXT",
+         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."),
+        ("LINK", "https://github.com/Peace-Robotics-Studio/report-manager/wiki/Obtaining-Data-From-MyEd", "Instructions for exporting student data from MyEd", "Report Manager Wiki")
+    ],
+    [
+        ("TEXT",
+         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."),
+        ("LINK", "https://github.com/Peace-Robotics-Studio/report-manager/wiki/Obtaining-Data-From-MyEd", "Instructions for exporting student data from MyEd", "Report Manager Wiki")
+    ],
+    [
+        ("TEXT",
+         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."),
+        ("LINK", "https://github.com/Peace-Robotics-Studio/report-manager/wiki/Obtaining-Data-From-MyEd", "Instructions for exporting student data from MyEd", "Report Manager Wiki")
+    ]
+]
+
 page_dict = {}
 for tab in root.findall('tab'):  # Generate a list of tabs
     if tab.get("id") == "MENU_0":  # Pick a specific tab based on the 'id' attribute
         page_dict[tab.get("id")] = {}
         for page in tab.findall('page'):  # Generate a list of pages
             if page.get('id') == 'PANEL_0':
-                page_dict[tab.get("id")][page.get('id')] = []
+                page_dict[tab.get("id")][page.get('id')] = {}
                 for element in page.iter():
-                    print("-------------------------")
                     if(element.tag != "page"):
-                        page_dict[tab.get("id")][page.get('id')].append()
+                        page_dict[tab.get("id")][page.get('id')]...
                 print(page_dict)
