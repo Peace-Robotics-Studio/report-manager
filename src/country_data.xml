@@ -11,7 +11,7 @@
   ~ furnished to do so.
   -->
 
-<help_pages>
+<help>
     <tab id="MENU_0">
         <page id="PANEL_0">
             <page_title class="H2">Student Enrollment</page_title>
@@ -61,4 +61,4 @@
             </section>
         </page>
     </tab>
-</help_pages>
+</help>

@@ -66,9 +66,16 @@ print("++++++++++++++++++++++++++++++++++++++++++=")
 # print(element.text)
 # print(element.attrib)
 # print(element.get("x"))
+
+page_dict = {}
 for tab in root.findall('tab'):  # Generate a list of tabs
     if tab.get("id") == "MENU_0":  # Pick a specific tab based on the 'id' attribute
+        page_dict[tab.get("id")] = {}
         for page in tab.findall('page'):  # Generate a list of pages
             if page.get('id') == 'PANEL_0':
-                print("yeah")
-                # Iterate over this element and convert children to dictionary
+                page_dict[tab.get("id")][page.get('id')] = []
+                for element in page.iter():
+                    print("-------------------------")
+                    if(element.tag != "page"):
+                        page_dict[tab.get("id")][page.get('id')].append()
+                print(page_dict)
