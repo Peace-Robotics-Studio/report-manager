@@ -16,8 +16,8 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 from ..gui.ABS_Content_Manager import Content_Manager
 from ..gui.L_Menu import L_Menu
-from .setup_options.L_Student_Enrollment import L_Student_Enrollment
-from .setup_options.L_Pronouns import L_Pronouns
+from .setup_panels.L_Student_Enrollment import L_Student_Enrollment
+from .setup_panels.L_Pronouns import L_Pronouns
 
 
 class L_Setup_Manager(Content_Manager):

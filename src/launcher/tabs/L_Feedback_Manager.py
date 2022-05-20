@@ -15,7 +15,7 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 from ..gui.ABS_Content_Manager import Content_Manager
 from ..gui.L_Menu import L_Menu
-from .feedback_options.L_Feedback_Files import L_Feedback_Files
+from .feedback_panels.L_Feedback_Files import L_Feedback_Files
 
 
 class L_Feedback_Manager(Content_Manager):
