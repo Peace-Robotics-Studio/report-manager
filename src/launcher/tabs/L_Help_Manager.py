@@ -1,4 +1,4 @@
-#  L_Help_Manager.py. (Modified 2022-05-15, 10:49 p.m. by Praxis)
+#  L_Help_Manager.py. (Modified 2022-05-22, 12:10 p.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,27 +19,10 @@ from ...Config import *
 from gi.repository import Gtk,  GdkPixbuf
 
 class L_Help_Manager:
-    FORMATTED_DATA = {
-        'MENU_0': [
-            ['Enrollment', 'MENU_0.PANEL_0'],
-            ['Pronouns', 'MENU_0.PANEL_1'],
-        ],
-        'MENU_1': [
-        ],
-        'MENU_2': [
-            ['Recent Files', 'MENU_2.PANEL_0'],
-            ['By Grade', 'MENU_2.PANEL_1'],
-            ['By Teacher', 'MENU_2.PANEL_2'],
-            ['By Class Code', 'MENU_2.PANEL_3'],
-            ['By Date', 'MENU_2.PANEL_4']
-        ]
-    }
-    ROW_ORDER = {
-        'MENU_0': 'Setup', 'MENU_1': 'Quick Reports', 'MENU_2': 'Feedback'
-    }
-
+    ROW_ORDER = {}
+    FORMATTED_DATA = {}
+    TOP_LEVEL_ROW_PROPERTIES = {}
     DATA_FIELDS = ['Title', 'Breadcrumbs']
-
     COLUMN_PROPERTIES = {"Title": {"renderer": "static-text", "searchable": True}}
 
     def __init__(self, tab_id: str):
@@ -56,11 +39,8 @@ class L_Help_Manager:
         help_directory.set_vexpand(True)
         self.__layout_container.pack_start(help_directory, True, True, 0)
         # Add TreeView to hold a directory of help contents organized by menu tab and panel
-        topic_treeview = Treestore_Frame(css_class="launcher_help_directory_treeview")
-        topic_treeview.update(data_fields=self.__class__.DATA_FIELDS, column_properties=self.__class__.COLUMN_PROPERTIES, row_order=self.__class__.ROW_ORDER, data=self.__class__.FORMATTED_DATA)
-        topic_treeview.set_treeview_expanded(is_expanded=True)
-        topic_treeview.hide_column_titles(True)
-        help_directory.add(topic_treeview.get_layout_container())
+        self.topic_treeview = Treestore_Frame(css_class="launcher_help_directory_treeview", selection_callback=self.treestore_frame_selection)
+        help_directory.add(self.topic_treeview.get_layout_container())
         # Add a box to hold the contents of the help file
         help_contents = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         help_contents.get_style_context().add_class('launcher_help_content')
@@ -81,20 +61,111 @@ class L_Help_Manager:
         help_close.get_style_context().add_class(self.__navigation_button_css_class)
         help_close.connect("clicked", self.close_button_clicked)
         button_grid.attach(child=help_close, left=0, top=0, width=1, height=1)
-        self.build_help_pages()
+        data = self.__load_help_xml_file(launcher_help_xml_file)
+        if data is not None:
+            packaged_data = self.__package_xml_tree_data(tree=data)
+            self.__build_help_pages(pages=packaged_data)
 
-    def build_help_pages(self):
-        print(help_pages)
-        # help_page = L_Help_Page(tab_id=self.__page_id["TAB_ID"], panel_id=self.__page_id["PANEL_ID"])
-        # help_page.set_page_title(title="Pronouns")
-        # help_page.add_section_title(title="Subtitle", section=1)
-        # help_page.add_image(image_file="t0-p0 save path.png", height=75, section=1, path_key='T0P0_IMAGES')
-        # help_page.add_text(
-        #     text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-        #     section=1)
-        # help_page.add_link(url="https://github.com/Peace-Robotics-Studio/report-manager/wiki/Obtaining-Data-From-MyEd", link_text="Instructions for exporting student data from MyEd",
-        #                    alt_text="Report Manager Wiki", section=1)
+    def treestore_frame_selection(self, model, iter):
+        """ Callback: Triggered when a treeview row is clicked in the help menu. Function reference is passed to Treestore_Frame(). """
+        if iter:  # Make sure the iterator is valid
+            # Breadcrumbs values are built as tab_id.panel_id
+            (breadcrumbs,) = model.get(iter, 2)  # Unpack tuple. Column 2 contains the breadcrumb data as specified by the DATA_FIELDS dict. The TreeView class prepends a bool value containing a visiblity setting.
+            if breadcrumbs != "":
+                tab_id, panel_id = breadcrumbs.split(".")  # Unpack list
+                self.__page_renderer.show_page(tab_id=tab_id, panel_id=panel_id)
 
+    def __build_help_pages(self, pages: dict):
+        """ Creates L_Help_Page objects for each panel element listed in L_help_pages.xml. """
+        for tab_id, panels in pages.items():
+            for panel_id, panel_contents in panels.items():
+                help_page = L_Help_Page(tab_id=tab_id, panel_id=panel_id)
+                # Page title
+                help_page.set_page_title(title=panel_contents['page_title']['text'], size=panel_contents['page_title']['attribute']['class'])
+                # Page sections
+                for i, (section, elements) in enumerate(panel_contents['section'].items()):
+                    for element in elements.items():
+                        # Element is a tuple (name, dict)
+                        match element[0]:
+                            case "title":
+                                help_page.add_section_title(title=element[1]['text'], section=i, size=element[1]['attrib']['class'])
+                            case "image":
+                                help_page.add_image(image_file=element[1]['attrib']['name'], height=75, section=i, path_key=element[1]['attrib']['path']+'_IMAGES')
+                            case "text":
+                                help_page.add_text(text=element[1]['text'], section=i)
+                            case "link":
+                                help_page.add_link(url=element[1]['attrib']['url'], link_text=element[1]['text'], alt_text=element[1]['attrib']['alt'], section=i)
+
+    def __load_help_xml_file(self, xml_file):
+        """ Load the L_help_pages.xml file """
+        if os.path.isfile(xml_file):  # Make sure the file exists
+            file_size = os.stat(xml_file).st_size
+            if file_size != 0:  # Make sure the file is not empty
+                try:
+                    with open(xml_file) as file:
+                        tree = ET.parse(file)
+                        return tree
+                except:
+                    # ToDo: Present message to user in GUI
+                    print("Unable to load help_pages XML file.")
+                    return None
+        else:
+            print("No XML file (Config.py)")
+            return None
+
+    @classmethod
+    def register_panel(cls, panel_name: str, tab_id: str, panel_id: str):
+        if tab_id not in cls.FORMATTED_DATA:
+            cls.FORMATTED_DATA[tab_id] = []
+        cls.FORMATTED_DATA[tab_id].append([panel_name, tab_id + '.' + panel_id])  # The 'Breadcrumbs' TreeStore column stores the string "tab_id+'.'+panel_id"
+
+    @classmethod
+    def register_tab(cls, tab_name: str, tab_id: str, has_panels: bool = True):
+        if tab_id not in cls.FORMATTED_DATA:
+            cls.FORMATTED_DATA[tab_id] = []
+        cls.ROW_ORDER[tab_id] = tab_name
+        if not has_panels:
+            cls.set_top_level_row_properties(tab_id=tab_id, column_name='Breadcrumbs', column_value=tab_id+'.ROOT')
+
+    @classmethod
+    def set_top_level_row_properties(cls, tab_id: str, column_name, column_value):
+        """ Public Class Method: Used to specify data for specific columns in the menu's TreeStore. """
+        # Example: TOP_LEVEL_ROW_PROPERTIES = {'MENU_1': {'Breadcrumbs': 'MENU_1.ROOT'}} -> Adds the value 'MENU_1.ROOT' to the 'Breadcrumbs' column in the TreeStore
+        if tab_id not in cls.TOP_LEVEL_ROW_PROPERTIES:
+            cls.TOP_LEVEL_ROW_PROPERTIES[tab_id] = {}
+        cls.TOP_LEVEL_ROW_PROPERTIES[tab_id][column_name] = column_value
+
+    def __package_xml_tree_data(self, tree) -> dict:
+        """ Parse the contents of XML document and save as dict """
+        help_pages = {}
+        root = tree.getroot()  # Get the root xml element
+        for tab in root.findall('tab'):  # Generate a list of tabs.
+            help_pages[tab.get("id")] = {}  # Create a new dict and set it to the tab's id
+            for page in tab.findall('page'):  # Generate a list of pages linked to this tab
+                help_pages[tab.get("id")][page.get('id')] = {}  # Create a new dict and set it to the panel's id
+                for count, element in enumerate(page):
+                    # Add element values contained at the 'page_title' level inside the 'page' element
+                    if element.tag == "section":  # Sections have CSS styling similar to <p></p>
+                        # Check to see if the 'section' key has been added for this panel
+                        if "section" not in help_pages[tab.get("id")][page.get('id')]:
+                            help_pages[tab.get("id")][page.get('id')][element.tag] = {}  # Add the 'section' key and set it to an empty dict
+                        # Pages may have more than one section. Differentiate using the count value
+                        # Create a new empty dict and set to the count key
+                        help_pages[tab.get("id")][page.get('id')][element.tag][count] = {}
+                        # Add all elements from the 'section' element to a dict
+                        for child_element in element:  # Loop through all elements in 'section'
+                            # Clean text of all whitespace characters
+                            text = child_element.text  # Grab the text from this child_element element
+                            if text is not None:  # Make sure that the element contained text
+                                text = " ".join(str(text).split())  # Remove any leading \n, \t, or multiple spaces
+                            # Add to the dict
+                            help_pages[tab.get("id")][page.get('id')][element.tag][count][child_element.tag] = {"attrib": child_element.attrib, "text": text}
+                    else:
+                        # Create a dict with 'attribute' key and set to the dict of element attributes
+                        help_pages[tab.get("id")][page.get('id')][element.tag] = dict(attribute=element.attrib)
+                        # Add a 'text' key to this dict and set it to the string contained by the element
+                        help_pages[tab.get("id")][page.get('id')][element.tag]["text"] = element.text
+        return help_pages
 
     def get_layout_container(self):
         """ Public Convenience: Returns the layout container for this object. """
@@ -104,6 +175,17 @@ class L_Help_Manager:
         """ Callback Reference: Allows two buttons to trigger the same action (help button and close button) """
         # This function is executed in L_Menu_Layer after the creation of the 'main_menu' navigation menu
         self.__close_help_menu_callback = callback
+
+    def rebuild_treeview_menu(self):
+        """" Public Initializer: Reload the TreeView object displaying help menu items """
+        # This function is executed in L_Menu_Layer after the creation of the 'main_menu' navigation menu
+        self.topic_treeview.update(data_fields=self.__class__.DATA_FIELDS,
+                              column_properties=self.__class__.COLUMN_PROPERTIES,
+                              row_order=self.__class__.ROW_ORDER,
+                              data=self.__class__.FORMATTED_DATA,
+                              top_level_row_properties=self.__class__.TOP_LEVEL_ROW_PROPERTIES)
+        self.topic_treeview.set_treeview_expanded(is_expanded=True)
+        self.topic_treeview.hide_column_titles(True)
 
     def update(self):
         """ Get the page_renderer to display the help page registered to current combination of active tab and panel ids. """

@@ -1,4 +1,4 @@
-#  Treestore_Frame.py. (Modified 2022-05-08, 2:54 p.m. by Praxis)
+#  Treestore_Frame.py. (Modified 2022-05-22, 11:45 a.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -19,12 +19,13 @@ from .Action_Frame import Action_Frame
 class Treestore_Frame(Action_Frame):
     EXPAND_BY_DEFAULT = False
 
-    def __init__(self, css_class: str = "table-list-container", css_name: str = None, active_toggle: str = "EXPAND"):
+    def __init__(self, css_class: str = "table-list-container", css_name: str = None, active_toggle: str = "EXPAND", selection_callback: callable = None):
         """ Constructor:  """
         super().__init__(css_class=css_class, css_name=css_name)
         self.filter = None
         self.tree_view = None
         self.tree_store = None
+        self.selection_callback = selection_callback
         self.tree_store_columns = {}
         self.default_search_fields = []
         self.__displaying_tree_view = False
@@ -65,11 +66,11 @@ class Treestore_Frame(Action_Frame):
             elif id == "TF-collapse":
                 self.tree_view.collapse_all()
 
-    def __create_tree_view(self, data: dict, column_properties: dict, row_order: dict, gtypes: list) -> None:
+    def __create_tree_view(self, data: dict, data_fields: list, column_properties: dict, row_order: dict, gtypes: list, top_level_row_properties: dict = None) -> None:
         """ Private initializer: Instantiates a TreeView object and adds display columns """
         # Create a TreeStore using a list of column types (required to initialize storage containers)
         self.tree_store = Gtk.TreeStore.new(types=gtypes)
-        self.__update_treestore(data=data, row_order=row_order, number_of_treestore_data_fields=len(gtypes))  # Format the data and store it in TreeStore container
+        self.__update_treestore(data=data, data_fields=data_fields, row_order=row_order, number_of_treestore_data_fields=len(gtypes), top_level_row_properties=top_level_row_properties)  # Format the data and store it in TreeStore container
         # Use an internal column for filtering
         self.filter = self.tree_store.filter_new()
         self.filter.set_visible_column(column=self.COLUMNS["VISIBLE"])
@@ -131,9 +132,10 @@ class Treestore_Frame(Action_Frame):
         self.tree_store[path][self.COLUMNS[field]] = text
 
     def item_selected(self, widget):
-        model, iter = self.tree_view.get_selection().get_selected()
-        if iter:
-            print(model.get(iter, 1, 2))
+        """ Callback: Send the model and iter of the row click to the callback function """
+        if self.selection_callback is not None:
+            model, iter = self.tree_view.get_selection().get_selected()
+            self.selection_callback(model=model, iter=iter)
 
     def text_edited(self, widget, path, text):
         # self.liststore[path][1] = text
@@ -156,7 +158,7 @@ class Treestore_Frame(Action_Frame):
             column = self.tree_view.get_column(self.tree_store_columns[title])
             column.set_visible(visible)
 
-    def update(self, data: dict, data_fields: list, column_properties: dict, row_order: dict) -> None:
+    def update(self, data: dict, data_fields: list, column_properties: dict, row_order: dict, top_level_row_properties: dict = None) -> None:
         """ Public initializer: Organizes data used for creating a TreeView, its columns, """
         # Generate column numbers for each field in the data_fields list.
         # COLUMNS[] is used by the search methods and when creating the TreeStore
@@ -176,24 +178,33 @@ class Treestore_Frame(Action_Frame):
                 if properties["searchable"]:
                     self.default_search_fields.append(field)
             # Create the TreeView
-            self.__create_tree_view(data=data, column_properties=column_properties, gtypes=gtypes, row_order=row_order)  # Create a new TreeView object
+            self.__create_tree_view(data=data, column_properties=column_properties, gtypes=gtypes, row_order=row_order, data_fields=data_fields, top_level_row_properties=top_level_row_properties)  # Create a new TreeView object
             self.__displaying_tree_view = True  # Record that a TreeView object exists
         else:  # TreeView created previously. Update its TreeStore
-            self.reset()
+            self.reset()  # Deletes existing treeview & treestore
             self.update(data=data, data_fields=data_fields, column_properties=column_properties, row_order=row_order)
             # self.__update_treestore(data=data, row_order=row_order)  # Update the information shown by this TreeView
         self.show_all()  # Show all widgets
 
-    def __update_treestore(self, data: dict, row_order: dict, number_of_treestore_data_fields: int) -> None:
+    def __update_treestore(self, data: dict, data_fields: list, row_order: dict, number_of_treestore_data_fields: int, top_level_row_properties: dict = None) -> None:
         """ Private Task:  """
         if self.__displaying_tree_view:  # This TreeView was created previously
             self.tree_store.clear()  # Clear all data from its TreeStore
         # Add each row and associated children
         for row_field, label in row_order.items():  # Add values for all remaining keys
             # Format the data used by the top-level row label
-            category_list_values = [True, label]  # List of values for each row [Visible = True, Grade # (count)
+            category_list_values = [True, label]  # List of values for each row [Visible = True, label]
             for i in range(number_of_treestore_data_fields - 2):  # For each additional item in the value
-                category_list_values += [""]  # Add an empty string to the top-level row name to fill column spaces
+                # This structure was added to modify the behaviour of the help menu selector
+                column_string_property = ""  # String to add as a column value
+                if top_level_row_properties is not None:  # Check if a dict with top-level properties has been supplied
+                    if row_field in top_level_row_properties:  # Check if a property has been supplied for this row field name
+                        # Example: TOP_LEVEL_ROW_PROPERTIES = {'MENU_1': {'Breadcrumbs': 'MENU_1.ROOT'}} -> As used in L_Help_Manager
+                        for column_title, column_value in top_level_row_properties[row_field].items():  # Loop through all values specified for this row's field name
+                            if (data_fields.index(column_title) + 1) == (i + 2):  # data_fields is a dict. It does not include the visible column (+1)
+                                                                                  # (i+2) reverses the length of (number_of_treestore_data_fields - 2)
+                                column_string_property = column_value  # Set the column value to data in column_value
+                category_list_values += [column_string_property]  # Add an empty string to the top-level row name to fill column spaces
             # Add the top-level row
             top_level_row = self.tree_store.append(parent=None, row=category_list_values)  # Store the list 'category_list_values' in the TreeStore
             # Attach all child rows

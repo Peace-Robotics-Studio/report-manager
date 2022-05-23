@@ -1,4 +1,4 @@
-#  L_Student_Enrollment.py. (Modified 2022-05-15, 3:30 p.m. by Praxis)
+#  L_Student_Enrollment.py. (Modified 2022-05-22, 10:43 a.m. by Praxis)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -17,13 +17,15 @@ from gi.repository import Gtk
 from ...gui.widgets.Combo_Picker import Combo_Picker
 from ...gui.widgets.Treestore_Frame import Treestore_Frame
 from .L_Load_Student_Data import L_Load_Student_Data
+from ..L_Help_Manager import L_Help_Manager
 
 
 class L_Student_Enrollment:
     def __init__(self, page_id: dict, parent_window: Gtk.Window):
         """ Constructor: """
 
-        self.__page_id = page_id
+        self.__page_id = page_id  # page_id = {tab_id, panel_id}
+        L_Help_Manager.register_panel(panel_name="Enrollment", tab_id=page_id['TAB_ID'], panel_id=page_id['PANEL_ID'])
         self.RAW_DATA = defaultdict(list)
         self.__student_roster_loaded = False
         # Create a container to hold student enrollment data

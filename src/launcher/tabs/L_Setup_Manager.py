@@ -1,4 +1,4 @@
-#  L_Setup_Manager.py. (Modified 2022-05-15, 7:58 p.m. by Praxis)
+#  L_Setup_Manager.py. (Modified 2022-05-22, 2:22 p.m. by Praxis)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,6 +18,7 @@ from ..gui.ABS_Content_Manager import Content_Manager
 from ..gui.L_Menu import L_Menu
 from .setup_panels.L_Student_Enrollment import L_Student_Enrollment
 from .setup_panels.L_Pronouns import L_Pronouns
+from .L_Help_Manager import L_Help_Manager
 
 
 class L_Setup_Manager(Content_Manager):
@@ -26,6 +27,7 @@ class L_Setup_Manager(Content_Manager):
         """ Constructor: Inherits from Content_Manager abstract class """
         super().__init__()
         self.__tab_id = tab_id
+        L_Help_Manager.register_tab(tab_name='Setup', tab_id=tab_id)
         self.__process_action = message_callback
         self.__content_container_css_class = 'launcher-feedback-content-container'
         self.__navigation_bar_css_class = 'launcher-feedback-navigation-bar'
@@ -90,8 +92,9 @@ class L_Setup_Manager(Content_Manager):
         self.__process_action("editor")
 
     def option_clicked(self, value):
+        pass
         # self.__setup_manager.set_state(value)
-        print(f"Setup_Manager: option_clicked()")
+        # print(f"Setup_Manager: option_clicked()")
         # Check if button belongs to active option
         # Remove layout container for active option and load container for key value
 

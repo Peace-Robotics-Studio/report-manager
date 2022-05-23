@@ -1,4 +1,4 @@
-#  L_Feedback_Manager.py. (Modified 2022-05-15, 7:58 p.m. by Praxis)
+#  L_Feedback_Manager.py. (Modified 2022-05-22, 10:56 a.m. by Praxis)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -16,6 +16,7 @@ from gi.repository import Gtk
 from ..gui.ABS_Content_Manager import Content_Manager
 from ..gui.L_Menu import L_Menu
 from .feedback_panels.L_Feedback_Files import L_Feedback_Files
+from .L_Help_Manager import L_Help_Manager
 
 
 class L_Feedback_Manager(Content_Manager):
@@ -23,6 +24,7 @@ class L_Feedback_Manager(Content_Manager):
         """ Constructor: Inherits from Content_Manager abstract class """
         super().__init__()
         self.__tab_id = tab_id
+        L_Help_Manager.register_tab(tab_name='Feedback', tab_id=tab_id)
         self.__process_action = message_callback
         self.__content_container_css_class = 'launcher-feedback-content-container'
         self.__navigation_bar_css_class = 'launcher-feedback-navigation-bar'

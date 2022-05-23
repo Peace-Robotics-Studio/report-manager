@@ -345,6 +345,7 @@
 .help-text {
     color: #a8c2b9;
     margin-left: 10px;
+    margin-bottom: 5px;
 }
 .help-link {
     margin-left: 10px;
@@ -352,6 +353,7 @@
 }
 .help-link link {
     color: #809ee2;
+    margin-bottom: 10px;
 }
 .help-text-section {
     margin-bottom: 15px;
@@ -364,7 +366,4 @@
     padding: 5px;
     border-radius: 5px;
     margin: 5px 20px;
-}
-h2 {
-  color: orange;
 }

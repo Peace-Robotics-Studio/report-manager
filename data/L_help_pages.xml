@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ country_data.xml. (Modified 2022-05-18, 10:35 p.m. by Praxis)
+  ~ L_help_pages.xml. (Modified 2022-05-22, 2:38 p.m. by Praxis)
   ~ Copyright (c) 2022-2022 Peace Robotics Studio
   ~ Licensed under the MIT License.
   ~ Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -16,44 +16,102 @@
         <page id="PANEL_0">
             <page_title class="H2">Student Enrollment</page_title>
             <section>
-                <title class="H3">Student Data From MyEd</title>
-                <image name="t0-p0 student enrollment.png"/>
+                <title class="H3">Overview</title>
                 <text>
-                    Panel 0 -> Section 1 text
+                    The Report Manager loads a list of student information that is exported from MyEd in a 'comma separated values' (CSV) file. Student data in this file is
+                    organized by grade and gender and is used to ensure that report card comments utilize each student's correct name and gender.
+                </text>
+            </section>
+            <section>
+                <title class="H3">Loading Data From MyEd</title>
+                <image name="T0P0 student enrollment.png" path="T0P0"/>
+                <text>
+                    The CSV file needs to contain specific data fields that can be selected from MyEd when creating a 'Quick Report'. The link below provides a visual
+                    tutorial on exporting student data from MyEd.
                 </text>
                 <link url="https://github.com/Peace-Robotics-Studio/report-manager/wiki/Obtaining-Data-From-MyEd" alt="Report Manager Wiki">Instructions for exporting student data from MyEd</link>
             </section>
             <section>
-                <title class="H3">Student Data From MyEd</title>
-                <image name="t0-p0 student enrollment.png"/>
+                <title class="H3">Choose CSV File</title>
+                <image name="T0P0 select csv file.png" path="T0P0"/>
                 <text>
-                    Panel_0 -> Section 2 text
+                    Choose a CSV file to load by clicking on the picture of the folder.
                 </text>
-                <link url="https://github.com/Peace-Robotics-Studio/report-manager/wiki/Obtaining-Data-From-MyEd" alt="Report Manager Wiki">Instructions for exporting student data from MyEd</link>
+            </section>
+            <section>
+                <title class="H3">Remember CSV File Location</title>
+                <image name="T0P0 save path.png" path="T0P0"/>
+                <text>
+                    Select this option (default) to allow the Report Manager to remember the last CSV file you used.
+                </text>
             </section>
         </page>
         <page id="PANEL_1">
-            <page_title class="H2">Student Enrollment</page_title>
+            <page_title class="H2">Gender Pronouns</page_title>
             <section>
-                <title class="H3">Student Data From MyEd</title>
-                <image name="t0-p0 student enrollment.png"/>
+                <title class="H3">Overview</title>
                 <text>
-                    Panel_1 text
+                    Student gender identities can be set in this panel. The default gender pronouns used when checking a comment are based on the student's registered gender. If MyEd lists a gender identity, then
+                    this value is used instead. Additional genders and pronouns can be defined in this panel.
                 </text>
-                <link url="https://github.com/Peace-Robotics-Studio/report-manager/wiki/Obtaining-Data-From-MyEd" alt="Report Manager Wiki">Instructions for exporting student data from MyEd</link>
             </section>
         </page>
     </tab>
     <tab id="MENU_1">
         <page id="ROOT">
-            <page_title class="H2">Student Enrollment</page_title>
+            <page_title class="H2">Quick Reports</page_title>
             <section>
-                <title class="H3">Student Data From MyEd</title>
-                <image name="t0-p0 student enrollment.png"/>
+                <title class="H3">Overview</title>
                 <text>
-                    MENU_1 Text
+                    Information about this page
                 </text>
-                <link url="https://github.com/Peace-Robotics-Studio/report-manager/wiki/Obtaining-Data-From-MyEd" alt="Report Manager Wiki">Instructions for exporting student data from MyEd</link>
+            </section>
+        </page>
+    </tab>
+    <tab id="MENU_2">
+        <page id="PANEL_0">
+            <page_title class="H2">Recent Files</page_title>
+            <section>
+                <title class="H3">Overview</title>
+                <text>
+                    Information about this page
+                </text>
+            </section>
+        </page>
+        <page id="PANEL_1">
+            <page_title class="H2">Feedback By Grade</page_title>
+            <section>
+                <title class="H3">Overview</title>
+                <text>
+                    Information about this page
+                </text>
+            </section>
+        </page>
+        <page id="PANEL_2">
+            <page_title class="H2">Feedback By Teacher</page_title>
+            <section>
+                <title class="H3">Overview</title>
+                <text>
+                    Information about this page
+                </text>
+            </section>
+        </page>
+        <page id="PANEL_3">
+            <page_title class="H2">Feedback By Class Code</page_title>
+            <section>
+                <title class="H3">Overview</title>
+                <text>
+                    Information about this page
+                </text>
+            </section>
+        </page>
+        <page id="PANEL_4">
+            <page_title class="H2">Feedback By Date</page_title>
+            <section>
+                <title class="H3">Overview</title>
+                <text>
+                    Information about this page
+                </text>
             </section>
         </page>
     </tab>

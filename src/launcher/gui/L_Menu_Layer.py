@@ -1,4 +1,4 @@
-#  L_Menu_Layer.py. (Modified 2022-05-15, 9:37 p.m. by Praxis)
+#  L_Menu_Layer.py. (Modified 2022-05-22, 11:31 a.m. by Praxis)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -68,7 +68,8 @@ class L_Menu_Layer(Content_Layer):
                                       content_manager=content_manager,
                                       message_callback=self.__process_action)
 
-        help_manager.set_close_help_callback(self.__category_menu.help_button_clicked)
+        help_manager.set_close_help_callback(self.__category_menu.help_button_clicked)  # Link the callback for the close button to the callback for the help button. This allows two buttons to perform the same job
+        help_manager.rebuild_treeview_menu()
 
         self.__menu_container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
 
