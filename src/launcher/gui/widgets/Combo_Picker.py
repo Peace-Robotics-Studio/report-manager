@@ -1,4 +1,4 @@
-#  Combo_Picker.py. (Modified 2022-05-06, 10:15 p.m. by Praxis)
+#  Combo_Picker.py. (Modified 2022-05-23, 11:22 p.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,6 +24,7 @@ class Combo_Picker:
             parent_window: The common top-level window """
         self.__parent_window = parent_window  # Handle to common top-level window
         self.__results_callback = callback
+        self.__remember_path = True
         # Fixme: This shouldn't be baked into this class
         if "student_roster" in config_data:  # Check to see if a dictionary key for 'student roster' exists in the loaded configuration key
             self.directory_path = config_data["student_roster"]  # Set the directory_path to this key's value if it exists
@@ -84,7 +85,7 @@ class Combo_Picker:
 
     def __picker_config_context(self, button):
         """ Private Callback: This function creates a context menu when the picker config button is activated. """
-        form_items = [Form_Item_Properties(label="Save Path", response_key="HKEY", callback=self.__save_picker_config_data, toggled_on=True, decorator="checkbox")]
+        form_items = [Form_Item_Properties(label="Remember Path", response_key="HKEY", callback=self.__save_picker_config_data, toggled_on=True, decorator="checkbox")]
         config_context = Context_Box(parent=self.__parent_window, reference_widget=button, align="right", form_items=form_items)
         response = config_context.run()
         # if response == Gtk.ResponseType.OK:
@@ -92,8 +93,16 @@ class Combo_Picker:
         config_context.destroy()
 
     def __save_picker_config_data(self, button, name):
-        # ToDo: Save preference to configuration file
-        print(f"ToDo: Save preference to configuration file: {name}")
+        # ToDo: Save remember flag to file
+        if button.get_active():
+            self.__remember_path = True
+        else:
+            print(config_data)
+            self.__remember_path = False
+            if 'student_roster' in config_data:
+                del config_data["student_roster"]
+                update_configuration_data()
+            print(config_data)
 
     def __update_displayed_path(self, active_state):
         """ Private Initializer: This function sets the text in the Gtk.Entry widget. """
@@ -126,8 +135,9 @@ class Combo_Picker:
     def __is_path_valid(self) -> bool:
         """ Private Task: This function checks to see if the directory string is a valid path. """
         if os.path.exists(self.directory_path):
-            config_data["student_roster"] = self.directory_path
-            update_configuration_data()  # Save the internal dictionary to the configuration file
+            if self.__remember_path:
+                config_data["student_roster"] = self.directory_path
+                update_configuration_data()  # Save the internal dictionary to the configuration file
             self.__results_callback(self.directory_path)
         return os.path.exists(self.directory_path)
 
@@ -173,6 +183,7 @@ class Combo_Picker:
         if response == Gtk.ResponseType.OK:
             self.directory_path = dialog.get_filename()  # Store the path of the selected file
             self.__update_displayed_path(True)  # Update entry box with file path and set text colour
-            config_data["student_roster"] = self.directory_path  # Add path to internal dictionary of configuration data
-            update_configuration_data()  # Save the internal dictionary to the configuration file
+            if self.__remember_path:
+                config_data["student_roster"] = self.directory_path  # Add path to internal dictionary of configuration data
+                update_configuration_data()  # Save the internal dictionary to the configuration file
         dialog.destroy()

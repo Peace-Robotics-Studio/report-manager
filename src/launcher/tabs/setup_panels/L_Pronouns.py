@@ -1,4 +1,4 @@
-#  L_Pronouns.py. (Modified 2022-05-22, 10:43 a.m. by Praxis)
+#  L_Pronouns.py. (Modified 2022-05-23, 8:16 p.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -14,7 +14,7 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 from ...gui.widgets.Treestore_Frame import Treestore_Frame
 from ...gui.widgets.Liststore_Frame import Liststore_Frame
-from .L_Load_Student_Data import L_Load_Student_Data
+from src.launcher.gui.L_Load_Student_Data import L_Load_Student_Data
 from ..L_Help_Manager import L_Help_Manager
 
 

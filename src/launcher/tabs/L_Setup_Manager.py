@@ -1,4 +1,4 @@
-#  L_Setup_Manager.py. (Modified 2022-05-22, 2:22 p.m. by Praxis)
+#  L_Setup_Manager.py. (Modified 2022-05-23, 8:12 p.m. by Praxis)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -58,16 +58,6 @@ class L_Setup_Manager(Content_Manager):
                                       button_css_class="launcher-feedback-options-button",
                                       content_manager=self,
                                       message_callback=self.option_clicked)
-        self.__build_content()
-
-    def get_menu_buttons(self):
-        menu_keys = {}
-        for key, values in self.menu_button_keys.items():
-            menu_keys[key] = values['INFO']
-        return menu_keys
-
-    def __build_content(self):
-        """ Private Initializer: This function composes the feedback tab layout """
         # Create the content area
         content_area = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)  # Create a box to hold content data
         content_area.get_style_context().add_class(self.__content_container_css_class)  # Connect a CSS class to the box
@@ -86,6 +76,12 @@ class L_Setup_Manager(Content_Manager):
         self.options_content_area.set_vexpand(True)
         self.options_content_area.set_hexpand(True)
         content_area.pack_start(self.options_content_area, False, True, 0)
+
+    def get_menu_buttons(self):
+        menu_keys = {}
+        for key, values in self.menu_button_keys.items():
+            menu_keys[key] = values['INFO']
+        return menu_keys
 
     def navigation_pane_button_clicked(self, button) -> None:
         """ Public Processor: This function coordinates menu actions with the GUI_Manager. """
