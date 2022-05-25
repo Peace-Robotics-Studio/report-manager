@@ -1,4 +1,4 @@
-#  Combo_Picker.py. (Modified 2022-05-23, 11:22 p.m. by Praxis)
+#  Combo_Picker.py. (Modified 2022-05-23, 11:27 p.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -97,12 +97,10 @@ class Combo_Picker:
         if button.get_active():
             self.__remember_path = True
         else:
-            print(config_data)
             self.__remember_path = False
             if 'student_roster' in config_data:
                 del config_data["student_roster"]
                 update_configuration_data()
-            print(config_data)
 
     def __update_displayed_path(self, active_state):
         """ Private Initializer: This function sets the text in the Gtk.Entry widget. """

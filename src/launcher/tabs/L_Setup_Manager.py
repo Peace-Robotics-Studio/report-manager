@@ -1,4 +1,4 @@
-#  L_Setup_Manager.py. (Modified 2022-05-23, 8:12 p.m. by Praxis)
+#  L_Setup_Manager.py. (Modified 2022-05-24, 9:29 p.m. by Praxis)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,6 +18,7 @@ from ..gui.ABS_Content_Manager import Content_Manager
 from ..gui.L_Menu import L_Menu
 from .setup_panels.L_Student_Enrollment import L_Student_Enrollment
 from .setup_panels.L_Pronouns import L_Pronouns
+from .setup_panels.L_Comments import L_Comments
 from .L_Help_Manager import L_Help_Manager
 
 
@@ -46,8 +47,14 @@ class L_Setup_Manager(Content_Manager):
                     "PACK": "Start",
                     "LABEL": "Pronouns",
                     "ACTIVE": False,
-                    "INFO": "Manage custom pronouns",
-                    "CONTENT_MANAGER": L_Pronouns(page_id={"TAB_ID": self.__tab_id, "PANEL_ID": "PANEL_1"})}
+                    "INFO": "Manage gender pronouns",
+                    "CONTENT_MANAGER": L_Pronouns(page_id={"TAB_ID": self.__tab_id, "PANEL_ID": "PANEL_1"})},
+            PANEL_2={"TYPE": "Text",
+                    "PACK": "Start",
+                    "LABEL": "Comments",
+                    "ACTIVE": False,
+                    "INFO": "Load report card comments",
+                    "CONTENT_MANAGER": L_Comments(page_id={"TAB_ID": self.__tab_id, "PANEL_ID": "PANEL_2"})}
         )
         self.__category_menu = L_Menu(id="setup_menu",
                                       parent_id=tab_id,

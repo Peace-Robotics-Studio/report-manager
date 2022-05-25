@@ -1,5 +1,5 @@
-#  L_Reports.py. (Modified 2022-05-24, 9:27 p.m. by Praxis)
-#  Copyright (c) 2021-2022 Peace Robotics Studio
+#  L_Comments.py. (Modified 2022-05-24, 9:27 p.m. by Praxis)
+#  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
 #  of this software and associated documentation files (the "Software"), to deal
@@ -12,25 +12,19 @@ import gi
 gi.require_version('Gtk', '3.0')
 
 from gi.repository import Gtk
-from ...Config import *
-from .L_Help_Manager import L_Help_Manager
+from ..L_Help_Manager import L_Help_Manager
 
 
-class L_Reports:
-    def __init__(self, tab_id: str):
-        self.__tab_id = tab_id
-        L_Help_Manager.register_tab(tab_name='Quick Reports', tab_id=tab_id, has_panels=False)
+class L_Comments:
+    def __init__(self, page_id: dict):
+        self.__page_id = page_id
+        L_Help_Manager.register_panel(panel_name="Comments", tab_id=page_id['TAB_ID'], panel_id=page_id['PANEL_ID'])
         self.__layout_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         label = Gtk.Label()  # Add a label to the box
-        label.set_text("Reports Area")  # Set the value of the label text
+        label.set_text("Comments")  # Set the value of the label text
         label.get_style_context().add_class('label-notification')  # Connect a CSS class to the label
         self.__layout_container.add(label)
-        image = Gtk.Image()
-        image.set_from_file(res_dir['T0P0_IMAGES'] + 'T0P0 save path.png')
-        self.__layout_container.add(image)
-
-    def get_menu_buttons(self):
-        return None
 
     def get_layout_container(self):
+        """ Public Accessor: Returns the main Gtk.Container holding widgets for this class. """
         return self.__layout_container
