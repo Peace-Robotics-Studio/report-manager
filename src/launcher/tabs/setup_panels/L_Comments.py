@@ -1,4 +1,4 @@
-#  L_Comments.py. (Modified 2022-05-24, 9:27 p.m. by Praxis)
+#  L_Comments.py. (Modified 2022-05-25, 10:57 p.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -11,6 +11,7 @@ import csv
 from collections import defaultdict
 
 import gi
+import re
 gi.require_version('Gtk', '3.0')
 
 from gi.repository import Gtk
@@ -27,21 +28,25 @@ class L_Comments(Panel):
         report_list.register_button(name="remove", id="gender-remove", callback=self.button_clicked, tooltip="Remove", active=False)
         self.add(report_list.get_layout_container())
 
-        self.RAW_DATA = defaultdict(list)
-        self.__load_student_data("/home/godvalve/Downloads/report243.csv")
-        print(self.RAW_DATA)
+        # self.RAW_DATA = defaultdict(list)
+        self.__load_student_data("/home/godvalve/Desktop/report243.csv")
+        # print(self.RAW_DATA)
 
     def button_clicked(self, button, id):
         print(f"Button Clicked: {id}")
 
     def __load_student_data(self, file_name):
-        self.RAW_DATA.clear()  # Reset the dictionary to an empty state
+        # self.RAW_DATA.clear()  # Reset the dictionary to an empty state
+        count = 0
         try:
-            with open(file_name, mode='r', encoding='utf-8-sig') as csv_file:  # Open file using utf-8 encoding
-                csv_reader = csv.DictReader(csv_file)  # Read contents of CSV file
-                for line in csv_reader:  # Parse data into dictionary format
-                    for key, value in line.items():
-                        self.RAW_DATA[key].append(value)
+            with open(file_name, mode='r', encoding='utf-8-sig') as fp:  # Open file using utf-8 encoding
+                Lines = fp.readlines()
+                for line in Lines:
+                    count += 1
+                    line = re.sub(",,+", ",", line.strip(","))
+                    # line = line.strip(",")
+                    print("Line {}: {}".format(count, line))
+
         except Exception as e:
             print(e)
             # ToDo: display message to user in GUI

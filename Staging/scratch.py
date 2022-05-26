@@ -1,4 +1,4 @@
-#  scratch.py. (Modified 2022-05-22, 2:09 p.m. by Praxis)
+#  scratch.py. (Modified 2022-05-25, 9:10 p.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -8,5 +8,6 @@
 #  copies of the Software, and to permit persons to whom the Software is
 #  furnished to do so.
 
-unicode = u"\u2022"
-print(unicode)
+test = "Peace River North,,,,,,,,,,,,,Prespatou Elementary Secondary,,,,,"
+output = ''.join(test.split(',,'))
+print(output)
