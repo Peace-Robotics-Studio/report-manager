@@ -68,17 +68,21 @@ class Report_Manager_Launcher(Gtk.Dialog):
         # Check to see if it was the left mouse button that was clicked
         if state & Gdk.ModifierType.BUTTON1_MASK:
             # Only move the window if the 'click' happened inside the dialog banner area
-            if event.y_root < self.window_y + self.__launcher_properties['BANNER_HEIGHT']:
-                # Calculate the difference between the current mouse location and the previous mouse location
-                delta_x = self.mouse_x - event.x_root
-                delta_y = self.mouse_y - event.y_root
-                # Modify the location of the window along x,y by deltas calculated above
-                self.window_x -= delta_x
-                self.window_y -= delta_y
-                self.move(self.window_x, self.window_y)
-                # Store current mouse coordinates for reference
-                self.mouse_x = event.x_root
-                self.mouse_y = event.y_root
+            try:
+                if event.y_root < self.window_y + self.__launcher_properties['BANNER_HEIGHT']:
+                    # Calculate the difference between the current mouse location and the previous mouse location
+                    delta_x = self.mouse_x - event.x_root
+                    delta_y = self.mouse_y - event.y_root
+                    # Modify the location of the window along x,y by deltas calculated above
+                    self.window_x -= delta_x
+                    self.window_y -= delta_y
+                    self.move(self.window_x, self.window_y)
+                    # Store current mouse coordinates for reference
+                    self.mouse_x = event.x_root
+                    self.mouse_y = event.y_root
+            except Exception as e:
+                # ToDo: Move this to a log file
+                print(e)
 
     def draw(self, widget, context):
         """ Callback function triggered by the draw signal.

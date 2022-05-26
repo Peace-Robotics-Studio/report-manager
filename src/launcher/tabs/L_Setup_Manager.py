@@ -23,7 +23,7 @@ from .L_Help_Manager import L_Help_Manager
 
 
 class L_Setup_Manager(Content_Manager):
-    """ As per "The Quick Python Book": class doc strings list the available methods along with usage information. """
+    """ As per "The Quick Python Book": class DOC strings list the available methods along with usage information. (THIS is the doc string) """
     def __init__(self, tab_id: str, parent_window: Gtk.Window, message_callback):
         """ Constructor: Inherits from Content_Manager abstract class """
         super().__init__()

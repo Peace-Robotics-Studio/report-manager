@@ -19,10 +19,11 @@ from .L_Menu_Special_Button import L_Menu_Special_Button
 class L_Menu:
     ACTIVE_TAB = None  # Active tab in the main navigation menu
     ACTIVE_PANEL = {}  # Active panel in an options menu
-    def __init__(self, id: str, orientation: str, container_css_class: str, button_values: dict, button_css_class: str, content_manager: object, message_callback: classmethod, align_button_labels: str ="default", parent_id: str = None):
+    def __init__(self, id: str, orientation: str, container_css_class: str, button_values: dict, button_css_class: str, content_manager: object, message_callback: callable, align_button_labels: str ="default", parent_id: str = None, content_container: Gtk.Container = None):
         """ Constructor """
         self.id = id  # Keep track of the instance of L_Menu. This allows for logic for specific menu instances
         self.parent_id = parent_id
+        self.__content_container = content_container
         self.message_callback = message_callback  # Dialog OK | CANCEL messages - Open the editor or quit the application
         self.button_action_callbacks = {}
         self.__content_manager = content_manager
@@ -94,7 +95,8 @@ class L_Menu:
         if self.__active_tab_key is not None:  # It is only 'None' when first initialized
             # Obtain a reference to the content manager object  for this tab_id and get the Gtk.Container object with content widgets.
             # Remove the container.
-            self.__content_manager.remove_layout_container(self.__menu_buttons[self.__active_tab_key]["CONTENT_MANAGER"].get_layout_container())
+            if self.__content_container is None:
+                self.__content_manager.remove_layout_container(self.__menu_buttons[self.__active_tab_key]["CONTENT_MANAGER"].get_layout_container())
 
         # Check to see if the last container to be loaded was the help page container. Display last loaded page instead.
         if self.__active_tab_key == "MENU_3" and self.id == "main_menu":  # Is this is the 'help' button (MENU_3) on the navigation menu (main_menu)
@@ -103,7 +105,8 @@ class L_Menu:
             self.__active_tab_key = key  # Help page was not previously shown. Select content using this key.
 
         # Get the content container connected with this key.
-        self.__content_manager.add_layout_container(self.__menu_buttons[self.__active_tab_key]["CONTENT_MANAGER"].get_layout_container())
+        if self.__content_container is None:
+            self.__content_manager.add_layout_container(self.__menu_buttons[self.__active_tab_key]["CONTENT_MANAGER"].get_layout_container())
 
     def track_active_menu(self, key):
         """ Public Task: Store information about the currently active menus. """
