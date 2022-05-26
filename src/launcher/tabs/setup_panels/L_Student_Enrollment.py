@@ -17,21 +17,15 @@ from gi.repository import Gtk
 from ...gui.widgets.Combo_Picker import Combo_Picker
 from ...gui.widgets.Treestore_Frame import Treestore_Frame
 from src.launcher.gui.L_Load_Student_Data import L_Load_Student_Data
-from ..L_Help_Manager import L_Help_Manager
+from ...gui.ABS_Panel import Panel
 
 
-class L_Student_Enrollment:
-    def __init__(self, page_id: dict, parent_window: Gtk.Window):
+class L_Student_Enrollment(Panel):
+    def __init__(self, page_id: dict, panel_name: str, parent_window: Gtk.Window):
         """ Constructor: """
-
-        self.__page_id = page_id  # page_id = {tab_id, panel_id}
-        L_Help_Manager.register_panel(panel_name="Enrollment", tab_id=page_id['TAB_ID'], panel_id=page_id['PANEL_ID'])
+        super().__init__(panel_name=panel_name, page_id=page_id, layout_orientation=Gtk.Orientation.VERTICAL)
         self.RAW_DATA = defaultdict(list)
         self.__student_roster_loaded = False
-        # Create a container to hold student enrollment data
-        self.__layout_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        self.__layout_container.set_hexpand(True)
-        self.__layout_container.set_vexpand(True)
 
         # Create a widget to hold tabular data. Must be created before the Combo_Picker
         self.student_details_list = Treestore_Frame()
@@ -42,16 +36,12 @@ class L_Student_Enrollment:
 
         # Create a widget for selecting CSV files to be displayed in the Table_List
         roster_file_dir = Combo_Picker(label="Student Roster:", css_class="enrollment-combo-picker", parent_window=parent_window, callback=self.__load_student_data)
-        self.__layout_container.pack_start(roster_file_dir.get_layout_container(), False, False, 0)
-        self.__layout_container.pack_start(self.student_details_list.get_layout_container(), False, True, 0)
-        self.__layout_container.show_all()
+        self.pack_start(child=roster_file_dir.get_layout_container(), expand=False, fill=False, padding=0)
+        self.pack_start(child=self.student_details_list.get_layout_container(), expand=False, fill=True, padding=0)
+        self.show_all()
 
     def __button_clicked(self, button, id):
         print(f"{id} clicked (Student Enrollment)")
-
-    def get_layout_container(self):
-        """ Public Accessor: Returns the main Gtk.Container holding widgets for this class. """
-        return self.__layout_container
 
     def __load_student_data(self, file_name):
         self.RAW_DATA.clear()  # Reset the dictionary to an empty state

@@ -15,31 +15,28 @@ from gi.repository import Gtk
 from ...gui.widgets.Treestore_Frame import Treestore_Frame
 from ...gui.widgets.Liststore_Frame import Liststore_Frame
 from src.launcher.gui.L_Load_Student_Data import L_Load_Student_Data
-from ..L_Help_Manager import L_Help_Manager
+from ...gui.ABS_Panel import Panel
 
 
-class L_Pronouns:
+class L_Pronouns(Panel):
     GENDER_PRONOUNS = [{"Gender": "Male", "Symbol": "M", "Pronouns": ["he", "him", "his"]},
                        {"Gender": "Female", "Symbol": "F", "Pronouns": ["she", "her", "hers"]},
                        {"Gender": "Non-Binary", "Symbol": "NB", "Pronouns": ["they", "<name>", "theirs"]}]
 
-    def __init__(self, page_id: dict):
-        self.__page_id = page_id
-        L_Help_Manager.register_panel(panel_name="Pronouns", tab_id=page_id['TAB_ID'], panel_id=page_id['PANEL_ID'])
-        self.__layout_container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+    def __init__(self, page_id: dict, panel_name: str):
+        super().__init__(panel_name=panel_name, page_id=page_id, layout_orientation=Gtk.Orientation.HORIZONTAL)
         self.__showing_student_list = False
         gender_list = Liststore_Frame(css_name="gender-frame")
         gender_list.register_button(name="add", id="gender-add", callback=self.button_clicked, tooltip="Add", active=True)
         gender_list.register_button(name="remove", id="gender-remove", callback=self.button_clicked, tooltip="Remove", active=False)
-        self.__layout_container.add(gender_list.get_layout_container())
+        self.add(gender_list.get_layout_container())
         self.__populate_gender_liststore(gender_list)
 
         right_side = Gtk.Grid(column_spacing=0, row_spacing=0)
         right_side.set_vexpand(True)
-        self.__layout_container.add(right_side)
+        self.add(right_side)
         box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         right_side.attach(child=box, left=0, top=0, width=2, height=1)
-
 
         identity_label = Gtk.Label(label="Identity:")
         identity_label.set_xalign(1)
@@ -61,7 +58,6 @@ class L_Pronouns:
         self.symbol_entry.connect("changed", self.added_gender_label)
         self.symbol_entry.get_style_context().add_class('entry-with-label')
         box.add(self.symbol_entry)
-
 
         pronouns_label = Gtk.Label(label="Pronouns:")
         pronouns_label.set_xalign(1)
@@ -91,10 +87,6 @@ class L_Pronouns:
             self.student_list.set_column_visibility("Usual", False)
             self.student_list.set_column_visibility("Status", False)
             self.__showing_student_list = True
-
-    def get_layout_container(self) -> Gtk.Container:
-        """ Public Accessor: Returns the main Gtk.Container holding widgets for this class. """
-        return self.__layout_container
 
     def button_clicked(self, button, id):
         print(f"Button Clicked: {id}")

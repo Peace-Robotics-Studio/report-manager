@@ -7,24 +7,42 @@
 #  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 #  copies of the Software, and to permit persons to whom the Software is
 #  furnished to do so.
+import csv
+from collections import defaultdict
 
 import gi
 gi.require_version('Gtk', '3.0')
 
 from gi.repository import Gtk
-from ..L_Help_Manager import L_Help_Manager
+from ...gui.ABS_Panel import Panel
+from ...gui.widgets.Action_Frame import Action_Frame
 
 
-class L_Comments:
-    def __init__(self, page_id: dict):
-        self.__page_id = page_id
-        L_Help_Manager.register_panel(panel_name="Comments", tab_id=page_id['TAB_ID'], panel_id=page_id['PANEL_ID'])
-        self.__layout_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        label = Gtk.Label()  # Add a label to the box
-        label.set_text("Comments")  # Set the value of the label text
-        label.get_style_context().add_class('label-notification')  # Connect a CSS class to the label
-        self.__layout_container.add(label)
+class L_Comments(Panel):
+    def __init__(self, page_id: dict, panel_name: str):
+        super().__init__(panel_name=panel_name, page_id=page_id, layout_orientation=Gtk.Orientation.VERTICAL)
 
-    def get_layout_container(self):
-        """ Public Accessor: Returns the main Gtk.Container holding widgets for this class. """
-        return self.__layout_container
+        report_list = Action_Frame()
+        report_list.register_button(name="add", id="gender-add", callback=self.button_clicked, tooltip="Add", active=True)
+        report_list.register_button(name="remove", id="gender-remove", callback=self.button_clicked, tooltip="Remove", active=False)
+        self.add(report_list.get_layout_container())
+
+        self.RAW_DATA = defaultdict(list)
+        self.__load_student_data("/home/godvalve/Downloads/report243.csv")
+        print(self.RAW_DATA)
+
+    def button_clicked(self, button, id):
+        print(f"Button Clicked: {id}")
+
+    def __load_student_data(self, file_name):
+        self.RAW_DATA.clear()  # Reset the dictionary to an empty state
+        try:
+            with open(file_name, mode='r', encoding='utf-8-sig') as csv_file:  # Open file using utf-8 encoding
+                csv_reader = csv.DictReader(csv_file)  # Read contents of CSV file
+                for line in csv_reader:  # Parse data into dictionary format
+                    for key, value in line.items():
+                        self.RAW_DATA[key].append(value)
+        except Exception as e:
+            print(e)
+            # ToDo: display message to user in GUI
+            print('\033[3;30;43m' + ' Unable to read CSV file! ' + '\033[0m')

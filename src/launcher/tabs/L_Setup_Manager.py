@@ -42,19 +42,19 @@ class L_Setup_Manager(Content_Manager):
                     "LABEL": "Enrollment",
                     "ACTIVE": True,
                     "INFO": "Load a CSV file containing student data",
-                    "CONTENT_MANAGER": L_Student_Enrollment(page_id={"TAB_ID": self.__tab_id, "PANEL_ID": "PANEL_0"}, parent_window=parent_window)},
+                    "CONTENT_MANAGER": L_Student_Enrollment(page_id={"TAB_ID": self.__tab_id, "PANEL_ID": "PANEL_0"}, panel_name="Enrollment", parent_window=parent_window)},
             PANEL_1={"TYPE": "Text",
                     "PACK": "Start",
                     "LABEL": "Pronouns",
                     "ACTIVE": False,
                     "INFO": "Manage gender pronouns",
-                    "CONTENT_MANAGER": L_Pronouns(page_id={"TAB_ID": self.__tab_id, "PANEL_ID": "PANEL_1"})},
+                    "CONTENT_MANAGER": L_Pronouns(page_id={"TAB_ID": self.__tab_id, "PANEL_ID": "PANEL_1"}, panel_name="Pronouns")},
             PANEL_2={"TYPE": "Text",
                     "PACK": "Start",
                     "LABEL": "Comments",
                     "ACTIVE": False,
                     "INFO": "Load report card comments",
-                    "CONTENT_MANAGER": L_Comments(page_id={"TAB_ID": self.__tab_id, "PANEL_ID": "PANEL_2"})}
+                    "CONTENT_MANAGER": L_Comments(page_id={"TAB_ID": self.__tab_id, "PANEL_ID": "PANEL_2"}, panel_name="Comments")}
         )
         self.__category_menu = L_Menu(id="setup_menu",
                                       parent_id=tab_id,
