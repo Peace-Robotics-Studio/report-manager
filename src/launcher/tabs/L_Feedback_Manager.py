@@ -1,4 +1,4 @@
-#  L_Feedback_Manager.py. (Modified 2022-05-22, 10:56 a.m. by Praxis)
+#  L_Feedback_Manager.py. (Modified 2022-05-26, 6:40 p.m. by Praxis)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -32,38 +32,38 @@ class L_Feedback_Manager(Content_Manager):
         self.__content_options_menu_css_class = 'launcher-feedback-options-menu-container'
         self.__content_options_container_css_class = 'launcher-feedback-options-container'
         self.options_content_area = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)  # Create a box to hold the options display data
-        self.__feedback_manager = L_Feedback_Files(tab_id=tab_id, active_option="PANEL_0")
+        self.__feedback_files = L_Feedback_Files(tab_id=tab_id, active_option="PANEL_0")
         self.menu_button_keys = dict(
             PANEL_0={"TYPE": "Text",
                     "PACK": "Start",
                     "LABEL": "Recent Files",
                     "ACTIVE": True,
                     "INFO": "Recent feedback summary files",
-                    "CONTENT_MANAGER": self.__feedback_manager},
+                    "CONTENT_MANAGER": self.__feedback_files},
             PANEL_1={"TYPE": "Text",
                     "PACK": "Start",
                     "LABEL": "By Grade",
                     "ACTIVE": False,
                     "INFO": "Summary files by grade",
-                    "CONTENT_MANAGER": self.__feedback_manager},
+                    "CONTENT_MANAGER": self.__feedback_files},
             PANEL_2={"TYPE": "Text",
                     "PACK": "Start",
                     "LABEL": "By Teacher",
                     "ACTIVE": False,
                     "INFO": "Summary files by teacher",
-                    "CONTENT_MANAGER": self.__feedback_manager},
+                    "CONTENT_MANAGER": self.__feedback_files},
             PANEL_3={"TYPE": "Text",
                     "PACK": "Start",
                     "LABEL": "By Class Code",
                     "ACTIVE": False,
                     "INFO": "Summary files by class code",
-                    "CONTENT_MANAGER": self.__feedback_manager},
+                    "CONTENT_MANAGER": self.__feedback_files},
             PANEL_4={"TYPE": "Text",
                     "PACK": "Start",
                     "LABEL": "By Date",
                     "ACTIVE": False,
                     "INFO": "Summary files by date",
-                    "CONTENT_MANAGER": self.__feedback_manager}
+                    "CONTENT_MANAGER": self.__feedback_files}
         )
         self.__category_menu = L_Menu(id="feedback_menu",
                                       parent_id=tab_id,
@@ -121,7 +121,7 @@ class L_Feedback_Manager(Content_Manager):
         self.__process_action("editor")
 
     def option_clicked(self, value):
-        self.__feedback_manager.set_state(value)
+        self.__feedback_files.set_state(value)
 
     def add_layout_container(self, container: Gtk.Container, state=None) -> None:
         self.options_content_area.add(container)
