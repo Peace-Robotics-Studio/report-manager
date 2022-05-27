@@ -17,13 +17,15 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 from ...gui.ABS_Panel import Panel
 from ...gui.widgets.Action_Frame import Action_Frame
+from ...gui.widgets.Config_Button import Config_Button
 from ...gui.L_Menu import L_Menu
 
 
 class L_Comments(Panel):
-    def __init__(self, page_id: dict, panel_name: str):
+    def __init__(self, page_id: dict, panel_name: str, parent_window: Gtk.Window):
         super().__init__(panel_name=panel_name, page_id=page_id, layout_orientation=Gtk.Orientation.VERTICAL)
         self.__page_id = page_id
+        self.__parent_window = parent_window
         self.__currently_loaded_property = None
         # Add a container to hold the properties menu
         self.__properties_menu_container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
@@ -33,7 +35,7 @@ class L_Comments(Panel):
 
         self.menu_button_keys = dict(
             PROPERTY_0={"TYPE": "Text",  # This is a text-based menu
-                     "PACK": "Start",  # Buttons are stacked from left to right
+                     "PACK": "Start",  # Buttons are stacked from left/top ("START") to right/bottom ("END")
                      "LABEL": "Files",  # Name of the menu entry
                      "ACTIVE": True,  # This button is initialized with active styling
                      "INFO": "Recent feedback summary files",  # The tooltip
@@ -41,7 +43,7 @@ class L_Comments(Panel):
             PROPERTY_1={"TYPE": "Text",
                      "PACK": "Start",
                      "LABEL": "By Grade",
-                     "ACTIVE": False,
+                     "ACTIVE": False,  # This button is initialized with inactive styling
                      "INFO": "Summary files by grade",
                      "CONTENT_MANAGER": self},
             PROPERTY_2={"TYPE": "Text",
@@ -66,18 +68,17 @@ class L_Comments(Panel):
         self.__category_menu = L_Menu(id="comments_menu",  # The ID of this menu
                                       parent_id=self.__page_id['PANEL_ID'],  # The panel that this menu belongs to
                                       orientation="horizontal",  # This is a horizontal menu
-                                      container_css_class="test",  # The CSS class for the menu container
+                                      container_css_class="panel-comments-menu",  # The CSS class for the menu container
                                       button_values=self.menu_button_keys,  # The dictionary of keys to be displayed in this menu
                                       align_button_labels="left",  # Aligns all buttons labels left
-                                      button_css_class="properties-menu-button",  # CSS class for the menu buttons
+                                      button_css_class="panel-comments-menu-button",  # CSS class for the menu buttons
                                       content_manager=self,  # This object (L_Comments) will manage content for this menu
                                       message_callback=self.property_clicked,  # Capture click events and coordinate loading widgets into the content area
                                       manage_content=False)  # L_Menu will not load widgets into the content area
-        self.__category_menu.pad_menu(css_class="test2")  # Add a box with styling to the end of the menu to complete styling theme
+        self.__category_menu.pad_menu(css_class="panel-comments-menu-padding")  # Add a box with styling to the end of the menu to complete styling theme
         self.__properties_menu_container.add(self.__category_menu.get_layout_container())
 
         self.__properties_content_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
-        self.__properties_content_container.get_style_context().add_class('test1')
         self.__properties_content_container.set_vexpand(True)
         self.__properties_content_container.set_hexpand(True)
         self.add(self.__properties_content_container)
@@ -100,14 +101,18 @@ class L_Comments(Panel):
 
     def __display_files(self):
         """ PROPERTY_0 """
-        files_list = Action_Frame(css_class="files-list-container")
+        files_list = Action_Frame(css_class="comments-content-files")
         files_list.register_button(name="add", id="add_file", callback=self.__files_button_clicked, tooltip="Add", active=True)
         files_list.register_button(name="remove", id="remove_file", callback=self.__files_button_clicked, tooltip="Remove", active=False)
+        files_list.register_button(name="settings", id="file_settings", callback=self.__save_picker_config_data, tooltip="Settings", active=True)
+        # Form_Item_Properties(label="Remember Path", response_key="HKEY", callback=self.__save_picker_config_data, toggled_on=True, decorator="checkbox")
         self.display_content(files_list.get_layout_container())
 
     def __display_by_grade(self):
         """ PROPERTY_1 """
-        self.display_content(Gtk.Label(label="Comments by grade."))
+        settings_button = Config_Button(css_class='form-button', css_name='drop-config-button', parent_window=self.__parent_window)
+        settings_button.add_menu_item(label="Remember Path", response_key="HKEY", callback=self.__save_picker_config_data, toggled_on=True, decorator="checkbox")
+        self.display_content(settings_button.get_button())
 
     def __display_by_teacher(self):
         """ PROPERTY_2 """
@@ -137,7 +142,7 @@ class L_Comments(Panel):
             # ToDo: display message to user in GUI
             print('\033[3;30;43m' + ' Unable to read CSV file! ' + '\033[0m')
 
-    def display_content(self, container: Gtk.Container) -> None:
+    def display_content(self, container) -> None:
         if self.__currently_loaded_property is not None:
             self.__properties_content_container.remove(self.__currently_loaded_property)
         self.__properties_content_container.add(container)
@@ -146,4 +151,10 @@ class L_Comments(Panel):
 
     def __files_button_clicked(self, button, id):
         print(f"{id} clicked")
+
+    def __save_picker_config_data(self, button, name):
+        if button.get_active():
+            print("Toggle on")
+        else:
+            print("Toggle off")
 

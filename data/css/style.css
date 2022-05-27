@@ -367,39 +367,35 @@
     border-radius: 5px;
     margin: 5px 20px;
 }
-.test {
+.panel-comments-menu {
     color: #dbdbdb;
 }
-.test1 {
-
-}
-
-.properties-menu-button {
+.panel-comments-menu-button {
     border: 0px;
     padding: 2px 10px;
     border-bottom: 3px solid #2b2b2b;
     border-radius: 3px 3px 0px 0px;
     background-image:none;
 }
-#inactive-menu-button.properties-menu-button {
+#inactive-menu-button.panel-comments-menu-button {
     color: #dbdbdb;
     padding-bottom: 1px;
     border-bottom: 1px solid black;
 }
-#inactive-menu-button.properties-menu-button:hover {
+#inactive-menu-button.panel-comments-menu-button:hover {
     background-color: #444444;
 }
-#active-menu-button.properties-menu-button {
+#active-menu-button.panel-comments-menu-button {
     color: #dbdbdb;
     padding-bottom: 0px;
     border-bottom: 2px solid #2d5fab;
 }
-#active-menu-button.properties-menu-button:hover {
+#active-menu-button.panel-comments-menu-button:hover {
     background-color: #444444;
 }
-.test2 {
+.panel-comments-menu-padding {
     border-bottom: 1px solid black;
 }
-.files-list-container {
+.comments-content-files {
     margin-top: 10px;
 }

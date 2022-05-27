@@ -27,7 +27,7 @@ res_dir = dict(
     T0P0_IMAGES=RES_FOLDER + "images/tab_0/panel_0/"
 )
 
-version_number = "v2022.5.16"
+version_number = "v2022.5.27"
 config_file_name = "configuration.json"
 config_file_path = res_dir["ROOT"] + "/" + config_file_name
 config_data = {}

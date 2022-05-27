@@ -13,7 +13,7 @@ class Panel(ABC):
         self.__layout_container = Gtk.Box(orientation=layout_orientation)
         self.__layout_container.set_hexpand(True)
         self.__layout_container.set_vexpand(True)
-        L_Help_Manager.register_panel(panel_name="Comments", tab_id=page_id['TAB_ID'], panel_id=page_id['PANEL_ID'])
+        L_Help_Manager.register_panel(panel_name=panel_name, tab_id=page_id['TAB_ID'], panel_id=page_id['PANEL_ID'])
 
     def get_layout_container(self):
         """ Public Accessor: Returns the main Gtk.Container holding widgets for this class. """

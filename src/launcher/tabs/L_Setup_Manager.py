@@ -54,7 +54,7 @@ class L_Setup_Manager(Content_Manager):
                     "LABEL": "Comments",
                     "ACTIVE": False,
                     "INFO": "Load report card comments",
-                    "CONTENT_MANAGER": L_Comments(page_id={"TAB_ID": self.__tab_id, "PANEL_ID": "PANEL_2"}, panel_name="Comments")}
+                    "CONTENT_MANAGER": L_Comments(page_id={"TAB_ID": self.__tab_id, "PANEL_ID": "PANEL_2"}, panel_name="Comments", parent_window=parent_window)}
         )
         self.__category_menu = L_Menu(id="setup_menu",
                                       parent_id=tab_id,
