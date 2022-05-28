@@ -1,4 +1,4 @@
-#  Combo_Picker.py. (Modified 2022-05-23, 11:27 p.m. by Praxis)
+#  File_Picker.py. (Modified 2022-05-27, 11:07 p.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -12,12 +12,11 @@ import gi
 
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, Gdk
-from .Context_Box import Context_Box
-from .Form_Item import Form_Item_Properties
+from .Settings_Button import Settings_Button
 from ....Config import *
 
 
-class Combo_Picker:
+class File_Picker:
     def __init__(self, label: str, css_class: str, parent_window: Gtk.Window, callback: callable):
         """ Constructor: This class creates a custom entry field using Gtk.Entry
             label: descriptive name of the event box,
@@ -64,11 +63,9 @@ class Combo_Picker:
         picker_button.connect("clicked", self.__file_picker)
         file_dir.pack_end(child=picker_button, expand=False, fill=False, padding=0)
         # Create a button to display a context menu with configuration options
-        drop_config_button = Gtk.Button()
-        drop_config_button.get_style_context().add_class('form-button')
-        drop_config_button.set_name("drop-config-button")
-        drop_config_button.connect("clicked", self.__picker_config_context)
-        self.__layoutContainer.pack_end(child=drop_config_button, expand=False, fill=False, padding=0)
+        settings_button = Settings_Button(css_class='form-button', css_name='drop-config-button', parent_window=self.__parent_window)
+        settings_button.add_menu_item(label="Remember Path", response_key="HKEY", callback=self.__save_picker_config_data, toggled_on=True, decorator="checkbox")
+        self.__layoutContainer.pack_end(child=settings_button, expand=False, fill=False, padding=0)
 
     # Public Methods
 
@@ -82,15 +79,6 @@ class Combo_Picker:
         return self.__layoutContainer
 
     # Private Methods
-
-    def __picker_config_context(self, button):
-        """ Private Callback: This function creates a context menu when the picker config button is activated. """
-        form_items = [Form_Item_Properties(label="Remember Path", response_key="HKEY", callback=self.__save_picker_config_data, toggled_on=True, decorator="checkbox")]
-        config_context = Context_Box(parent=self.__parent_window, reference_widget=button, align="right", form_items=form_items)
-        response = config_context.run()
-        # if response == Gtk.ResponseType.OK:
-        #     print("The OK button was clicked")
-        config_context.destroy()
 
     def __save_picker_config_data(self, button, name):
         # ToDo: Save remember flag to file

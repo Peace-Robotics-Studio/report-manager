@@ -1,4 +1,4 @@
-#  Context_Box.py. (Modified 2022-04-24, 8:25 p.m. by Praxis)
+#  Context_Menu_Dialog.py. (Modified 2022-05-27, 9:24 p.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -13,11 +13,11 @@ import cairo
 
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, Gdk
-from .Form_Item import Form_Item
+from .Context_Menu_Item import Context_Menu_Item
 from ....Config import *
 
 
-class Context_Box(Gtk.Dialog):
+class Context_Menu_Dialog(Gtk.Dialog):
     def __init__(self, parent, reference_widget: Gtk.Widget, align: str, form_items: list):
         """ Constructor:  """
         super().__init__(flags=0)
@@ -95,5 +95,5 @@ class Context_Box(Gtk.Dialog):
         """ Public Initializer: This function adds form items to the context menu """
         if self.__form_items:
             for item_property_dictionary in self.__form_items:
-                form_item = Form_Item(item_property_dictionary)
+                form_item = Context_Menu_Item(item_property_dictionary)
                 self.layout_container.add(form_item.get_layout_container())

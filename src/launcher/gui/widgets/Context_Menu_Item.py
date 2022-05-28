@@ -1,4 +1,4 @@
-#  Form_Item.py. (Modified 2022-04-26, 7:37 p.m. by Praxis)
+#  Context_Menu_Item.py. (Modified 2022-05-27, 10:29 p.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -14,21 +14,21 @@ gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GdkPixbuf
 from ....Config import *
 
-class Form_Item_Properties:
+class Context_Menu_Item_Properties:
     """ Structure to hold form item properties. This is preferable over a standard dictionary because this approach allows for type checking and setting defaults. """
     def __init__(self, label: str, response_key: str, callback: callable, active: bool = True, toggled_on: bool = False, decorator: str = None, title: bool = False, menu: bool = False):
-        self.__properties_dictionary = dict(label=label,
-                                            response_key=response_key,
-                                            callback=callback,
-                                            active=active,
-                                            toggled_on=toggled_on,
-                                            decorator=decorator,
-                                            title=title,
-                                            menu=menu)
+        self.__properties_dictionary = dict(label=label,  # The text applied to the form item
+                                            response_key=response_key,  # A unique identifier used to store the response value in the configuration dictionary
+                                            callback=callback,  # A function linked with each menu item (excluding static title labels)
+                                            active=active,  # Determines whether an item can be interacted with
+                                            toggled_on=toggled_on,  # Sets a widgets toggled state (such as check boxes)
+                                            decorator=decorator,  # An image or clickable widget
+                                            title=title,  # Sets the item as a static element if true
+                                            menu=menu)  # Sets the item to spawn a child context menu
     def get_properties_dict(self):
         return self.__properties_dictionary
 
-class Form_Item:
+class Context_Menu_Item:
     """ Option items added to the Context_Box() widget. """
     def __init__(self, item_properties_list=None):
         """ Constructor:

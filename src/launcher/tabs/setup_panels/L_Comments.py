@@ -1,4 +1,4 @@
-#  L_Comments.py. (Modified 2022-05-26, 10:54 p.m. by Praxis)
+#  L_Comments.py. (Modified 2022-05-27, 11:01 p.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -17,7 +17,7 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 from ...gui.ABS_Panel import Panel
 from ...gui.widgets.Action_Frame import Action_Frame
-from ...gui.widgets.Config_Button import Config_Button
+from ...gui.widgets.Settings_Button import Settings_Button
 from ...gui.L_Menu import L_Menu
 
 
@@ -104,15 +104,16 @@ class L_Comments(Panel):
         files_list = Action_Frame(css_class="comments-content-files")
         files_list.register_button(name="add", id="add_file", callback=self.__files_button_clicked, tooltip="Add", active=True)
         files_list.register_button(name="remove", id="remove_file", callback=self.__files_button_clicked, tooltip="Remove", active=False)
-        files_list.register_button(name="settings", id="file_settings", callback=self.__save_picker_config_data, tooltip="Settings", active=True)
-        # Form_Item_Properties(label="Remember Path", response_key="HKEY", callback=self.__save_picker_config_data, toggled_on=True, decorator="checkbox")
+        settings_button = files_list.register_button(name="context-settings", id="file_settings", callback=self.__save_file_paths, tooltip="Settings", active=True, has_context_menu=True)
+        settings_button.add_context_menu_item(label="Remember Path", response_key="HKEY", callback=self.__save_file_paths, toggled_on=True, decorator="checkbox")
+        settings_button.set_context_menu_left()
         self.display_content(files_list.get_layout_container())
 
     def __display_by_grade(self):
         """ PROPERTY_1 """
-        settings_button = Config_Button(css_class='form-button', css_name='drop-config-button', parent_window=self.__parent_window)
-        settings_button.add_menu_item(label="Remember Path", response_key="HKEY", callback=self.__save_picker_config_data, toggled_on=True, decorator="checkbox")
-        self.display_content(settings_button.get_button())
+        settings_button = Settings_Button(css_class='form-button', css_name='drop-config-button', parent_window=self.__parent_window)
+        settings_button.add_menu_item(label="Remember Path", response_key="HKEY", callback=self.__save_file_paths, toggled_on=True, decorator="checkbox")
+        self.display_content(settings_button)
 
     def __display_by_teacher(self):
         """ PROPERTY_2 """
@@ -152,7 +153,7 @@ class L_Comments(Panel):
     def __files_button_clicked(self, button, id):
         print(f"{id} clicked")
 
-    def __save_picker_config_data(self, button, name):
+    def __save_file_paths(self, button, name):
         if button.get_active():
             print("Toggle on")
         else:

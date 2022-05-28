@@ -1,4 +1,4 @@
-#  Action_Frame.py. (Modified 2022-05-01, 8:36 p.m. by Praxis)
+#  Action_Frame.py. (Modified 2022-05-27, 10:45 p.m. by Praxis)
 #  Copyright (c) 2022-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -12,7 +12,7 @@ import gi
 
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
-from .Form_Button import Form_Button
+from .Frame_Button import Frame_Button
 from abc import ABC
 
 
@@ -70,18 +70,19 @@ class Action_Frame(ABC):
         else:
             self.__action_bar.pack_start(child=item, expand=expand, fill=fill, padding=padding)
 
-    def register_button(self, name: str, id: str, callback: callable, tooltip: str, interaction_type: str = "Button", group_key: str = "", active: bool = True, pack_order: str = "CENTER"):
+    def register_button(self, name: str, id: str, callback: callable, tooltip: str, interaction_type: str = "Button", group_key: str = "", active: bool = True, pack_order: str = "CENTER", has_context_menu: bool = False) -> Frame_Button:
         if id not in self.BUTTON_CALLBACKS:
-            button = Form_Button(name=name, id=id, callback=self.button_clicked_intercept, tooltip_text=tooltip, active=active)
+            button = Frame_Button(name=name, id=id, callback=self.button_clicked_intercept, tooltip_text=tooltip, active=active, has_context_menu=has_context_menu)
             self.BUTTON_CALLBACKS[id] = callback
             if pack_order == "END":
-                self.__action_bar_buttons_end.add(button.add())
+                self.__action_bar_buttons_end.add(button)
             elif pack_order == "CENTER":
-                self.__action_bar_buttons_center.add(button.add())
+                self.__action_bar_buttons_center.add(button)
             else:
-                self.__action_bar_buttons_start.add(button.add())
+                self.__action_bar_buttons_start.add(button)
             if interaction_type == "toggle":
                 self.TOGGLE_BUTTONS[id] = {"status": active, "object": button, "group_key": group_key}
+            return button
         else:
             print('\033[3;30;43m' + ' Error! Attempt to register a duplicate button ID ' + '\033[0m')
 

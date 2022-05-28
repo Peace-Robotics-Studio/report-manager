@@ -159,13 +159,13 @@
     background-image: url("../icons/open_folder_light.png");
 }
 #drop-config-button.form-button {
-    background-image: url("../icons/drop_settings.png");
+    background-image: url("../icons/context_settings.png");
     min-width: 23px;
     padding: 2px;
 }
 #drop-config-button.form-button:hover {
     background-color: #45494a;
-    background-image: url("../icons/drop_settings_light.png");
+    background-image: url("../icons/context_settings_light.png");
 }
 #drop-config-button.form-button:active {
     background-color: #515657;
@@ -238,6 +238,12 @@
 }
 #add-active.form-button {
     background-image: url("../icons/add_light.png");
+}
+#context-settings-inactive.form-button {
+    background-image: url("../icons/context_settings.png");
+}
+#context-settings-active.form-button {
+    background-image: url("../icons/context_settings_light.png");
 }
 #edit-inactive.form-button {
     background-image: url("../icons/edit.png");

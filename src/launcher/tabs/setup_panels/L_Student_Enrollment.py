@@ -1,4 +1,4 @@
-#  L_Student_Enrollment.py. (Modified 2022-05-23, 8:16 p.m. by Praxis)
+#  L_Student_Enrollment.py. (Modified 2022-05-27, 9:24 p.m. by Praxis)
 #  Copyright (c) 2021-2022 Peace Robotics Studio
 #  Licensed under the MIT License.
 #  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -14,7 +14,7 @@ gi.require_version('Gtk', '3.0')
 import csv
 from collections import defaultdict
 from gi.repository import Gtk
-from ...gui.widgets.Combo_Picker import Combo_Picker
+from ...gui.widgets.File_Picker import File_Picker
 from ...gui.widgets.Treestore_Frame import Treestore_Frame
 from src.launcher.gui.L_Load_Student_Data import L_Load_Student_Data
 from ...gui.ABS_Panel import Panel
@@ -35,7 +35,7 @@ class L_Student_Enrollment(Panel):
         self.student_details_list.register_button(name="save", id="TF-save", callback=self.__button_clicked, tooltip="Save Changes", active=False)
 
         # Create a widget for selecting CSV files to be displayed in the Table_List
-        roster_file_dir = Combo_Picker(label="Student Roster:", css_class="enrollment-combo-picker", parent_window=parent_window, callback=self.__load_student_data)
+        roster_file_dir = File_Picker(label="Student Roster:", css_class="enrollment-combo-picker", parent_window=parent_window, callback=self.__load_student_data)
         self.pack_start(child=roster_file_dir.get_layout_container(), expand=False, fill=False, padding=0)
         self.pack_start(child=self.student_details_list.get_layout_container(), expand=False, fill=True, padding=0)
         self.show_all()
